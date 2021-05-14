@@ -59,6 +59,7 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
       setLoading(false);
     }else{      
       setLoading(false);
+      setCode('');
       setError(true);
     }
 
@@ -103,9 +104,9 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
           
         
               {is_error == true ? 
-                <Block>
+                <Block center>
                   <Text h6 style={{color:Colors.danger}}>
-                  Incorrect Username or password.</Text>                    
+                  Incorrect OTP.</Text>                    
                 </Block>
                   :                  
                 null                   

@@ -80,7 +80,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
               
         }).catch((error)=>{
           setLoading(false);
-          console.warn(error)        
+          console.warn(error.response)        
         })
     }
     else{
@@ -162,7 +162,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
 
                 {is_warning == true ? 
                   <Text h7 style={{color:Colors.warning}}>
-                  Please enter all fields.</Text>                    
+                  Please enter your username and password.</Text>                    
                   :                  
                   null                  
                 }
