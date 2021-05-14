@@ -4,7 +4,8 @@ import { StyleSheet,
           View, 
           Image,           
           KeyboardAvoidingView,
-          Picker
+          Picker,
+          FlatList
          } from 'react-native';
 import { Card } from 'react-native-paper';
 import { RootStackParamList } from '../types';
@@ -108,7 +109,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
     setShowPanel(false);
 
     setCardInfo((prevState)=>[...prevState,{commodity:'Egg', Unit:'kg', Quantity:'2',Amount:5.00 }])
-    
+
     // setCommodities(prevState=>[...prevState, ( 
     //   <Card>
     //     <Card.Title>Chicken ( 2 Kilogram )      
@@ -173,44 +174,47 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
           
         
 
-          {cardInfo.map((item:any) =>
-
-                <Card elevation={1}>
-                <Card.Title title={item.Commodity}    />
-                <Card.Content>
-                  <Text style={[styles.title,{color:Colors.danger}]}>Amount:  {item.Amount} </Text>
-                </Card.Content>              
-                <Card.Actions >
-                <Button  size="small" 
-                          
-                          icon="edit" 
-                          iconFamily="material" 
-                          iconSize={10} 
-                          color="warning" 
-                          onlyIcon
-                          style={{alignSelf:'flex-end',display:'flex'}}
-                          >Edit</Button>
-  
-                  <Button  size="small" 
-                        
-                        icon="delete" 
-                        iconFamily="material" 
-                        iconSize={10} 
-                        color="danger" 
-                        style={{right:0}}
-                        onlyIcon
-                        onPress={()=>setDeleteDialog(true)}
-                        >Remove</Button>
-                </Card.Actions>
-              </Card>
-  
-            
-            )}
+          
 
 
 
 
+      <FlatList
+        data={cardInfo}
+        renderItem={(item:any)=>{
+          <Block>
+            <Card elevation={1}>
+            <Card.Title title={item.Commodity + ' ( ' + item.Quantity + ' ' + item.Unit + ' )'  }    />
+            <Card.Content>
+              <Text style={[styles.title,{color:Colors.danger}]}>Amount:  {item.Amount} </Text>
+            </Card.Content>              
+            <Card.Actions >
+            <Button  size="small" 
+                      
+                      icon="edit" 
+                      iconFamily="material" 
+                      iconSize={10} 
+                      color="warning" 
+                      onlyIcon
+                      style={{alignSelf:'flex-end',display:'flex'}}
+                      >Edit</Button>
 
+              <Button  size="small" 
+                    
+                    icon="delete" 
+                    iconFamily="material" 
+                    iconSize={10} 
+                    color="danger" 
+                    style={{right:0}}
+                    onlyIcon
+                    onPress={()=>setDeleteDialog(true)}
+                    >Remove</Button>
+            </Card.Actions>
+          </Card>  
+          </Block>
+        }}
+        
+      />
 
           
           <Button
