@@ -1,0 +1,424 @@
+import { StackScreenProps } from '@react-navigation/stack';
+import React,{useState,useEffect} from 'react';
+import { StyleSheet,                  
+          View, 
+          Image,           
+          KeyboardAvoidingView,                  
+ 
+         } from 'react-native';
+
+import { RootStackParamList } from '../types';
+import Images from '../constants/Images';
+import Colors from '../constants/Colors';
+import MyWindow from '../constants/Layout';
+import { Input, Block, Button, Card ,Text} from "galio-framework";
+import {Footer} from 'native-base';
+import axios from 'axios';
+import * as ip_config from '../ip_config';
+import StepIndicator from 'react-native-step-indicator';
+import ViewPager from '@react-native-community/viewpager';
+import { ScrollView, State } from 'react-native-gesture-handler';
+import { min } from 'react-native-reanimated';
+
+
+
+
+
+const form = {
+  username:'',
+  password:''
+}
+
+const labels = ["Claimer Profile", "Add Fertilizer","Import Document"]
+const customStyles = {    
+    stepIndicatorSize: 25,
+    currentStepIndicatorSize:30,
+    separatorStrokeWidth: 1,
+    currentStepStrokeWidth: 3,
+    stepStrokeCurrentColor: Colors.base,
+    stepStrokeWidth: 3,
+    stepStrokeFinishedColor: Colors.base,
+    stepStrokeUnFinishedColor: '#aaaaaa',
+    separatorFinishedColor: Colors.base,
+    separatorUnFinishedColor: '#aaaaaa',
+    stepIndicatorFinishedColor: Colors.base,
+    stepIndicatorUnFinishedColor: '#ffffff',
+    stepIndicatorCurrentColor: '#ffffff',
+    stepIndicatorLabelFontSize: 13,
+    currentStepIndicatorLabelFontSize: 13,
+    stepIndicatorLabelCurrentColor: Colors.base,
+    stepIndicatorLabelFinishedColor: '#ffffff',
+    stepIndicatorLabelUnFinishedColor: '#aaaaaa',
+    labelColor: '#999999',
+    labelSize: 13,
+    fontWeight:'bold',
+    currentStepLabelColor: Colors.base
+  }
+
+
+  
+export default function ClaimVoucherScreen({navigation,route} : StackScreenProps <RootStackParamList, 'ClaimVoucher'>) {
+
+
+  const params= route.params;  
+  console.log(params)
+  const [is_loading,setLoading]  = useState(false);
+  var [viewPager,setPage]  = useState();
+  
+  var [currentPage,setCurrentPage]  = useState(1);
+  
+  
+
+  const claimVoucher = async ()=>{
+
+    setLoading(true);
+
+    axios.post(ip_config.ip_address+'vmp-web/public/api/claim_voucher',form)
+    .then((response)=>{
+        console.warn(response.data);
+        navigation.replace('Root')
+        setLoading(false);
+    }).catch((error)=>{
+    console.warn(error.response.data);
+    setLoading(false);
+    })  
+  }
+
+  var renderViewPage = (data:any) =>{
+    return data;
+  }
+
+ // SECOND FORM
+ const addFertilizerScreen = () =>{
+  return(
+    <ScrollView>
+      <Block>
+          <Card
+          flex
+          borderless
+          shadow
+          title="Add Item"
+          caption="139 minutes ago"
+          location="Los Angeles, CA"
+            />
+      </Block>
+    </ScrollView>
+  )
+}
+
+  // THIRD FORM
+  const importFileScreen = () =>{
+    return(
+      <Block>
+        <Text>Sample</Text>
+      </Block>
+    )
+  }
+
+ 
+
+  // FIRST FORM
+  const claimerScreen = () =>{
+    return(
+      <ScrollView>
+              {/* <Block space="between"  middle>
+                    <Block  width={MyWindow.Width * 0.8} 
+                        space="evenly"          
+                        flex={0.9}  
+                    >   
+                        <Text h7>Reference Number</Text>
+                        <Input                 
+                            placeholderTextColor={Colors.muted}                 
+                            color={Colors.header}
+                            style={styles.input}                                 
+                            onChangeText={(value)=>{form.username=value}}
+                            editable={false}
+                            value={params[0]['RSBSA_CTRL_NO']}
+                            />
+
+                    </Block>
+
+                    <Block   width={MyWindow.Width * 0.8} style={{ marginVertical: 20}}
+                        space="between"                        
+                    >   
+
+                        <Block >
+                            <Text h7>Last Name</Text>
+
+                            <Input                            
+                                placeholderTextColor={Colors.muted}                 
+                                color={Colors.header}
+                                style={styles.input}                                 
+                                value={params[0]['INFO_NAME_L']}
+                                editable={false}
+                                
+                            />
+                        </Block>                      
+
+                        <Block >
+                            <Text h7>First Name</Text>
+
+                            <Input                            
+                                placeholderTextColor={Colors.muted}                 
+                                color={Colors.header}
+                                style={styles.input}                                 
+                                value={params[0]['INFO_NAME_F']}
+                                editable={false}
+                            />
+                        </Block>   
+
+                        <Block >
+                            <Text h7>Middle Name</Text>
+
+                            <Input                            
+                                placeholderTextColor={Colors.muted}                 
+                                color={Colors.header}
+                                style={styles.input}                                 
+                                value={params[0]['INFO_NAME_M']}
+                                editable={false}
+                            />
+                        </Block>   
+
+
+                        <Block >
+                            <Text h7>Extension Name</Text>
+
+                            <Input                            
+                                placeholderTextColor={Colors.muted}                 
+                                color={Colors.header}
+                                style={styles.input}                                 
+                                value={params[0]['INFO_NAME_EXT']}
+                                editable={false}
+                            />
+                        </Block>   
+
+                        <Block >
+                            <Text h7>Permanent Address</Text>
+
+                            <Input                            
+                                placeholderTextColor={Colors.muted}                 
+                                color={Colors.header}
+                                style={styles.textArea}                                 
+                                value={params[0]['INFO_PERM_ADD_A'] + ','
+                                      + params[0]['INFO_PERM_BRGY'] + ',' 
+                                      + params[0]['INFO_PERM_CITY'] + ',' 
+                                      + params[0]['INFO_PERM_PROV'] + ',' 
+                                       }
+                                editable={false}
+                            />
+                        </Block>   
+
+                        
+                        <Block >
+                            <Text h7>Province Name</Text>
+
+                            <Input                            
+                                placeholderTextColor={Colors.muted}                 
+                                color={Colors.header}
+                                style={styles.textArea}                                 
+                                value={params[0]['INFO_PERM_PROV']}
+                                editable={false}
+                            />
+                        </Block>   
+
+                        
+                        <Block >
+                            <Text h7>Municipality</Text>
+
+                            <Input                            
+                                placeholderTextColor={Colors.muted}                 
+                                color={Colors.header}
+                                style={styles.textArea}                                 
+                                value={params[0]['INFO_NAME_REG']}
+                                editable={false}
+                            />
+                        </Block>   
+                  </Block>        
+                </Block> */}
+              </ScrollView>
+    )
+  }
+
+  const PAGES = [claimerScreen(),addFertilizerScreen(),importFileScreen()];
+
+
+  var renderLabel = ({position,stepStatus,label,currentPosition})=>{
+    
+    return (
+      
+      <Text style = {
+        position === currentPosition
+        ? styles.stepLabelSelected
+        : styles.stepLabel
+
+      }>
+
+        {label}
+      </Text>
+    )
+  }
+
+
+
+// STEP FORM BUTTON 
+
+
+const goToNextPage = async () => {
+  
+  if(labels.length-1 != currentPage){
+    setCurrentPage(currentPage + 1);      
+    viewPager.setPage(currentPage + 1)
+  }
+    
+  }
+
+const goBackPage = async () => {
+    setCurrentPage(currentPage - 1);      
+    viewPager.setPage(currentPage - 1)
+    
+  }
+  
+  return (
+      
+    <View style={styles.container}>
+        <KeyboardAvoidingView style={{flex:1}}>                         
+                <Block center space="between">                  
+                        <Text style={styles.title}>Claimer Profile</Text>
+                </Block>
+                <Block center space="between">                  
+                        <Text style={styles.title}>Available </Text>
+                </Block>
+                <StepIndicator
+                    customStyles={customStyles}                    
+                    stepCount={3}
+                    labels={labels}
+                    currentPosition={currentPage}                    
+                    renderLabel= {renderLabel}                    
+                />
+
+
+                
+
+                <ViewPager
+                  
+                  style={{flexGrow:1}}
+                  scrollEnabled={false}
+                  ref = {(viewPager:any) =>{setPage(viewPager)}}
+                  onPageSelected ={(page:any) => {
+                      
+                      setCurrentPage(page.nativeEvent.position)
+                  }}                    
+                >                  
+                  {PAGES.map(page=> renderViewPage(page))}
+
+                </ViewPager>
+                
+             
+        </KeyboardAvoidingView>
+
+        <Footer style={{backgroundColor:'white'}}>
+       
+            <Block middle row> 
+
+                  { currentPage == 1 ? 
+                    <Button
+                    round uppercase color={Colors.back} style={styles.button}                
+                    onPress={goBackPage} loading={is_loading}>
+                        Go back
+                    </Button>
+                    :
+                    null                
+                  
+                  }                    
+
+                    <Button
+                    round uppercase color="#66BB6A" style={styles.button}                
+                    onPress={goToNextPage} loading={is_loading}>
+                        Next
+                    </Button>
+            </Block>
+        </Footer>
+    </View>
+      
+    
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',    
+    
+  },
+  second_container: {
+    flex:1,
+    backgroundColor: '#F5F5F5',
+    alignItems: 'center',
+    borderTopEndRadius:40,
+    borderTopStartRadius:40,
+    resizeMode:'contain',
+    top:150,
+    justifyContent: 'center',    
+  },
+  form_container:{
+    alignItems:'center',
+    marginTop:200
+    
+  },
+  logo:{
+        width:150,
+        height:150,
+        borderRadius:40,        
+        left:MyWindow.Width / 2 - 100,
+        top:MyWindow.Height / 2 - 465 ,
+        resizeMode:'center', 
+        alignItems: 'center'     
+      },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  }, 
+  button:{
+    marginRight:20,
+    height: 50,
+    width:MyWindow.Width - 220,
+    position:'relative'
+  }
+  ,
+  otp:{textAlign: 'center', fontSize: 25},
+  otp_desc:{textAlign: 'center', fontSize: 18},
+  root: {flex: 1, padding: 20},  
+  codeFieldRoot: {marginTop: 20},
+  cell: {
+    width: 60,
+    height: 60,
+    lineHeight: 58,
+    fontSize: 28,
+    borderWidth: 2,
+    borderColor: '#00000030',
+    textAlign: 'center',
+  },
+  focusCell: {
+    borderColor: '#000',
+  },
+  input: {    
+    borderColor: Colors.border,
+    height: 50,
+    width:MyWindow.Width - 500,
+    fontSize:20,
+    backgroundColor: '#ddd',
+    opacity:0.8       
+  },
+  textArea: {    
+    borderColor: Colors.border,
+    height: 100,
+    width:MyWindow.Width - 500,
+    fontSize:20,
+    backgroundColor: '#ddd'        
+  },
+  stepLabelSelected:{},
+  stepLabel:{
+
+  }
+
+});
