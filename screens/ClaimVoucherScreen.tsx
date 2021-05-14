@@ -3,15 +3,15 @@ import React,{useState,useEffect} from 'react';
 import { StyleSheet,                  
           View, 
           Image,           
-          KeyboardAvoidingView,                  
- 
+          KeyboardAvoidingView,
+          Picker
          } from 'react-native';
-
+import { Card } from 'react-native-paper';
 import { RootStackParamList } from '../types';
 import Images from '../constants/Images';
 import Colors from '../constants/Colors';
 import MyWindow from '../constants/Layout';
-import { Input, Block, Button, Card ,Text} from "galio-framework";
+import { Input, Block, Button ,Text} from "galio-framework";
 import {Footer} from 'native-base';
 import axios from 'axios';
 import * as ip_config from '../ip_config';
@@ -19,9 +19,8 @@ import StepIndicator from 'react-native-step-indicator';
 import ViewPager from '@react-native-community/viewpager';
 import { ScrollView, State } from 'react-native-gesture-handler';
 import { min } from 'react-native-reanimated';
-
-
-
+import DraggablePanel from 'react-native-draggable-panel';
+import {ConfirmDialog} from 'react-native-simple-dialogs';
 
 
 const form = {
@@ -29,7 +28,7 @@ const form = {
   password:''
 }
 
-const labels = ["Claimer Profile", "Add Fertilizer","Import Document"]
+const labels = ["Claimer Profile", "Add Commodity","Import Document"]
 const customStyles = {    
     stepIndicatorSize: 25,
     currentStepIndicatorSize:30,
@@ -61,10 +60,19 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 
 
   const params= route.params;  
-  console.log(params)
+  const [open,setOpen] = useState(false);
+  const [value, setValue] = useState('CHICKEN');
+  const [commodities,setCommodities] = useState([]);
+  
+  const [isDeleteDialog,setDeleteDialog] = useState(false)
+  
+  const [cardInfo,setCardInfo] = useState([
+      {Commodity:'Chicken', Unit:'Kilogram', Quantity:'2',Amount:5.00 }
+    ]);
+
   const [is_loading,setLoading]  = useState(false);
   var [viewPager,setPage]  = useState();
-  
+  var [isShowPanel,setShowPanel]  = useState(false);  
   var [currentPage,setCurrentPage]  = useState(1);
   
   
@@ -88,23 +96,54 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
     return data;
   }
 
- // SECOND FORM
- const addFertilizerScreen = () =>{
-  return(
-    <ScrollView>
-      <Block>
-          <Card
-          flex
-          borderless
-          shadow
-          title="Add Item"
-          caption="139 minutes ago"
-          location="Los Angeles, CA"
-            />
-      </Block>
-    </ScrollView>
-  )
-}
+  
+  const addCommodity = () => {
+
+        setShowPanel(true);
+       
+
+  }
+
+  const saveCommodity = () =>{
+    setShowPanel(false);
+
+    setCardInfo((prevState)=>[...prevState,{commodity:'Egg', Unit:'kg', Quantity:'2',Amount:5.00 }])
+    
+    // setCommodities(prevState=>[...prevState, ( 
+    //   <Card>
+    //     <Card.Title>Chicken ( 2 Kilogram )      
+    //     </Card.Title>
+    //     <Card.Divider/>
+    //     <Card.FeaturedTitle>
+    //       <Text style={{color:Colors.danger}}>Amount: 2,000</Text>
+    //       <Block>
+    //       <Button  size="small" 
+                  
+    //               icon="edit" 
+    //               iconFamily="material" 
+    //               iconSize={10} 
+    //               color="warning" 
+    //               onlyIcon
+    //               style={{alignSelf:'flex-end',fontSize:10}}
+    //               >Edit</Button>
+
+    //       <Button  size="small" 
+                
+    //             icon="delete" 
+    //             iconFamily="material" 
+    //             iconSize={10} 
+    //             color="danger" 
+    //             style={{alignSelf:'flex-end'}}
+    //             onlyIcon
+    //             >Remove</Button>
+    //       </Block>
+        
+    //     </Card.FeaturedTitle>            
+    //   </Card>
+      
+      
+    //   )]);
+  }
 
   // THIRD FORM
   const importFileScreen = () =>{
@@ -114,6 +153,196 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
       </Block>
     )
   }
+
+
+
+  const showPanel = () => {
+    if(isShowPanel == true)
+    {
+      setShowPanel(false)
+    }else{
+      setShowPanel(true)
+    }
+  }
+ // SECOND FORM
+ const addFertilizerScreen = () =>{
+  return(
+    <ScrollView keyboardShouldPersistTaps='handled'>
+      
+      <Block>
+          
+        
+
+          {cardInfo.map((item:any) =>
+
+                <Card elevation={1}>
+                <Card.Title title={item.Commodity}    />
+                <Card.Content>
+                  <Text style={[styles.title,{color:Colors.danger}]}>Amount:  {item.Amount} </Text>
+                </Card.Content>              
+                <Card.Actions >
+                <Button  size="small" 
+                          
+                          icon="edit" 
+                          iconFamily="material" 
+                          iconSize={10} 
+                          color="warning" 
+                          onlyIcon
+                          style={{alignSelf:'flex-end',display:'flex'}}
+                          >Edit</Button>
+  
+                  <Button  size="small" 
+                        
+                        icon="delete" 
+                        iconFamily="material" 
+                        iconSize={10} 
+                        color="danger" 
+                        style={{right:0}}
+                        onlyIcon
+                        onPress={()=>setDeleteDialog(true)}
+                        >Remove</Button>
+                </Card.Actions>
+              </Card>
+  
+            
+            )}
+
+
+
+
+
+
+          
+          <Button
+                icon="add" 
+                iconFamily="FontAwesome" 
+                iconSize={20}
+                round uppercase 
+                color={Colors.info} 
+                style={styles.add_button}                
+                loading={is_loading}
+                onPress={addCommodity}
+                >
+                        Add  Item
+          </Button>
+
+
+          {/* Delete COnfirm Dialog */}
+
+          <ConfirmDialog
+            title="Do you want to remove this commodity?"
+            visible={isDeleteDialog}            
+            positiveButton={{
+                title: "Yes",
+                onPress: () => alert("yes")
+            }} 
+            negativeButton={{
+              title:'No',
+              onPress: () => setDeleteDialog(false)
+            }}
+            ></ConfirmDialog>
+
+
+
+
+
+
+
+          {/* Add Commodity Form */}
+
+            <DraggablePanel visible={isShowPanel} onDismiss={()=>{setShowPanel(false)}} initialHeight={500}  >
+              <Block   
+                width={MyWindow.Width } 
+                style={{ marginVertical: 20,zIndex:1}}
+                space="between"                        
+                >   
+                <Block center>
+                  <Text style={styles.title}>Add Commodity Form</Text>
+
+                </Block>
+                
+                <Block  >
+                  <Text style={styles.commodity}>Select an Commodity</Text>
+                  <Picker
+                  onValueChange={(value)=>setValue(value)}
+                  selectedValue={value}                 
+                  >
+                    <Picker.Item label="Chicken" value="CHICKEN" />
+                    <Picker.Item label="Egg" value="EGG" />
+                    <Picker.Item label="Rice" value="RICE" />
+                    
+                  </Picker>
+                           
+                </Block>
+
+
+                <Block  >
+                  <Text style={styles.commodity}>Select an Unit</Text>
+                  <Picker
+                  onValueChange={(value)=>setValue(value)}
+                  selectedValue={value}                 
+                  >
+                    <Picker.Item label="Kilograms" value="Kilograms" />
+                    <Picker.Item label="Pieces" value="Pieces" />
+                    <Picker.Item label="Sacks" value="Sacks" />
+                    <Picker.Item label="Trays" value="Trays" />
+                    
+                  </Picker>
+                           
+                </Block>
+
+
+
+                
+
+                <Block>              
+                  <Input
+                  placeholder="0"                  
+                  color={Colors.muted}
+                  style={styles.unit_input}
+                  help="Quantity"                                    
+                  rounded
+                  type="numeric"
+                  // onChangeText={(value)=>setForm({...form,password:value})}
+                  />
+                </Block>
+                
+
+                <Block>              
+                  <Input
+                  placeholder="0"                  
+                  color={Colors.muted}
+                  style={styles.unit_input}
+                  help="Amount"                                    
+                  rounded
+                  type="decimal-pad"
+                  // onChangeText={(value)=>setForm({...form,password:value})}
+                  />
+
+                </Block>
+                <Block  >
+                  <Button
+                    icon="save" 
+                    iconFamily="FontAwesome" 
+                    iconSize={20}
+                    round uppercase 
+                    color={Colors.base} 
+                    style={styles.add_button}                
+                    loading={is_loading}      
+                    onPress={saveCommodity}              
+                    >
+                      Save
+                  </Button>      
+                </Block> 
+
+              </Block>
+            </DraggablePanel>
+      </Block>
+    </ScrollView>
+  )
+}
+
+
 
  
 
@@ -278,15 +507,16 @@ const goBackPage = async () => {
     
   }
   
+
   return (
       
     <View style={styles.container}>
         <KeyboardAvoidingView style={{flex:1}}>                         
                 <Block center space="between">                  
-                        <Text style={styles.title}>Claimer Profile</Text>
+                        {/* <Text style={styles.title}>Claimer Profile</Text> */}
                 </Block>
                 <Block center space="between">                  
-                        <Text style={styles.title}>Available </Text>
+                        <Text style={styles.title}>Available Balance: <Text style={{color:Colors.info}}>2,000</Text></Text>
                 </Block>
                 <StepIndicator
                     customStyles={customStyles}                    
@@ -384,6 +614,12 @@ const styles = StyleSheet.create({
     width:MyWindow.Width - 220,
     position:'relative'
   }
+  , 
+  add_button:{
+    
+    height: 50,
+    width:MyWindow.Width -20,    
+  }
   ,
   otp:{textAlign: 'center', fontSize: 25},
   otp_desc:{textAlign: 'center', fontSize: 18},
@@ -409,6 +645,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#ddd',
     opacity:0.8       
   },
+  unit_input: {    
+    borderColor: Colors.border,
+    height: 50,
+    width:MyWindow.Width - 500,
+    fontSize:20,
+    backgroundColor: Colors.light.background,
+    opacity:0.8       
+  },
   textArea: {    
     borderColor: Colors.border,
     height: 100,
@@ -418,7 +662,10 @@ const styles = StyleSheet.create({
   },
   stepLabelSelected:{},
   stepLabel:{
-
+  },
+  commodity:{
+    marginVertical:10,
+    color:Colors.muted
   }
 
 });
