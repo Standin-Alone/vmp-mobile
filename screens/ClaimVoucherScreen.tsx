@@ -22,12 +22,10 @@ import { ScrollView, State } from 'react-native-gesture-handler';
 import { min } from 'react-native-reanimated';
 import DraggablePanel from 'react-native-draggable-panel';
 import {ConfirmDialog} from 'react-native-simple-dialogs';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-const form = {
-  username:'',
-  password:''
-}
+
 
 const labels = ["Claimer Profile", "Add Commodity","Import Document"]
 const customStyles = {    
@@ -61,19 +59,24 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 
 
   const params= route.params;  
-  const [open,setOpen] = useState(false);
-  const [value, setValue] = useState('CHICKEN');
-  const [commodities,setCommodities] = useState([]);
+  const [form,setForm] = useState({
+      commodity_txt: '',
+      unit_txt: '',
+      quantity_txt: 1,
+      amount_txt: 0.00,
+      id:''
+  });
+
   
   const [isDeleteDialog,setDeleteDialog] = useState(false)
   
-  const [cardInfo,setCardInfo] = useState([
-      {Commodity:'Chicken', Unit:'Kilogram', Quantity:'2',Amount:5.00 }
-    ]);
+  const [cardInfo,setCardInfo] = useState({Commodity:'', Unit:'', Quantity:0,Amount:0.00 });
 
+  const [cardValues, setCardValues] = useState([{Commodity:'', Unit:'', Quantity:0,Amount:0.00 }])
   const [is_loading,setLoading]  = useState(false);
   var [viewPager,setPage]  = useState();
   var [isShowPanel,setShowPanel]  = useState(false);  
+  var [isShowEditPanel,setEditShowPanel]  = useState(false);  
   var [currentPage,setCurrentPage]  = useState(1);
   
   
@@ -101,14 +104,14 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   const addCommodity = () => {
 
         setShowPanel(true);
-       
+       console.warn('hlolo')
 
   }
 
   const saveCommodity = () =>{
     setShowPanel(false);
-
-    setCardInfo((prevState)=>[...prevState,{commodity:'Egg', Unit:'kg', Quantity:'2',Amount:5.00 }])
+    console.warn(cardInfo);
+    setCardValues([...cardValues,{Commodity:cardInfo.Commodity, Unit:cardInfo.Unit, Quantity:cardInfo.Quantity,Amount:cardInfo.Amount }]);
 
     // setCommodities(prevState=>[...prevState, ( 
     //   <Card>
@@ -146,6 +149,19 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
     //   )]);
   }
 
+
+  // UPDATE COMMODITY
+
+  const updateCommodity = () => {
+
+    console.warn(form)
+   
+
+}
+
+
+
+
   // THIRD FORM
   const importFileScreen = () =>{
     return(
@@ -156,6 +172,21 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   }
 
 
+  const showEditForm = ({index,item}) => {
+
+    setEditShowPanel(true);
+    
+    setForm({...form,
+              id:index.toLocaleString(),
+              commodity_txt:item.Commodity,
+              unit_txt:item.Unit,
+              quantity_txt:item.Quantity,
+              amount_txt:item.Amount.toLocaleString(),            
+            });
+
+
+    
+  }
 
   const showPanel = () => {
     if(isShowPanel == true)
@@ -168,55 +199,57 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
  // SECOND FORM
  const addFertilizerScreen = () =>{
   return(
-    <ScrollView keyboardShouldPersistTaps='handled'>
-      
-      <Block>
-          
-        
+    
+  <Block>
 
-          
+    
+      <View>
+        <ScrollView keyboardShouldPersistTaps='handled'>
+                <FlatList
+                  
+                  data={cardValues}
+                  renderItem={({item,index})=>(
+                     index == 0 ?  null :
+              
+                        
+                      <Card elevation={10} style={{flex:1}}>
+                      <Card.Title title={index + 1 + '. '+item.Commodity + ' ( ' + item.Quantity + ' ' + item.Unit + ' )'  }    />
+                      <Card.Content>
+                        <Text style={[styles.title,{color:Colors.danger}]}>Amount:  {item.Amount} </Text>
+                      </Card.Content>              
+                      <Card.Actions >
+                      <Button  size="small" 
+                                
+                                icon="edit" 
+                                iconFamily="material" 
+                                iconSize={10} 
+                                color="warning" 
+                                onlyIcon
+                                style={{alignSelf:'flex-end',display:'flex'}}
+                                onPress={()=>showEditForm({index,item})}
+                                >Edit</Button>
 
+                        <Button  size="small" 
+                              
+                              icon="delete" 
+                              iconFamily="material" 
+                              iconSize={10} 
+                              color="danger" 
+                              style={{right:0}}
+                              onlyIcon
+                              onPress={()=>setDeleteDialog(true)}
+                              >Remove</Button>
+                      </Card.Actions>
+                    </Card>  
+                 
+                  )}
+                  
+                  keyExtractor={(item, index) => index}
+                  
+                />
 
-
-
-      <FlatList
-        data={cardInfo}
-        renderItem={(item:any)=>{
-          <Block>
-            <Card elevation={1}>
-            <Card.Title title={item.Commodity + ' ( ' + item.Quantity + ' ' + item.Unit + ' )'  }    />
-            <Card.Content>
-              <Text style={[styles.title,{color:Colors.danger}]}>Amount:  {item.Amount} </Text>
-            </Card.Content>              
-            <Card.Actions >
-            <Button  size="small" 
-                      
-                      icon="edit" 
-                      iconFamily="material" 
-                      iconSize={10} 
-                      color="warning" 
-                      onlyIcon
-                      style={{alignSelf:'flex-end',display:'flex'}}
-                      >Edit</Button>
-
-              <Button  size="small" 
-                    
-                    icon="delete" 
-                    iconFamily="material" 
-                    iconSize={10} 
-                    color="danger" 
-                    style={{right:0}}
-                    onlyIcon
-                    onPress={()=>setDeleteDialog(true)}
-                    >Remove</Button>
-            </Card.Actions>
-          </Card>  
-          </Block>
-        }}
-        
-      />
-
-          
+            </ScrollView>
+        </View>
           <Button
                 icon="add" 
                 iconFamily="FontAwesome" 
@@ -259,17 +292,19 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                 width={MyWindow.Width } 
                 style={{ marginVertical: 20,zIndex:1}}
                 space="between"                        
+                
                 >   
+
                 <Block center>
-                  <Text style={styles.title}>Add Commodity Form</Text>
+                  <Text style={styles.title}>Add Commodity</Text>
 
                 </Block>
                 
                 <Block  >
                   <Text style={styles.commodity}>Select an Commodity</Text>
                   <Picker
-                  onValueChange={(value)=>setValue(value)}
-                  selectedValue={value}                 
+                  onValueChange={(value)=>setCardInfo({...cardInfo,Commodity:value})}
+                  selectedValue={cardInfo.Commodity == '' ? 'CHICKEN' : cardInfo.Commodity}                 
                   >
                     <Picker.Item label="Chicken" value="CHICKEN" />
                     <Picker.Item label="Egg" value="EGG" />
@@ -283,8 +318,8 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                 <Block  >
                   <Text style={styles.commodity}>Select an Unit</Text>
                   <Picker
-                  onValueChange={(value)=>setValue(value)}
-                  selectedValue={value}                 
+                  onValueChange={(value)=>setCardInfo({...cardInfo,Unit:value})}
+                  selectedValue={cardInfo.Unit == '' ? 'Kilograms' : cardInfo.Unit}                 
                   >
                     <Picker.Item label="Kilograms" value="Kilograms" />
                     <Picker.Item label="Pieces" value="Pieces" />
@@ -307,7 +342,8 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                   help="Quantity"                                    
                   rounded
                   type="numeric"
-                  // onChangeText={(value)=>setForm({...form,password:value})}
+                  onChangeText={(value)=>setCardInfo({...cardInfo,Quantity:value})}
+                  defaultValue={cardInfo.Quantity}
                   />
                 </Block>
                 
@@ -320,7 +356,8 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                   help="Amount"                                    
                   rounded
                   type="decimal-pad"
-                  // onChangeText={(value)=>setForm({...form,password:value})}
+                  onChangeText={(value)=>setCardInfo({...cardInfo,Amount:value})}
+                  defaultValue={cardInfo.Amount}
                   />
 
                 </Block>
@@ -341,8 +378,113 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 
               </Block>
             </DraggablePanel>
+
+
+
+
+
+
+             {/* Edit Commodity Form */}
+
+             <DraggablePanel visible={isShowEditPanel} onDismiss={()=>{setEditShowPanel(false)}} initialHeight={500}  >
+              <Block   
+                width={MyWindow.Width } 
+                style={{ marginVertical: 20,zIndex:1}}
+                space="between"                        
+                >   
+                <Block center>
+                  <Text style={styles.title}>Edit Commodity</Text>
+                  <Input
+                      style={{display:'none'}}
+                      defaultValue={form.id}
+                  />
+                </Block>
+                
+                <Block  >
+                  <Text style={styles.commodity}>Select an Commodity</Text>
+                  <Picker
+                  onValueChange={(value)=>setForm({...form,commodity_txt:value})}
+                  selectedValue={form.commodity_txt} 
+                  >
+                    <Picker.Item label="Chicken" value="CHICKEN" />
+                    <Picker.Item label="Egg" value="EGG" />
+                    <Picker.Item label="Rice" value="RICE" />
+                    
+                  </Picker>
+                           
+                </Block>
+
+
+                <Block  >
+                  <Text style={styles.commodity}>Select an Unit</Text>
+                  <Picker
+                  onValueChange={(value)=>setForm({...form,unit_txt:value})}
+                  selectedValue={form.unit_txt}         
+                  >
+                    <Picker.Item label="Kilograms" value="Kilograms" />
+                    <Picker.Item label="Pieces" value="Pieces" />
+                    <Picker.Item label="Sacks" value="Sacks" />
+                    <Picker.Item label="Trays" value="Trays" />
+                    
+                  </Picker>
+                           
+                </Block>
+
+
+
+                
+
+                <Block>              
+                  <Input
+                  placeholder="0"                  
+                  color={Colors.muted}
+                  style={styles.unit_input}
+                  help="Quantity"                                    
+                  rounded
+                  type="numeric"
+                  onChangeText={(value)=>setForm({...form,quantity_txt:value})}
+                  value={form.quantity_txt}
+                  />
+                </Block>
+                
+
+                <Block>              
+                  <Input
+                  placeholder="0"                  
+                  color={Colors.muted}
+                  style={styles.unit_input}
+                  help="Amount"                                    
+                  rounded
+                  type="decimal-pad"
+                  onChangeText={(value)=>setForm({...form,amount_txt:value})}
+                  value={form.amount_txt}
+                  />
+
+                </Block>
+                <Block  >
+                  <Button
+                    icon="save" 
+                    iconFamily="FontAwesome" 
+                    iconSize={20}
+                    round uppercase 
+                    color={Colors.base} 
+                    style={styles.add_button}                
+                    loading={is_loading}      
+                    onPress={updateCommodity}              
+                    >
+                      Update
+                  </Button>      
+                </Block> 
+
+              </Block>
+            </DraggablePanel>
+
+
+
+
+      
       </Block>
-    </ScrollView>
+    
   )
 }
 
