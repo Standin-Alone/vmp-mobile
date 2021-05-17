@@ -65,14 +65,16 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
       quantity_txt: 1,
       amount_txt: 0.00,
       id:''
-  });
+  }); // For Edit Commodity Form
 
   
   const [isDeleteDialog,setDeleteDialog] = useState(false)
   
-  const [cardInfo,setCardInfo] = useState({Commodity:'Chicken', Unit:'Kilograms', Quantity:0,Amount:0.00 });
+  const [cardInfo,setCardInfo] = useState({Commodity:'Chicken', Unit:'Kilograms', Quantity:1,Amount:0.00 });  // For Add Commodity Form
 
-  const [cardValues, setCardValues] = useState([{Commodity:'', Unit:'', Quantity:0,Amount:0.00 }])
+
+  const [cardValues, setCardValues] = useState([{Commodity:'', Unit:'', Quantity:1,Amount:0.00 }])  // For FlatList Element
+
   const [is_loading,setLoading]  = useState(false);
   var [viewPager,setPage]  = useState();
   var [isShowPanel,setShowPanel]  = useState(false);  
@@ -201,7 +203,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                       <Card elevation={10} style={{flex:1}}>
                       <Card.Title title={index  + '. '+item.Commodity + ' ( ' + item.Quantity + ' ' + item.Unit + ' )'  }    />
                       <Card.Content>
-                        <Text style={[styles.title,{color:Colors.danger}]}>Amount:  {item.Amount} </Text>
+                        <Text style={[styles.title,{color:Colors.danger}]}>Amount:  ₱{item.Amount} </Text>
                       </Card.Content>              
                       <Card.Actions >
                       <Button  size="small" 
