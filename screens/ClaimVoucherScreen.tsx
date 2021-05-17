@@ -110,7 +110,9 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   }
 
 
+
   
+
   const saveCommodity = () =>{
 
     
@@ -120,7 +122,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
      cardInfo.Amount = 0;
      setShowPanel(false);    
     }else{
-      alert('Please enter all fields.')
+      alert('Please enter all the fields.')
     }
   }
 
@@ -131,15 +133,18 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
     cardValues.map((item,index)=>{
       
       if(index == id){
-        item.Commodity = form.commodity_txt;
-        item.Unit = form.unit_txt;
-        item.Quantity = form.quantity_txt;
-        item.Amount = form.amount_txt;
-      }
-      
-
+        if(form.quantity_txt != 0 && form.amount_txt != 0){
+          item.Commodity = form.commodity_txt;
+          item.Unit = form.unit_txt;
+          item.Quantity = form.quantity_txt;
+          item.Amount = form.amount_txt;
+          setEditShowPanel(false);   
+        }else{
+          alert("Please enter all the fields.")
+        }
+      }    
     })
-    setEditShowPanel(false);   
+    
 }
 
 
@@ -156,31 +161,22 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 
 
   const showEditForm = ({index,item}) => {
-
-    setEditShowPanel(true);
-    
+    setEditShowPanel(true);  
     setForm({...form,
               id:index.toLocaleString(),
               commodity_txt:item.Commodity,
               unit_txt:item.Unit,
               quantity_txt:item.Quantity,
               amount_txt:item.Amount.toLocaleString(),            
-            });
-
-
-    
+            });    
   }
   
-  const showDeleteDialog = ({index,item}) => {
 
-    setDeleteDialog(true);
-    
+  const showDeleteDialog = ({index,item}) => {
+    setDeleteDialog(true);    
     setForm({...form,
               id:index.toLocaleString()                
             });
-
-
-    
   }
 
 
@@ -189,8 +185,6 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   return(
     
   <Block>
-
-    
       <View>
         <ScrollView keyboardShouldPersistTaps='handled'>
                 <FlatList
@@ -231,12 +225,10 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                     </Card>  
                  
                   )}
-                  
-                  
                 />
-
             </ScrollView>
         </View>
+
           <Button
                 icon="add" 
                 iconFamily="FontAwesome" 
@@ -251,10 +243,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
           </Button>
 
 
-
-
           {/* Delete Confirm Dialog */}
-
           <ConfirmDialog
             title="Do you want to remove this commodity?"
             visible={isDeleteDialog}            
@@ -267,29 +256,21 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                           cardValues.splice(index, Number(form.id))
                         }
                     })
-
                 }
             }} 
             negativeButton={{
               title:'No',
               onPress: () => setDeleteDialog(false)
             }}
-            ></ConfirmDialog>
-
-
-
-
-
+            />
 
 
           {/* Add Commodity Form */}
-
             <DraggablePanel visible={isShowPanel} onDismiss={()=>{setShowPanel(false)}} initialHeight={500}  >
               <Block   
                 width={MyWindow.Width } 
                 style={{ marginVertical: 20,zIndex:1}}
-                space="between"                        
-                
+                space="between"                                    
                 >   
 
                 <Block center>
@@ -307,8 +288,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                     <Picker.Item label="Egg" value="EGG" />
                     <Picker.Item label="Rice" value="RICE" />
                     
-                  </Picker>
-                           
+                  </Picker>                        
                 </Block>
 
 
@@ -323,13 +303,8 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                     <Picker.Item label="Sacks" value="Sacks" />
                     <Picker.Item label="Trays" value="Trays" />
                     
-                  </Picker>
-                           
+                  </Picker>                           
                 </Block>
-
-
-
-                
 
                 <Block>              
                   <Input
@@ -476,11 +451,6 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 
               </Block>
             </DraggablePanel>
-
-
-
-
-      
       </Block>
     
   )
