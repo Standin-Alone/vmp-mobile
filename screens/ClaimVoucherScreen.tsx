@@ -70,7 +70,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   
   const [isDeleteDialog,setDeleteDialog] = useState(false)
   
-  const [cardInfo,setCardInfo] = useState({Commodity:'', Unit:'', Quantity:0,Amount:0.00 });
+  const [cardInfo,setCardInfo] = useState({Commodity:'Chicken', Unit:'Kilograms', Quantity:0,Amount:0.00 });
 
   const [cardValues, setCardValues] = useState([{Commodity:'', Unit:'', Quantity:0,Amount:0.00 }])
   const [is_loading,setLoading]  = useState(false);
@@ -103,60 +103,41 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   
   const addCommodity = () => {
 
-        setShowPanel(true);
-       console.warn('hlolo')
+    setShowPanel(true);       
 
   }
 
+
+  
   const saveCommodity = () =>{
-    setShowPanel(false);
-    console.warn(cardInfo);
-    setCardValues([...cardValues,{Commodity:cardInfo.Commodity, Unit:cardInfo.Unit, Quantity:cardInfo.Quantity,Amount:cardInfo.Amount }]);
 
-    // setCommodities(prevState=>[...prevState, ( 
-    //   <Card>
-    //     <Card.Title>Chicken ( 2 Kilogram )      
-    //     </Card.Title>
-    //     <Card.Divider/>
-    //     <Card.FeaturedTitle>
-    //       <Text style={{color:Colors.danger}}>Amount: 2,000</Text>
-    //       <Block>
-    //       <Button  size="small" 
-                  
-    //               icon="edit" 
-    //               iconFamily="material" 
-    //               iconSize={10} 
-    //               color="warning" 
-    //               onlyIcon
-    //               style={{alignSelf:'flex-end',fontSize:10}}
-    //               >Edit</Button>
-
-    //       <Button  size="small" 
-                
-    //             icon="delete" 
-    //             iconFamily="material" 
-    //             iconSize={10} 
-    //             color="danger" 
-    //             style={{alignSelf:'flex-end'}}
-    //             onlyIcon
-    //             >Remove</Button>
-    //       </Block>
-        
-    //     </Card.FeaturedTitle>            
-    //   </Card>
-      
-      
-    //   )]);
+    
+    if(cardInfo.Quantity != 0 && cardInfo.Amount != 0){
+     setCardValues([...cardValues,{Commodity:cardInfo.Commodity, Unit:cardInfo.Unit, Quantity:cardInfo.Quantity,Amount:cardInfo.Amount }]);
+     cardInfo.Quantity = 0;
+     cardInfo.Amount = 0;
+     setShowPanel(false);    
+    }else{
+      alert('Please enter all fields.')
+    }
   }
 
 
-  // UPDATE COMMODITY
+  // UPDATE COMMODITY 
 
-  const updateCommodity = () => {
+  const updateCommodity = (id) => {
+    cardValues.map((item,index)=>{
+      
+      if(index == id){
+        item.Commodity = form.commodity_txt;
+        item.Unit = form.unit_txt;
+        item.Quantity = form.quantity_txt;
+        item.Amount = form.amount_txt;
+      }
+      
 
-    console.warn(form)
-   
-
+    })
+    setEditShowPanel(false);   
 }
 
 
@@ -187,15 +168,20 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 
     
   }
+  
+  const showDeleteDialog = ({index,item}) => {
 
-  const showPanel = () => {
-    if(isShowPanel == true)
-    {
-      setShowPanel(false)
-    }else{
-      setShowPanel(true)
-    }
+    setDeleteDialog(true);
+    
+    setForm({...form,
+              id:index.toLocaleString()                
+            });
+
+
+    
   }
+
+
  // SECOND FORM
  const addFertilizerScreen = () =>{
   return(
@@ -211,9 +197,9 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                   renderItem={({item,index})=>(
                      index == 0 ?  null :
               
-                        
+
                       <Card elevation={10} style={{flex:1}}>
-                      <Card.Title title={index + 1 + '. '+item.Commodity + ' ( ' + item.Quantity + ' ' + item.Unit + ' )'  }    />
+                      <Card.Title title={index  + '. '+item.Commodity + ' ( ' + item.Quantity + ' ' + item.Unit + ' )'  }    />
                       <Card.Content>
                         <Text style={[styles.title,{color:Colors.danger}]}>Amount:  {item.Amount} </Text>
                       </Card.Content>              
@@ -237,14 +223,13 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                               color="danger" 
                               style={{right:0}}
                               onlyIcon
-                              onPress={()=>setDeleteDialog(true)}
+                              onPress={()=>showDeleteDialog({index,item})}
                               >Remove</Button>
                       </Card.Actions>
                     </Card>  
                  
                   )}
                   
-                  keyExtractor={(item, index) => index}
                   
                 />
 
@@ -264,14 +249,24 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
           </Button>
 
 
-          {/* Delete COnfirm Dialog */}
+
+
+          {/* Delete Confirm Dialog */}
 
           <ConfirmDialog
             title="Do you want to remove this commodity?"
             visible={isDeleteDialog}            
             positiveButton={{
                 title: "Yes",
-                onPress: () => alert("yes")
+                onPress: () => {                  
+                  setDeleteDialog(false);
+                    cardValues.map((item,index)=>{
+                        if(index.toLocaleString() == form.id){
+                          cardValues.splice(index, Number(form.id))
+                        }
+                    })
+
+                }
             }} 
             negativeButton={{
               title:'No',
@@ -343,7 +338,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                   rounded
                   type="numeric"
                   onChangeText={(value)=>setCardInfo({...cardInfo,Quantity:value})}
-                  defaultValue={cardInfo.Quantity}
+                  value={cardInfo.Quantity.toLocaleString()}
                   />
                 </Block>
                 
@@ -357,7 +352,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                   rounded
                   type="decimal-pad"
                   onChangeText={(value)=>setCardInfo({...cardInfo,Amount:value})}
-                  defaultValue={cardInfo.Amount}
+                  value={cardInfo.Amount.toLocaleString()}
                   />
 
                 </Block>
@@ -470,7 +465,8 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                     color={Colors.base} 
                     style={styles.add_button}                
                     loading={is_loading}      
-                    onPress={updateCommodity}              
+
+                    onPress={()=>updateCommodity(form.id)}
                     >
                       Update
                   </Button>      
