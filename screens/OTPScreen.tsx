@@ -118,7 +118,7 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
                 <Button
                   round uppercase color="#66BB6A" style={styles.button}                
                   onPress={verifyOTP} loading={is_loading}>
-                  Verify
+                  Verify Pin
                  </Button>
             </Block>
 

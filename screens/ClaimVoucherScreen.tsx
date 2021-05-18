@@ -19,15 +19,14 @@ import * as ip_config from '../ip_config';
 import StepIndicator from 'react-native-step-indicator';
 import ViewPager from '@react-native-community/viewpager';
 import { ScrollView, State } from 'react-native-gesture-handler';
-import { min } from 'react-native-reanimated';
+
 import DraggablePanel from 'react-native-draggable-panel';
 import {ConfirmDialog} from 'react-native-simple-dialogs';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-
+import * as ImagePicker from 'expo-image-picker';
 
 
 const labels = ["Claimer Profile", "Add Commodity","Import Document"]
+
 const customStyles = {    
     stepIndicatorSize: 25,
     currentStepIndicatorSize:30,
@@ -68,20 +67,35 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   }); // For Edit Commodity Form
 
   
-  const [isDeleteDialog,setDeleteDialog] = useState(false)
+  const [isDeleteDialog,setDeleteDialog] = useState(false) // Delete Dialog Boolean
   
   const [cardInfo,setCardInfo] = useState({Commodity:'Chicken', Unit:'Kilograms', Quantity:1,Amount:0.00 });  // For Add Commodity Form
 
 
   const [cardValues, setCardValues] = useState([{Commodity:'', Unit:'', Quantity:1,Amount:0.00 }])  // For FlatList Element
 
-  const [is_loading,setLoading]  = useState(false);
-  var [viewPager,setPage]  = useState();
-  var [isShowPanel,setShowPanel]  = useState(false);  
-  var [isShowEditPanel,setEditShowPanel]  = useState(false);  
-  var [currentPage,setCurrentPage]  = useState(1);
+  const [is_loading,setLoading]  = useState(false); // Loading Boolean
+
+  const [images,setImages] = useState([]); //Images JSON
+
+
+  var [viewPager,setPage]  = useState(); // View Pager
+  var [isShowPanel,setShowPanel]  = useState(false);  // Show Add Commodity Form Panel
+  var [isShowEditPanel,setEditShowPanel]  = useState(false);  // Show Edit Commodity Form Panel
+  var [currentPage,setCurrentPage]  = useState(1);   // index of current page
   
   
+  
+
+  useEffect(() => {
+    async () => {
+      const {status} = await ImagePicker.requestCameraPermissionsAsync();
+      if(status !== 'granted'){
+        alert('Sorry, we need camera permission to make this work.')
+      }
+    };
+  },)
+
 
   const claimVoucher = async ()=>{
 
@@ -109,9 +123,6 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 
   }
 
-
-
-  
 
   const saveCommodity = () =>{
 
@@ -148,16 +159,63 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 }
 
 
+const openCamera = ()=>{
 
+  ImagePicker.launchCameraAsync({mediaTypes:ImagePicker.MediaTypeOptions.Images,base64:true,quality:1}).then((response)=>{    
+    setImages([...images,{uri:response.base64}]);    
+  })
+  
+}
 
   // THIRD FORM
-  const importFileScreen = () =>{
+  const importProofScreen = () =>{
     return(
       <Block>
-        <Text>Sample</Text>
+          
+      <ScrollView>
+
+
+        <FlatList
+          data={images}
+          renderItem ={({item,index})=>(
+            <Card elevation={10} style={{flex:1}}>
+              <Card.Title title={'Photo'} />
+              <Card.Cover source={{uri:'data:image/jpeg;base64,'+item.uri}}/>    
+              <Card.Actions >            
+
+                <Button  size="small"                     
+                      icon="delete" 
+                      iconFamily="material" 
+                      iconSize={10} 
+                      color="danger" 
+                      style={{right:0}}                  
+                      // onPress={()=>showDeleteDialog({index,item})}
+                      >Remove</Button>
+              </Card.Actions>
+            </Card> 
+          )}        
+        />
+         
+        <Button
+                icon="camera" 
+                iconFamily="FontAwesome" 
+                iconSize={20}
+                round uppercase 
+                color={Colors.info} 
+                style={styles.add_button}                
+                loading={is_loading}
+                onPress={openCamera }
+                >
+                        Take a photo
+          </Button>
+      </ScrollView>
+        
       </Block>
     )
   }
+
+
+
 
 
   const showEditForm = ({index,item}) => {
@@ -181,7 +239,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 
 
  // SECOND FORM
- const addFertilizerScreen = () =>{
+ const addCommodityScreen = () =>{
   return(
     
   <Block>
@@ -239,7 +297,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
                 loading={is_loading}
                 onPress={addCommodity}
                 >
-                        Add  Item
+                        Add Item
           </Button>
 
 
@@ -456,12 +514,9 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   )
 }
 
-
-
  
-
   // FIRST FORM
-  const claimerScreen = () =>{
+  const claimerProfileScreen = () =>{
     return(
       <ScrollView>
               {/* <Block space="between"  middle>
@@ -582,7 +637,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
     )
   }
 
-  const PAGES = [claimerScreen(),addFertilizerScreen(),importFileScreen()];
+  const PAGES = [claimerProfileScreen(),addCommodityScreen(),importProofScreen()];
 
 
   var renderLabel = ({position,stepStatus,label,currentPosition})=>{
@@ -612,7 +667,11 @@ const goToNextPage = async () => {
     setCurrentPage(currentPage + 1);      
     viewPager.setPage(currentPage + 1)
   }
-    
+   
+  if(currentPage == 2){
+
+  }
+
   }
 
 const goBackPage = async () => {
@@ -664,7 +723,7 @@ const goBackPage = async () => {
        
             <Block middle row> 
 
-                  { currentPage == 1 ? 
+                  { currentPage == 1 || currentPage == 2 ? 
                     <Button
                     round uppercase color={Colors.back} style={styles.button}                
                     onPress={goBackPage} loading={is_loading}>
@@ -678,7 +737,7 @@ const goBackPage = async () => {
                     <Button
                     round uppercase color="#66BB6A" style={styles.button}                
                     onPress={goToNextPage} loading={is_loading}>
-                        Next
+                      {currentPage == 2 ? 'Submit' : 'Next'}
                     </Button>
             </Block>
         </Footer>

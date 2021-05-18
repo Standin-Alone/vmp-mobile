@@ -5,7 +5,8 @@ import { StyleSheet,
           View, 
           Image,           
           KeyboardAvoidingView, 
-          AsyncStorage                 
+          AsyncStorage
+          
          } from 'react-native';
 
 import { RootStackParamList } from '../types';
@@ -17,7 +18,7 @@ import axios from 'axios';
 import * as ip_config from '../ip_config';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
-
+import NetInfo from '@react-native-community/netinfo';
 
 
 
@@ -35,6 +36,9 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
   const [is_error,setError]  = useState(false);
   const [is_warning,setWarning]  = useState(false);
   const [is_biometrics_loading,setBiometricsLoading]  = useState(false);
+
+
+
   const biometricsAuth = async (data:any) => {
     
     const compatible = await LocalAuthentication.hasHardwareAsync();
@@ -63,32 +67,41 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
 
     setLoading(true);  
     setError(false);
+  
+  //Check internet connection
+  NetInfo.fetch().then((response:any)=>{ 
+    console.warn(response.isConnected)
+    if(response.isConnected){   
 
-    if(form.username != "" && form.password != "" ){
-      axios.post(ip_config.ip_address+'vmp-web/public/api/sign_in',form)
-        .then((response)=>{                        
-              
-              if(response.data[0]['Message'] == 'true'){
-                console.warn(response.data[0]['OTP']);
-                navigation.replace('OTPScreen');              
-                AsyncStorage.setItem('otp_code',response.data[0]['OTP'].toLocaleString());              
-                setLoading(false);
-              }else{
-                setError(true);
-                setLoading(false);
-              }
-              
-        }).catch((error)=>{
-          setLoading(false);
-          console.warn(error.response)        
-        })
-    }
-    else{
-      setWarning(true);
+      if(form.username != "" && form.password != "" ){
+        axios.post(ip_config.ip_address+'vmp-web/public/api/sign_in',form)
+          .then((response)=>{                        
+                
+                if(response.data[0]['Message'] == 'true'){
+                  console.warn(response.data[0]['OTP']);
+                  navigation.replace('OTPScreen');              
+                  AsyncStorage.setItem('otp_code',response.data[0]['OTP'].toLocaleString());              
+                  setLoading(false);
+                }else{
+                  setError(true);
+                  setLoading(false);
+                }
+                
+          }).catch((error)=>{
+            setLoading(false);
+            console.warn(error.response)        
+          })
+      }
+      else{
+        setWarning(true);
+        setLoading(false);
+
+      }    
+    }else{
+      alert('No Internet Connection.')      
       setLoading(false);
-
-    }
-      
+    }    
+  })
   }
 
   const scanbiometrics = async ()=>{
