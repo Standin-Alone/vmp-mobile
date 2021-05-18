@@ -100,7 +100,6 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 
 
   const claimVoucher = async ()=>{
-
     setLoading(true);
 
     axios.post(ip_config.ip_address+'vmp-web/public/api/claim_voucher',form)
@@ -121,9 +120,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   
   // Show Add Commodity Panel or Form
   const addCommodity = () => {
-
-    setShowPanel(true);       
-    
+    setShowPanel(true);           
   }
 
 
@@ -133,6 +130,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
      setCardValues([...cardValues,{Commodity:cardInfo.Commodity, Unit:cardInfo.Unit, Quantity:cardInfo.Quantity,Amount:cardInfo.Amount,Total_Amount:cardInfo.Total_Amount }]);
      cardInfo.Quantity = 1;
      cardInfo.Amount = 0;
+     cardInfo.Total_Amount = 0;
      setShowPanel(false);    
     }else{
       alert('Please enter all the fields.')
@@ -150,6 +148,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
           item.Unit = form.unit_txt;
           item.Quantity = form.quantity_txt;
           item.Amount = form.amount_txt;
+          item.Total_Amount = form.amount_txt;          
           setEditShowPanel(false);   
         }else{
           alert("Please enter all the fields.")
@@ -159,17 +158,17 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
     
 }
 
-
+// Take Photo Button
 const openCamera = ()=>{
 
   ImagePicker.launchCameraAsync({mediaTypes:ImagePicker.MediaTypeOptions.Images,base64:true,quality:1}).then((response)=>{    
-
     if(response.cancelled != true){
      setImages([...images,{uri:response.base64}]);    
     }
   })
   
 }
+
 
 
 const showDeleteImageDialog = ({index,item}) => {
@@ -261,8 +260,9 @@ const showDeleteImageDialog = ({index,item}) => {
               id:index.toLocaleString(),
               commodity_txt:item.Commodity,
               unit_txt:item.Unit,
-              quantity_txt:item.Quantity,
+              quantity_txt:item.Quantity.toLocaleString(),
               amount_txt:item.Amount.toLocaleString(),            
+              total_amount_txt:item.Total_Amount,            
             });    
   }
   
@@ -752,7 +752,7 @@ const goBackPage = async () => {
                 </Block>
                 <Block center space="between">                  
                         <Text style={styles.title}>Available Balance: 
-                          {/* <Text style={{color:Colors.info}}>₱{params[0].AMOUNT}</Text> */}
+                          {/* <Text style={{color:Colors.info}}>₱{params[0].Available_Balance}</Text> */}
                         </Text>
                 </Block>
                 <StepIndicator
