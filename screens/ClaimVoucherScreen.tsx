@@ -67,7 +67,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   }); // For Edit Commodity Form
 
   
-  const [isDeleteDialog,setDeleteDialog] = useState(false) // Delete Dialog Boolean
+  const [isDeleteDialog,setDeleteDialog] = useState(false) // Delete Dialog Boolean (Commodity)
   
   const [cardInfo,setCardInfo] = useState({Commodity:'Chicken', Unit:'Kilograms', Quantity:1,Amount:0.00 });  // For Add Commodity Form
 
@@ -77,7 +77,8 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   const [is_loading,setLoading]  = useState(false); // Loading Boolean
 
   const [images,setImages] = useState([]); //Images JSON
-
+  const [isDeleteImageDialog,setDeleteImageDialog] = useState(false) // Delete Dialog Boolean (Image)
+  const [imageId,setImageId] = useState({id:''});
 
   var [viewPager,setPage]  = useState(); // View Pager
   var [isShowPanel,setShowPanel]  = useState(false);  // Show Add Commodity Form Panel
@@ -162,9 +163,18 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 const openCamera = ()=>{
 
   ImagePicker.launchCameraAsync({mediaTypes:ImagePicker.MediaTypeOptions.Images,base64:true,quality:1}).then((response)=>{    
-    setImages([...images,{uri:response.base64}]);    
+
+    if(response.cancelled != true){
+     setImages([...images,{uri:response.base64}]);    
+    }
   })
   
+}
+
+
+const showDeleteImageDialog = ({index,item}) => {
+  setDeleteImageDialog(true);    
+  setImageId({...imageId,id:index.toLocaleString()});
 }
 
   // THIRD FORM
@@ -178,9 +188,9 @@ const openCamera = ()=>{
         <FlatList
           data={images}
           renderItem ={({item,index})=>(
-            <Card elevation={10} style={{flex:1}}>
+            <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
               <Card.Title title={'Photo'} />
-              <Card.Cover source={{uri:'data:image/jpeg;base64,'+item.uri}}/>    
+              <Card.Cover source={{uri:'data:image/jpeg;base64,'+item.uri}} resizeMode={'contain'}/>    
               <Card.Actions >            
 
                 <Button  size="small"                     
@@ -189,7 +199,7 @@ const openCamera = ()=>{
                       iconSize={10} 
                       color="danger" 
                       style={{right:0}}                  
-                      // onPress={()=>showDeleteDialog({index,item})}
+                      onPress={()=>showDeleteImageDialog({index,item})}
                       >Remove</Button>
               </Card.Actions>
             </Card> 
@@ -210,6 +220,33 @@ const openCamera = ()=>{
           </Button>
       </ScrollView>
         
+
+
+        {/* Delete Confirm Dialog (Commodity) */}
+        <ConfirmDialog
+            title="Do you want to remove this photo?"
+            visible={isDeleteImageDialog}            
+            positiveButton={{
+                title: "Yes",
+                onPress: () => {                  
+                  setDeleteImageDialog(false);
+                  
+
+                    images.map((item,index)=>{
+                        console.warn(index);
+                        if(index.toLocaleString() == imageId.id){
+                          images.splice(index, Number(imageId.id) +1)
+                        }
+                        console.warn(images);
+                    })
+                }
+            }} 
+            negativeButton={{
+              title:'No',
+              onPress: () => setDeleteImageDialog(false)
+            }}
+            />
+
       </Block>
     )
   }
@@ -238,6 +275,7 @@ const openCamera = ()=>{
   }
 
 
+
  // SECOND FORM
  const addCommodityScreen = () =>{
   return(
@@ -252,7 +290,7 @@ const openCamera = ()=>{
                      index == 0 ?  null :
               
 
-                      <Card elevation={10} style={{flex:1}}>
+                      <Card elevation={10} style={styles.card}>
                       <Card.Title title={index  + '. '+item.Commodity + ' ( ' + item.Quantity + ' ' + item.Unit + ' )'  }    />
                       <Card.Content>
                         <Text style={[styles.title,{color:Colors.danger}]}>Amount:  ₱{item.Amount} </Text>
@@ -301,7 +339,7 @@ const openCamera = ()=>{
           </Button>
 
 
-          {/* Delete Confirm Dialog */}
+          {/* Delete Confirm Dialog (Commodity) */}
           <ConfirmDialog
             title="Do you want to remove this commodity?"
             visible={isDeleteDialog}            
@@ -519,7 +557,7 @@ const openCamera = ()=>{
   const claimerProfileScreen = () =>{
     return(
       <ScrollView>
-              {/* <Block space="between"  middle>
+              <Block space="between"  middle>
                     <Block  width={MyWindow.Width * 0.8} 
                         space="evenly"          
                         flex={0.9}  
@@ -632,7 +670,7 @@ const openCamera = ()=>{
                             />
                         </Block>   
                   </Block>        
-                </Block> */}
+                </Block>
               </ScrollView>
     )
   }
@@ -839,6 +877,12 @@ const styles = StyleSheet.create({
   commodity:{
     marginVertical:10,
     color:Colors.muted
+  },
+  card:{flex:1,
+    borderRadius:5, 
+    width:MyWindow.Width - 20, 
+    alignSelf:'center',
+    marginBottom:20
   }
 
 });
