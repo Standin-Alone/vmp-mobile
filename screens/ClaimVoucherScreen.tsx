@@ -63,16 +63,17 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
       unit_txt: '',
       quantity_txt: 1,
       amount_txt: 0.00,
+      total_amount_txt: 0.00,
       id:''
   }); // For Edit Commodity Form
 
   
   const [isDeleteDialog,setDeleteDialog] = useState(false) // Delete Dialog Boolean (Commodity)
   
-  const [cardInfo,setCardInfo] = useState({Commodity:'Chicken', Unit:'Kilograms', Quantity:1,Amount:0.00 });  // For Add Commodity Form
+  const [cardInfo,setCardInfo] = useState({Commodity:'Chicken', Unit:'Kilograms', Quantity:1 ,Amount:0.00 , Total_Amount:0.00 });  // For Add Commodity Form
 
 
-  const [cardValues, setCardValues] = useState([{Commodity:'', Unit:'', Quantity:1,Amount:0.00 }])  // For FlatList Element
+  const [cardValues, setCardValues] = useState([{Commodity:'', Unit:'', Quantity:1, Amount:0.00, Total_Amount:0.00}])  // For FlatList Element
 
   const [is_loading,setLoading]  = useState(false); // Loading Boolean
 
@@ -87,9 +88,9 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   
   
   
-
+  // Set Permission of Camera
   useEffect(() => {
-    async () => {
+    async () => {      
       const {status} = await ImagePicker.requestCameraPermissionsAsync();
       if(status !== 'granted'){
         alert('Sorry, we need camera permission to make this work.')
@@ -118,19 +119,19 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   }
 
   
+  // Show Add Commodity Panel or Form
   const addCommodity = () => {
 
     setShowPanel(true);       
-
+    
   }
 
 
-  const saveCommodity = () =>{
-
-    
+  // Save Button
+  const saveCommodity = () =>{    
     if(cardInfo.Quantity != 0 && cardInfo.Amount != 0){
-     setCardValues([...cardValues,{Commodity:cardInfo.Commodity, Unit:cardInfo.Unit, Quantity:cardInfo.Quantity,Amount:cardInfo.Amount }]);
-     cardInfo.Quantity = 0;
+     setCardValues([...cardValues,{Commodity:cardInfo.Commodity, Unit:cardInfo.Unit, Quantity:cardInfo.Quantity,Amount:cardInfo.Amount,Total_Amount:cardInfo.Total_Amount }]);
+     cardInfo.Quantity = 1;
      cardInfo.Amount = 0;
      setShowPanel(false);    
     }else{
@@ -142,8 +143,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   // UPDATE COMMODITY 
 
   const updateCommodity = (id) => {
-    cardValues.map((item,index)=>{
-      
+    cardValues.map((item,index)=>{      
       if(index == id){
         if(form.quantity_txt != 0 && form.amount_txt != 0){
           item.Commodity = form.commodity_txt;
@@ -196,7 +196,7 @@ const showDeleteImageDialog = ({index,item}) => {
                 <Button  size="small"                     
                       icon="delete" 
                       iconFamily="material" 
-                      iconSize={10} 
+                      iconSize={20} 
                       color="danger" 
                       style={{right:0}}                  
                       onPress={()=>showDeleteImageDialog({index,item})}
@@ -293,16 +293,16 @@ const showDeleteImageDialog = ({index,item}) => {
                       <Card elevation={10} style={styles.card}>
                       <Card.Title title={index  + '. '+item.Commodity + ' ( ' + item.Quantity + ' ' + item.Unit + ' )'  }    />
                       <Card.Content>
-                        <Text style={[styles.title,{color:Colors.danger}]}>Amount:  ₱{item.Amount} </Text>
+                        <Text style={[styles.title,{color:Colors.danger}]}>Total Amount:  ₱{item.Total_Amount} </Text>
                       </Card.Content>              
                       <Card.Actions >
                       <Button  size="small" 
                                 
                                 icon="edit" 
                                 iconFamily="material" 
-                                iconSize={10} 
+                                iconSize={20} 
                                 color="warning" 
-                                onlyIcon
+                                
                                 style={{alignSelf:'flex-end',display:'flex'}}
                                 onPress={()=>showEditForm({index,item})}
                                 >Edit</Button>
@@ -311,10 +311,9 @@ const showDeleteImageDialog = ({index,item}) => {
                               
                               icon="delete" 
                               iconFamily="material" 
-                              iconSize={10} 
+                              iconSize={20} 
                               color="danger" 
-                              style={{right:0}}
-                              onlyIcon
+                              style={{right:0}}                              
                               onPress={()=>showDeleteDialog({index,item})}
                               >Remove</Button>
                       </Card.Actions>
@@ -362,7 +361,7 @@ const showDeleteImageDialog = ({index,item}) => {
 
 
           {/* Add Commodity Form */}
-            <DraggablePanel visible={isShowPanel} onDismiss={()=>{setShowPanel(false)}} initialHeight={500}  >
+            <DraggablePanel visible={isShowPanel} onDismiss={()=>{setShowPanel(false)}} initialHeight={600}  >
               <Block   
                 width={MyWindow.Width } 
                 style={{ marginVertical: 20,zIndex:1}}
@@ -410,7 +409,10 @@ const showDeleteImageDialog = ({index,item}) => {
                   help="Quantity"                                    
                   rounded
                   type="numeric"
-                  onChangeText={(value)=>setCardInfo({...cardInfo,Quantity:value})}
+                  onChangeText={(value)=>{
+                                    setCardInfo({...cardInfo,Quantity:value})
+                                    setCardInfo((prevState)=>({...prevState,Total_Amount:prevState.Amount * prevState.Quantity}))
+                                  }}
                   value={cardInfo.Quantity.toLocaleString()}
                   />
                 </Block>
@@ -424,11 +426,19 @@ const showDeleteImageDialog = ({index,item}) => {
                   help="Amount"                                    
                   rounded
                   type="decimal-pad"
-                  onChangeText={(value)=>setCardInfo({...cardInfo,Amount:value})}
-                  value={cardInfo.Amount.toLocaleString()}
+                  onChangeText={(value)=>{                          
+                                    setCardInfo({...cardInfo,Amount:value}) 
+                                    setCardInfo((prevState)=>({...prevState,Total_Amount:prevState.Amount * prevState.Quantity}))
+                                    }}
+                  value={cardInfo.Amount.toLocaleString()}                                  
                   />
 
                 </Block>
+
+                <Block>
+                  <Text style={styles.title,{color:'red'}} h4>Total Amount :  ₱{cardInfo.Total_Amount}</Text>
+                </Block>
+
                 <Block  >
                   <Button
                     icon="save" 
@@ -454,7 +464,7 @@ const showDeleteImageDialog = ({index,item}) => {
 
              {/* Edit Commodity Form */}
 
-             <DraggablePanel visible={isShowEditPanel} onDismiss={()=>{setEditShowPanel(false)}} initialHeight={500}  >
+             <DraggablePanel visible={isShowEditPanel} onDismiss={()=>{setEditShowPanel(false)}} initialHeight={600}  >
               <Block   
                 width={MyWindow.Width } 
                 style={{ marginVertical: 20,zIndex:1}}
@@ -510,7 +520,10 @@ const showDeleteImageDialog = ({index,item}) => {
                   help="Quantity"                                    
                   rounded
                   type="numeric"
-                  onChangeText={(value)=>setForm({...form,quantity_txt:value})}
+                  onChangeText={(value)=>{
+                                  setForm({...form,quantity_txt:value})
+                                  setForm((prevState)=>({...prevState,total_amount_txt:prevState.amount_txt * prevState.quantity_txt}))                
+                                }}
                   value={form.quantity_txt}
                   />
                 </Block>
@@ -524,11 +537,18 @@ const showDeleteImageDialog = ({index,item}) => {
                   help="Amount"                                    
                   rounded
                   type="decimal-pad"
-                  onChangeText={(value)=>setForm({...form,amount_txt:value})}
+                  onChangeText={(value)=>{
+                                  setForm({...form,amount_txt:value})                                  
+                                  setForm((prevState)=>({...prevState,total_amount_txt:prevState.amount_txt * prevState.quantity_txt}))                
+                                }}                                                                
                   value={form.amount_txt}
                   />
 
                 </Block>
+                <Block>
+                  <Text style={styles.title,{color:'red'}} h4>Total Amount :  ₱{form.total_amount_txt}</Text>
+                </Block>
+
                 <Block  >
                   <Button
                     icon="save" 
@@ -558,118 +578,122 @@ const showDeleteImageDialog = ({index,item}) => {
     return(
       <ScrollView>
               <Block space="between"  middle>
-                    <Block  width={MyWindow.Width * 0.8} 
-                        space="evenly"          
-                        flex={0.9}  
-                    >   
-                        <Text h7>Reference Number</Text>
-                        <Input                 
-                            placeholderTextColor={Colors.muted}                 
-                            color={Colors.header}
-                            style={styles.input}                                 
-                            onChangeText={(value)=>{form.username=value}}
-                            editable={false}
-                            value={params[0]['RSBSA_CTRL_NO']}
-                            />
+                <Card>
+                  <Card.Content>
+                      <Block  width={MyWindow.Width * 0.8} 
+                          space="evenly"          
+                          flex={0.9}  
+                      >   
+                          <Text h7>Reference Number</Text>
+                          <Input                 
+                              placeholderTextColor={Colors.muted}                 
+                              color={Colors.header}
+                              style={styles.input}                                 
+                              onChangeText={(value)=>{form.username=value}}
+                              editable={false}
+                              // value={params[0]['RSBSA_CTRL_NO']}
+                              />
 
-                    </Block>
+                      </Block>
 
-                    <Block   width={MyWindow.Width * 0.8} style={{ marginVertical: 20}}
-                        space="between"                        
-                    >   
+                      <Block   width={MyWindow.Width * 0.8} style={{ marginVertical: 20}}
+                          space="between"                        
+                      >   
 
-                        <Block >
-                            <Text h7>Last Name</Text>
+                          <Block >
+                              <Text h7>Last Name</Text>
 
-                            <Input                            
-                                placeholderTextColor={Colors.muted}                 
-                                color={Colors.header}
-                                style={styles.input}                                 
-                                value={params[0]['INFO_NAME_L']}
-                                editable={false}
-                                
-                            />
-                        </Block>                      
+                              <Input                            
+                                  placeholderTextColor={Colors.muted}                 
+                                  color={Colors.header}
+                                  style={styles.input}                                 
+                                  // value={params[0]['INFO_NAME_L']}
+                                  editable={false}
+                                  
+                              />
+                          </Block>                      
 
-                        <Block >
-                            <Text h7>First Name</Text>
+                          <Block >
+                              <Text h7>First Name</Text>
 
-                            <Input                            
-                                placeholderTextColor={Colors.muted}                 
-                                color={Colors.header}
-                                style={styles.input}                                 
-                                value={params[0]['INFO_NAME_F']}
-                                editable={false}
-                            />
-                        </Block>   
+                              <Input                            
+                                  placeholderTextColor={Colors.muted}                 
+                                  color={Colors.header}
+                                  style={styles.input}                                 
+                                  // value={params[0]['INFO_NAME_F']}
+                                  editable={false}
+                              />
+                          </Block>   
 
-                        <Block >
-                            <Text h7>Middle Name</Text>
+                          <Block >
+                              <Text h7>Middle Name</Text>
 
-                            <Input                            
-                                placeholderTextColor={Colors.muted}                 
-                                color={Colors.header}
-                                style={styles.input}                                 
-                                value={params[0]['INFO_NAME_M']}
-                                editable={false}
-                            />
-                        </Block>   
+                              <Input                            
+                                  placeholderTextColor={Colors.muted}                 
+                                  color={Colors.header}
+                                  style={styles.input}                                 
+                                  // value={params[0]['INFO_NAME_M']}
+                                  editable={false}
+                              />
+                          </Block>   
 
 
-                        <Block >
-                            <Text h7>Extension Name</Text>
+                          <Block >
+                              <Text h7>Extension Name</Text>
 
-                            <Input                            
-                                placeholderTextColor={Colors.muted}                 
-                                color={Colors.header}
-                                style={styles.input}                                 
-                                value={params[0]['INFO_NAME_EXT']}
-                                editable={false}
-                            />
-                        </Block>   
+                              <Input                            
+                                  placeholderTextColor={Colors.muted}                 
+                                  color={Colors.header}
+                                  style={styles.input}                                 
+                                  // value={params[0]['INFO_NAME_EXT']}
+                                  editable={false}
+                              />
+                          </Block>   
 
-                        <Block >
-                            <Text h7>Permanent Address</Text>
+                          <Block >
+                              <Text h7>Permanent Address</Text>
 
-                            <Input                            
-                                placeholderTextColor={Colors.muted}                 
-                                color={Colors.header}
-                                style={styles.textArea}                                 
-                                value={params[0]['INFO_PERM_ADD_A'] + ','
-                                      + params[0]['INFO_PERM_BRGY'] + ',' 
-                                      + params[0]['INFO_PERM_CITY'] + ',' 
-                                      + params[0]['INFO_PERM_PROV'] + ',' 
-                                       }
-                                editable={false}
-                            />
-                        </Block>   
+                              <Input                            
+                                  placeholderTextColor={Colors.muted}                 
+                                  color={Colors.header}
+                                  style={styles.textArea}                                 
+                                  // value={params[0]['INFO_PERM_ADD_A'] + ','
+                                  //       + params[0]['INFO_PERM_BRGY'] + ',' 
+                                  //       + params[0]['INFO_PERM_CITY'] + ',' 
+                                  //       + params[0]['INFO_PERM_PROV'] + ',' 
+                                  //        }
+                                  editable={false}
+                              />
+                          </Block>   
 
-                        
-                        <Block >
-                            <Text h7>Province Name</Text>
+                          
+                          <Block >
+                              <Text h7>Province Name</Text>
 
-                            <Input                            
-                                placeholderTextColor={Colors.muted}                 
-                                color={Colors.header}
-                                style={styles.textArea}                                 
-                                value={params[0]['INFO_PERM_PROV']}
-                                editable={false}
-                            />
-                        </Block>   
+                              <Input                            
+                                  placeholderTextColor={Colors.muted}                 
+                                  color={Colors.header}
+                                  style={styles.textArea}                                 
+                                  // value={params[0]['INFO_PERM_PROV']}
+                                  editable={false}
+                              />
+                          </Block>   
 
-                        
-                        <Block >
-                            <Text h7>Municipality</Text>
+                          
+                          <Block >
+                              <Text h7>Municipality</Text>
 
-                            <Input                            
-                                placeholderTextColor={Colors.muted}                 
-                                color={Colors.header}
-                                style={styles.textArea}                                 
-                                value={params[0]['INFO_NAME_REG']}
-                                editable={false}
-                            />
-                        </Block>   
-                  </Block>        
+                              <Input                            
+                                  placeholderTextColor={Colors.muted}                 
+                                  color={Colors.header}
+                                  style={styles.textArea}                                 
+                                  // value={params[0]['INFO_NAME_REG']}
+                                  editable={false}
+                              />
+                          </Block>   
+                      </Block>
+                    </Card.Content>
+                  </Card>        
                 </Block>
               </ScrollView>
     )
@@ -727,7 +751,9 @@ const goBackPage = async () => {
                         {/* <Text style={styles.title}>Claimer Profile</Text> */}
                 </Block>
                 <Block center space="between">                  
-                        <Text style={styles.title}>Available Balance: <Text style={{color:Colors.info}}>2,000</Text></Text>
+                        <Text style={styles.title}>Available Balance: 
+                          {/* <Text style={{color:Colors.info}}>₱{params[0].AMOUNT}</Text> */}
+                        </Text>
                 </Block>
                 <StepIndicator
                     customStyles={customStyles}                    
@@ -735,10 +761,7 @@ const goBackPage = async () => {
                     labels={labels}
                     currentPosition={currentPage}                    
                     renderLabel= {renderLabel}                    
-                />
-
-
-                
+                />                
 
                 <ViewPager
                   
