@@ -148,7 +148,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
           item.Unit = form.unit_txt;
           item.Quantity = form.quantity_txt;
           item.Amount = form.amount_txt;
-          item.Total_Amount = form.amount_txt;          
+          item.Total_Amount = form.total_amount_txt;          
           setEditShowPanel(false);   
         }else{
           alert("Please enter all the fields.")
@@ -323,7 +323,17 @@ const showDeleteImageDialog = ({index,item}) => {
                 />
             </ScrollView>
         </View>
+        <View
 
+            style={{
+                marginLeft: 25,
+                marginRight: 20,
+                paddingTop: 10,
+                paddingBottom: 10,
+                borderBottomColor: '#000',
+                borderBottomWidth: 1,
+            }}
+            />
           <Button
                 icon="add" 
                 iconFamily="FontAwesome" 

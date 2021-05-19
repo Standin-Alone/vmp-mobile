@@ -52,10 +52,14 @@ export default function QRCodeScreen() {
     .then((response)=>{                          
       console.warn(response.data[0]['data'].Available_Balance)
       if(response.data[0]['Message'] == 'true'){
-
-        navigation.navigate('ClaimVoucher',response.data[0]['data']);        
-        setScanned(false);
-        setIsShow(false);
+        if(response.data[0]['data'].Available_Balance != 0){
+          navigation.navigate('ClaimVoucher',response.data[0]['data']);        
+          setScanned(false);
+          setIsShow(false);
+        }else{
+          alert('Not Enough Balance.')
+        }
+        
       }else{        
         alert("Reference Number doesn't exist.")
         setScanned(false);
