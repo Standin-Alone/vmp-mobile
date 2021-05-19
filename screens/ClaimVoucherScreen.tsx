@@ -19,7 +19,7 @@ import * as ip_config from '../ip_config';
 import StepIndicator from 'react-native-step-indicator';
 import ViewPager from '@react-native-community/viewpager';
 import { ScrollView, State } from 'react-native-gesture-handler';
-
+import {Layout, Select, SelectItem} from '@ui-kitten/components';
 import DraggablePanel from 'react-native-draggable-panel';
 import {ConfirmDialog} from 'react-native-simple-dialogs';
 import * as ImagePicker from 'expo-image-picker';
@@ -52,7 +52,7 @@ const customStyles = {
     currentStepLabelColor: Colors.base
   }
 
-
+const commodity_list = ['Chicken','Rice','Egg'];
   
 export default function ClaimVoucherScreen({navigation,route} : StackScreenProps <RootStackParamList, 'ClaimVoucher'>) {
 
@@ -138,9 +138,10 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   }
 
 
+
   // UPDATE COMMODITY 
 
-  const updateCommodity = (id) => {
+  const updateCommodity = (id) => {  
     cardValues.map((item,index)=>{      
       if(index == id){
         if(form.quantity_txt != 0 && form.amount_txt != 0){
@@ -204,7 +205,7 @@ const showDeleteImageDialog = ({index,item}) => {
             </Card> 
           )}        
         />
-         
+         <View style={styles.divider}/>
         <Button
                 icon="camera" 
                 iconFamily="FontAwesome" 
@@ -280,8 +281,8 @@ const showDeleteImageDialog = ({index,item}) => {
  const addCommodityScreen = () =>{
   return(
     
-  <Block>
-      <View>
+  <Block >
+      <View  >
         <ScrollView keyboardShouldPersistTaps='handled'>
                 <FlatList
                   
@@ -323,17 +324,7 @@ const showDeleteImageDialog = ({index,item}) => {
                 />
             </ScrollView>
         </View>
-        <View
-
-            style={{
-                marginLeft: 25,
-                marginRight: 20,
-                paddingTop: 10,
-                paddingBottom: 10,
-                borderBottomColor: '#000',
-                borderBottomWidth: 1,
-            }}
-            />
+        <View style={styles.divider}/>
           <Button
                 icon="add" 
                 iconFamily="FontAwesome" 
@@ -394,6 +385,10 @@ const showDeleteImageDialog = ({index,item}) => {
                     <Picker.Item label="Rice" value="RICE" />
                     
                   </Picker>                        
+
+                  
+
+                  
                 </Block>
 
 
@@ -586,7 +581,7 @@ const showDeleteImageDialog = ({index,item}) => {
   // FIRST FORM
   const claimerProfileScreen = () =>{
     return(
-      <ScrollView>
+      <ScrollView >
               <Block space="between"  middle>
                 <Card>
                   <Card.Content>
@@ -821,7 +816,7 @@ const goBackPage = async () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',    
+    backgroundColor: '#FBAE14',    
     
   },
   second_container: {
@@ -916,6 +911,14 @@ const styles = StyleSheet.create({
     width:MyWindow.Width - 20, 
     alignSelf:'center',
     marginBottom:20
-  }
+  },
+  divider:{
+    marginLeft: 25,
+    marginRight: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderBottomColor: '#000',
+    borderBottomWidth: 1,
+}
 
 });
