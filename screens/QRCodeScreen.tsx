@@ -69,7 +69,7 @@ export default function QRCodeScreen() {
       }        
         
     }).catch((error)=>{      
-      console.warn(error.response)    
+      console.warn(error)    
       setScanned(false);    
       setIsShow(false);
     })

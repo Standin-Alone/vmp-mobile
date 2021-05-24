@@ -704,10 +704,10 @@ const closeEditPanel = () => {
                                   placeholderTextColor={Colors.muted}                 
                                   color={Colors.header}
                                   style={styles.textArea}                                 
-                                  value={params[0]['INFO_PERM_ADD_A'] + ','
-                                        + params[0]['INFO_PERM_BRGY'] + ',' 
-                                        + params[0]['INFO_PERM_CITY'] + ',' 
-                                        + params[0]['INFO_PERM_PROV'] + ',' 
+                                  value={(params[0]['INFO_PERM_ADD_A'] == null ? ' ' : params[0]['INFO_PERM_ADD_A']  + ', ')
+                                        + params[0]['INFO_PERM_BRGY'] + ', ' 
+                                        + params[0]['INFO_PERM_CITY'] + ', ' 
+                                        + params[0]['INFO_PERM_PROV']  
                                          }
                                   editable={false}
                               />
