@@ -50,17 +50,22 @@ export default function QRCodeScreen() {
 
     axios.post(ip_config.ip_address+'vmp-web/public/api/get_voucher_info',form)
     .then((response)=>{                          
-      console.warn(response.data[0]['data'].Available_Balance)
+      
       if(response.data[0]['Message'] == 'true'){
-        if(response.data[0]['data'].Available_Balance != 0){
-          navigation.navigate('ClaimVoucher',response.data[0]['data']);        
-          setScanned(false);
-          setIsShow(false);
-        }else{
-          alert('Not Enough Balance.')
-          setScanned(false);
-          setIsShow(false);
-        }
+        
+        navigation.navigate('ClaimVoucher',response.data[0]['data']);        
+        setScanned(false);
+        setIsShow(false);
+        // Test Available Balance
+        // if(response.data[0]['data'].Available_Balance != 0){
+        //   navigation.navigate('ClaimVoucher',response.data[0]['data']);        
+        //   setScanned(false);
+        //   setIsShow(false);
+        // }else{
+        //   alert('Not Enough Balance.')
+        //   setScanned(false);
+        //   setIsShow(false);
+        // }
         
       }else{        
         alert("Reference Number doesn't exist.")
@@ -69,7 +74,7 @@ export default function QRCodeScreen() {
       }        
         
     }).catch((error)=>{      
-      console.warn(error.response)    
+      console.warn(error)    
       setScanned(false);    
       setIsShow(false);
     })

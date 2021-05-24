@@ -89,7 +89,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                 }                
           }).catch((error)=>{
             setLoading(false);
-            console.warn(error.response)        
+            console.warn(error)        
           })
       }
       else{

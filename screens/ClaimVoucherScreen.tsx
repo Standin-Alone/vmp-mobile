@@ -704,10 +704,10 @@ const closeEditPanel = () => {
                                   placeholderTextColor={Colors.muted}                 
                                   color={Colors.header}
                                   style={styles.textArea}                                 
-                                  value={params[0]['INFO_PERM_ADD_A'] + ','
-                                        + params[0]['INFO_PERM_BRGY'] + ',' 
-                                        + params[0]['INFO_PERM_CITY'] + ',' 
-                                        + params[0]['INFO_PERM_PROV'] + ',' 
+                                  value={(params[0]['INFO_PERM_ADD_A'] == null ? ' ' : params[0]['INFO_PERM_ADD_A']  + ', ')
+                                        + params[0]['INFO_PERM_BRGY'] + ', ' 
+                                        + params[0]['INFO_PERM_CITY'] + ', ' 
+                                        + params[0]['INFO_PERM_PROV']  
                                          }
                                   editable={false}
                               />
@@ -786,14 +786,14 @@ const goToNextPage = async () => {
       fd.append('commodities[]',JSON.stringify({commodity:item.Commodity, unit:item.Unit, quantity:item.Quantity, amount:item.Amount, total_amount:item.Total_Amount}));
     })
     
-    // images.map((item,index)=>{  
-    //        console.warn(index);
-    // fd.append('image'+index,'data:image/jpeg;base64,'+item.uri);      
-    // fd.append('type'+index,'image/jpeg');      
-    // })
+    images.map((item,index)=>{  
+           console.warn(index);
+    fd.append('image'+index,'data:image/jpeg;base64,'+item.uri);      
+    fd.append('type'+index,'image/jpeg');      
+    })
 
+    fd.append('images_count',images.length.toLocaleString());    
     
-    // axios({url:ip_config.ip_address+'vmp-web/public/api/submit-voucher',method:'post',data:fd,headers:{'content-type':'multipart/form-data',accept:'application/json'}})
     axios.post(ip_config.ip_address+'vmp-web/public/api/submit-voucher',fd,{headers:{'content-type':'multipart/form-data',accept:'application/json'}})
     .then((response)=>{                        
           
@@ -882,7 +882,7 @@ const goBackPage = async () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FBAE14',    
+    backgroundColor: Colors.background,    
     
   },
   second_container: {

@@ -12,8 +12,8 @@
  import Colors from '../constants/Colors';
  import useColorScheme from '../hooks/useColorScheme';
  import BottomTabNavigator from './BottomTabNavigator';
- import SettingsScreen from '../screens/drawer/SettingsScreen'
-import TabOneScreen from '../screens/TabOneScreen';
+ 
+
 import CustomSidebarMenu from './CustomSidebarMenu';
  
 
