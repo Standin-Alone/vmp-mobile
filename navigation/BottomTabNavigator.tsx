@@ -8,14 +8,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 
-
+import {StyleSheet} from 'react-native';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import TabOneScreen from '../screens/TabOneScreen';
+import HomeScreen from '../screens/HomeScreen';
 import QRCodeScreen from '../screens/QRCodeScreen';
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types';
 import { AnimatedTabBarNavigator } from "react-native-animated-nav-tab-bar";
-
+import {Button,Block} from "galio-framework";
 const BottomTab = AnimatedTabBarNavigator<BottomTabParamList>();
 
 
@@ -32,6 +32,7 @@ export default function BottomTabNavigator() {
 
         
       }}
+
       appearance={{
         floating:true
 
@@ -40,11 +41,12 @@ export default function BottomTabNavigator() {
       >
 
       <BottomTab.Screen
-        name="TabOne"
+        name="HomeScreen"
         component={TabOneNavigator}
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          tabBarLabel:'Home'
+          tabBarLabel:'Home',
+          
         
         }}
         
@@ -83,9 +85,10 @@ function TabOneNavigator() {
   return (
     <TabOneStack.Navigator>
       <TabOneStack.Screen
-        name="TabOneScreen"
-        component={TabOneScreen}
-        options={{ headerTitle: 'Home'               
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{ headerTitle: 'Home' ,
+      
       }}
       />
     </TabOneStack.Navigator>
@@ -105,3 +108,12 @@ function TabTwoNavigator() {
     </TabTwoStack.Navigator>
   );
 }
+
+
+
+const styles = StyleSheet.create({
+
+  button:{
+
+  }
+})

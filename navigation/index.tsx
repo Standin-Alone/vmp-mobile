@@ -6,7 +6,7 @@
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { ColorSchemeName } from 'react-native';
+import { BackHandler, ColorSchemeName,StyleSheet } from 'react-native';
 
 // screens
 import NotFoundScreen from '../screens/NotFoundScreen';
@@ -21,9 +21,10 @@ import BottomTabNavigator from './BottomTabNavigator';
 import DrawerTabNavigator from './DrawerTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
 import {View,Text} from 'react-native';
-
+import {Button,Block} from "galio-framework";
 import {ApplicationProvider} from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
     
@@ -42,7 +43,7 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
 const Stack = createStackNavigator<RootStackParamList>();
 
 
-var Custom_Header = (props) => {return ( <View style={{ backgroundColor: "white" }}>
+var Custom_Header = () => {return ( <View style={{ backgroundColor: "white" }}>
 <Text
   style={[
     { color: "black" },
@@ -61,8 +62,16 @@ Helloworld
 function RootNavigator() {
   return (
 
-    <Stack.Navigator screenOptions={{ headerShown: false }}  initialRouteName="QRCodeScreen" mode="modal" >
-      <Stack.Screen name="Root" component={DrawerTabNavigator}   options={{ headerTitle: props => <Custom_Header {...props} /> }}  />      
+    <Stack.Navigator screenOptions={{ headerShown: false ,}}  initialRouteName="Root" mode="modal" >
+      <Stack.Screen name="Root" component={BottomTabNavigator}   options={{headerRight:props=>(<Button
+        icon="login" 
+       iconFamily="FontAwesome" 
+       iconSize={20}
+       iconColor={Colors.base}
+       round style={styles.button}                
+       onlyIcon
+       onPress={()=>alert('helo')}
+       />)       }}  />      
       <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />
       <Stack.Screen name="OTPScreen" component={OTPScreen} options={{ title: 'OTP Screen' }} />
@@ -78,3 +87,12 @@ function RootNavigator() {
     </Stack.Navigator>
   );
 }
+
+
+
+const styles = StyleSheet.create({
+
+  button:{
+    
+  }
+})
