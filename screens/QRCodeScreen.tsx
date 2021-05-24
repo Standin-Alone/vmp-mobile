@@ -58,6 +58,8 @@ export default function QRCodeScreen() {
           setIsShow(false);
         }else{
           alert('Not Enough Balance.')
+          setScanned(false);
+          setIsShow(false);
         }
         
       }else{        
@@ -67,7 +69,7 @@ export default function QRCodeScreen() {
       }        
         
     }).catch((error)=>{      
-      console.log(error.response)    
+      console.warn(error.response)    
       setScanned(false);    
       setIsShow(false);
     })
@@ -77,7 +79,7 @@ export default function QRCodeScreen() {
   return (
     
       <View style={styles.container}>
-
+        <ProgressDialog message="Scanning QR code..." title="Alert" visible={isShow}/>
       
       <BarCodeScanner
         onBarCodeScanned={scanned ? undefined : handleQRCodeScanned}
