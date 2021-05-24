@@ -6,7 +6,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import * as React from 'react';
+import React,{useState} from 'react';
 
 import {StyleSheet} from 'react-native';
 import Colors from '../constants/Colors';
@@ -15,7 +15,9 @@ import HomeScreen from '../screens/HomeScreen';
 import QRCodeScreen from '../screens/QRCodeScreen';
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types';
 import { AnimatedTabBarNavigator } from "react-native-animated-nav-tab-bar";
-import {Button,Block} from "galio-framework";
+import {Button,Block,Icon} from "galio-framework";
+import {ConfirmDialog} from 'react-native-simple-dialogs';
+
 const BottomTab = AnimatedTabBarNavigator<BottomTabParamList>();
 
 
@@ -23,7 +25,8 @@ const BottomTab = AnimatedTabBarNavigator<BottomTabParamList>();
 
 export default function BottomTabNavigator() {
   const colorScheme = useColorScheme();
-
+  const [isLogout,setLogout] = useState(false);
+  
   return (
     <BottomTab.Navigator
 
@@ -39,6 +42,21 @@ export default function BottomTabNavigator() {
       }}
       
       >
+
+
+<ConfirmDialog
+            title="Are you sure you want to logout?"
+            visible={isLogout}            
+            positiveButton={{
+                title: "Yes",
+                onPress: () => {                                    
+                }
+            }} 
+            negativeButton={{
+              title:'No',
+              onPress: () => setLogout(false)
+            }}
+            />
 
       <BottomTab.Screen
         name="HomeScreen"
@@ -87,7 +105,18 @@ function TabOneNavigator() {
       <TabOneStack.Screen
         name="HomeScreen"
         component={HomeScreen}
-        options={{ headerTitle: 'Home' ,
+        options={{ 
+          headerTitle: 'Home' ,
+          headerTitleContainerStyle:{ },
+
+          headerRight:props=>{return(<Icon
+          name="logout" family="FontAwesome" 
+          color={Colors.base} 
+          size={50}       
+          style={styles.button}
+          onPress={()=>alert('helo')}
+          
+          />) }
       
       }}
       />
@@ -114,6 +143,8 @@ function TabTwoNavigator() {
 const styles = StyleSheet.create({
 
   button:{
+
+  marginRight:10
 
   }
 })

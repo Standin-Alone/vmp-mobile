@@ -63,15 +63,7 @@ function RootNavigator() {
   return (
 
     <Stack.Navigator screenOptions={{ headerShown: false ,}}  initialRouteName="Root" mode="modal" >
-      <Stack.Screen name="Root" component={BottomTabNavigator}   options={{headerRight:props=>(<Button
-        icon="login" 
-       iconFamily="FontAwesome" 
-       iconSize={20}
-       iconColor={Colors.base}
-       round style={styles.button}                
-       onlyIcon
-       onPress={()=>alert('helo')}
-       />)       }}  />      
+      <Stack.Screen name="Root" component={BottomTabNavigator}    />      
       <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />
       <Stack.Screen name="OTPScreen" component={OTPScreen} options={{ title: 'OTP Screen' }} />
