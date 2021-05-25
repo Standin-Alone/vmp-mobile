@@ -54,9 +54,10 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
 
   const otp_timer = ()=>{
     interval = window.setTimeout(() => {        
-      setTimer(timer - 1);
-      clearTimeout(interval);
+      setTimer(timer - 1);      
       });
+    
+    clearTimeout(interval);
   }
 
   useEffect(() => {
@@ -65,6 +66,7 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
         setTimer(timer - 1)        
       }, 2000);       
     } 
+    
     if(timer ==  0){
       setIsResend(true);
       clearTimeout(interval);

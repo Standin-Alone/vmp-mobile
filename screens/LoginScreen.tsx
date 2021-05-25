@@ -70,7 +70,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
   
   //Check internet connection
   NetInfo.fetch().then((response:any)=>{ 
-    console.warn(response.isConnected)
+    
     if(response.isConnected){   
 
       if(form.username != "" && form.password != "" ){
@@ -133,6 +133,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                  iconColor={Colors.muted}
                  iconSize={20}                                
                  rounded
+                
                  onChangeText={(value)=>setForm({...form,username:value})}                 
                  
                  />
@@ -150,6 +151,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                  viewPass
                  password
                  rounded
+                
                  onChangeText={(value)=>setForm({...form,password:value})}
                 
                  />
@@ -171,7 +173,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                 }
 
                 {is_warning == true ? 
-                  <Text h7 style={{color:Colors.warning}}>
+                  <Text h7 style={{color:Colors.danger,marginLeft:5}}>
                   Please enter your username and password.</Text>                    
                   :                  
                   null                  
