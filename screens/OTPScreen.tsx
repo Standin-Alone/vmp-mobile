@@ -52,19 +52,23 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
 
   var interval:any;
 
+  const otp_timer = ()=>{
+    interval = window.setTimeout(() => {        
+      setTimer(timer - 1);
+      clearTimeout(interval);
+      });
+  }
 
   useEffect(() => {
-    if(isResend == false){
-      
+    if(isResend == false){      
         interval = window.setTimeout(() => {        
         setTimer(timer - 1)        
-      }, 2000);  
-      if(timer ==  0){
-        setIsResend(true);
-        clearTimeout(interval);
-      }    
+      }, 2000);       
     } 
-    
+    if(timer ==  0){
+      setIsResend(true);
+      clearTimeout(interval);
+    }    
     return () => {              
     }       
   }, [isResend,timer])
@@ -96,9 +100,10 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
       if(response.isConnected){
         axios.post(ip_config.ip_address+'vmp-web/public/api/resend-otp',{email:email})
           .then((response)=>{   
-            setIsShow(false)
-            setIsResend(false)
             setTimer(5);
+            setIsShow(false)
+            setIsResend(false)            
+            otp_timer();
             alert('Your new OTP has already sent to your email.')
             AsyncStorage.setItem('otp_code',response.data[0]['OTP'].toLocaleString());              
         }).catch((err)=>console.warn(err.response))

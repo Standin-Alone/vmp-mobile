@@ -8,7 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import React,{useState} from 'react';
 
-import {StyleSheet} from 'react-native';
+import {StyleSheet,Alert, AsyncStorage} from 'react-native';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import HomeScreen from '../screens/HomeScreen';
@@ -44,20 +44,6 @@ export default function BottomTabNavigator() {
       >
 
 
-<ConfirmDialog
-            title="Are you sure you want to logout?"
-            visible={isLogout}            
-            positiveButton={{
-                title: "Yes",
-                onPress: () => {                                    
-                }
-            }} 
-            negativeButton={{
-              title:'No',
-              onPress: () => setLogout(false)
-            }}
-            />
-
       <BottomTab.Screen
         name="HomeScreen"
         component={TabOneNavigator}
@@ -78,10 +64,7 @@ export default function BottomTabNavigator() {
         component={TabTwoNavigator}
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="qr-code" color={color} />,
-          tabBarLabel:'Scan Voucher'
-          
-          
-          
+          tabBarLabel:'Scan Voucher'            
         }
       }
       />
@@ -105,20 +88,27 @@ function TabOneNavigator() {
       <TabOneStack.Screen
         name="HomeScreen"
         component={HomeScreen}
-        options={{ 
-          headerTitle: 'Home' ,
-          headerTitleContainerStyle:{ },
-
+        options={({navigation})=>({ 
+          headerTitle: 'Home' ,          
           headerRight:props=>{return(<Icon
           name="logout" family="FontAwesome" 
           color={Colors.base} 
           size={50}       
           style={styles.button}
-          onPress={()=>alert('helo')}
+          onPress={()=>Alert.alert("Alert","Do you really want to logout?",
+          [
+            {text:"Yes",onPress:()=>{ 
+                  AsyncStorage.clear()
+                  navigation.navigate.replace('Login')
+                
+            }},
+            {text:"No"}
+
+          ])}
           
           />) }
       
-      }}
+      })}
       />
     </TabOneStack.Navigator>
   );

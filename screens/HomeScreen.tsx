@@ -6,7 +6,7 @@ import { Text, View } from '../components/Themed';
 import * as ipconfig from '../ip_config';
 import axios from 'axios';
 import SearchInput, {createFilter} from 'react-native-search-filter';
-import {Block,Button} from 'galio-framework';
+import {Block,Button,Input} from 'galio-framework';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from 'react-native-paper';
 import Images from '../constants/Images';
@@ -44,8 +44,14 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Block>
-        <SearchInput
-          style={styles.searchInput}
+        <Input
+          style={styles.searchInput}          
+          placeholderTextColor={Colors.muted}                 
+          color={Colors.header}          
+          family="FontAwesome"          
+          icon="search"                 
+          iconColor={Colors.base}
+          iconSize={20}                                          
           onChangeText = {(value)=>searchVoucher(value)}                    
           placeholder = "Search here..."
         />
@@ -77,6 +83,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1, 
+    backgroundColor:Colors.back
     
     
   },
@@ -88,7 +95,8 @@ const styles = StyleSheet.create({
     padding:10,
     borderColor:"#ddd",
     borderWidth:2,
-    margin:20
+    margin:20,
+    width:MyWindow.Width - 50
 
   },
   separator: {

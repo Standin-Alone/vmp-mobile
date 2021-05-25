@@ -4,9 +4,9 @@
  *
  */
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator,CardStyleInterpolators } from '@react-navigation/stack';
 import * as React from 'react';
-import { BackHandler, ColorSchemeName,StyleSheet } from 'react-native';
+import { BackHandler, ColorSchemeName,StyleSheet,  } from 'react-native';
 
 // screens
 import NotFoundScreen from '../screens/NotFoundScreen';
@@ -62,7 +62,7 @@ Helloworld
 function RootNavigator() {
   return (
 
-    <Stack.Navigator screenOptions={{ headerShown: false ,}}  initialRouteName="Root" mode="modal" >
+    <Stack.Navigator screenOptions={{ headerShown: false , cardStyleInterpolator:CardStyleInterpolators.forHorizontalIOS}}  initialRouteName="Root" mode="modal" >
       <Stack.Screen name="Root" component={BottomTabNavigator}    />      
       <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />

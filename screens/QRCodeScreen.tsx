@@ -1,6 +1,6 @@
 import React , {useState, useEffect}from 'react';
 import { StyleSheet,Button,Image,Dimensions } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useNavigationState} from '@react-navigation/native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { BarCodeScanner } from 'expo-barcode-scanner';
@@ -18,6 +18,7 @@ export default function QRCodeScreen() {
 
   var form = {};
   const navigation = useNavigation();
+  const navigation_state = useNavigationState((state) => state.routes[state.index].name);
 
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned,setScanned] = useState(false);
@@ -27,6 +28,9 @@ export default function QRCodeScreen() {
 
   useEffect(() => {
     (async () => {
+      if(navigation_state != 'QR_CodeScreen'){
+        setScanned(true);
+      }
       const {status} = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission( status === 'granted');    
               
