@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { StyleSheet,TouchableOpacity,FlatList} from 'react-native';
+import { StyleSheet,FlatList} from 'react-native';
 
 
 import { Text, View } from '../components/Themed';
@@ -53,8 +53,12 @@ export default function HomeScreen() {
           iconColor={Colors.base}
           iconSize={20}                                          
           onChangeText = {(value)=>searchVoucher(value)}                    
-          placeholder = "Search here..."
-        />
+          placeholder = "Search here..."                  
+          icon="search"
+          family="FontAwesome"
+          iconSize={14}
+          iconColor={Colors.base} 
+          />
       </Block>
 
 
