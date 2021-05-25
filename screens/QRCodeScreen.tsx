@@ -50,22 +50,15 @@ export default function QRCodeScreen() {
 
     axios.post(ip_config.ip_address+'vmp-web/public/api/get_voucher_info',form)
     .then((response)=>{                          
-      
+      console.warn(response.data[0]['data'].Available_Balance)
       if(response.data[0]['Message'] == 'true'){
-        
-        navigation.navigate('ClaimVoucher',response.data[0]['data']);        
-        setScanned(false);
-        setIsShow(false);
-        // Test Available Balance
-        // if(response.data[0]['data'].Available_Balance != 0){
-        //   navigation.navigate('ClaimVoucher',response.data[0]['data']);        
-        //   setScanned(false);
-        //   setIsShow(false);
-        // }else{
-        //   alert('Not Enough Balance.')
-        //   setScanned(false);
-        //   setIsShow(false);
-        // }
+        if(response.data[0]['data'].Available_Balance != 0){
+          navigation.navigate('ClaimVoucher',response.data[0]['data']);        
+          setScanned(false);
+          setIsShow(false);
+        }else{
+          alert('Not Enough Balance.')
+        }
         
       }else{        
         alert("Reference Number doesn't exist.")
@@ -74,7 +67,7 @@ export default function QRCodeScreen() {
       }        
         
     }).catch((error)=>{      
-      console.warn(error)    
+      console.log(error.response)    
       setScanned(false);    
       setIsShow(false);
     })
@@ -84,7 +77,7 @@ export default function QRCodeScreen() {
   return (
     
       <View style={styles.container}>
-        <ProgressDialog message="Scanning QR code..." title="Alert" visible={isShow}/>
+
       
       <BarCodeScanner
         onBarCodeScanned={scanned ? undefined : handleQRCodeScanned}

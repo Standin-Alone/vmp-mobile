@@ -14,7 +14,7 @@ export default {
         screens: {
           TabOne: {
             screens: {
-              HomeScreen: 'one',
+              TabOneScreen: 'one',
             },
           },
           TabTwo: {

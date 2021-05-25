@@ -126,15 +126,14 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 
   // Save Button
   const saveCommodity = () =>{    
-    if(cardInfo.Quantity !>= 0 && cardInfo.Amount !>= 0){
-      
+    if(cardInfo.Quantity != 0 && cardInfo.Amount != 0){
      setCardValues([...cardValues,{Commodity:cardInfo.Commodity, Unit:cardInfo.Unit, Quantity:cardInfo.Quantity,Amount:cardInfo.Amount,Total_Amount:cardInfo.Total_Amount }]);
      cardInfo.Quantity = 1;
      cardInfo.Amount = 0;
      cardInfo.Total_Amount = 0;
      setShowPanel(false);    
     }else{
-      alert('Please enter valid the values.')
+      alert('Please enter all the fields.')
     }
   }
 
@@ -145,7 +144,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   const updateCommodity = (id) => {  
     cardValues.map((item,index)=>{      
       if(index == id){
-        if(form.quantity_txt !>= 0 && form.amount_txt !>= 0){
+        if(form.quantity_txt != 0 && form.amount_txt != 0){
           item.Commodity = form.commodity_txt;
           item.Unit = form.unit_txt;
           item.Quantity = form.quantity_txt;
@@ -153,7 +152,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
           item.Total_Amount = form.total_amount_txt;          
           setEditShowPanel(false);   
         }else{
-          alert("Please enter valid the values.")
+          alert("Please enter all the fields.")
         }
       }    
     })
@@ -175,30 +174,9 @@ const openCamera = ()=>{
 
 const showDeleteImageDialog = ({index,item}) => {
   setDeleteImageDialog(true);    
-  setImageId({...imageId,id:index.toLocaleString()});  
+  setImageId({...imageId,id:index.toLocaleString()});
 }
 
-
-
-
-
-const closeAddPanel = () => {
-  if(isShowPanel != true){
-    setShowPanel(true)
-  }else{
-    setShowPanel(false)
-  }
-}
-
-
-const closeEditPanel = () => {
-  
-  if(isShowEditPanel != true){
-    setEditShowPanel(true)
-  }else{
-    setEditShowPanel(false)
-  }
-}
   // THIRD FORM
   const importProofScreen = () =>{
     return(
@@ -393,6 +371,7 @@ const closeEditPanel = () => {
 
                 <Block center>
                   <Text style={styles.title}>Add Commodity</Text>
+
                 </Block>
                 
                 <Block  >
@@ -403,8 +382,13 @@ const closeEditPanel = () => {
                   >
                     <Picker.Item label="Chicken" value="CHICKEN" />
                     <Picker.Item label="Egg" value="EGG" />
-                    <Picker.Item label="Rice" value="RICE" />                    
-                  </Picker>                       
+                    <Picker.Item label="Rice" value="RICE" />
+                    
+                  </Picker>                        
+
+                  
+
+                  
                 </Block>
 
 
@@ -417,7 +401,8 @@ const closeEditPanel = () => {
                     <Picker.Item label="Kilograms" value="Kilograms" />
                     <Picker.Item label="Pieces" value="Pieces" />
                     <Picker.Item label="Sacks" value="Sacks" />
-                    <Picker.Item label="Trays" value="Trays" />                    
+                    <Picker.Item label="Trays" value="Trays" />
+                    
                   </Picker>                           
                 </Block>
 
@@ -452,13 +437,14 @@ const closeEditPanel = () => {
                                     }}
                   value={cardInfo.Amount.toLocaleString()}                                  
                   />
+
                 </Block>
 
                 <Block>
                   <Text style={styles.title,{color:'red'}} h4>Total Amount :  ₱{cardInfo.Total_Amount}</Text>
                 </Block>
 
-                <Block>
+                <Block  >
                   <Button
                     icon="save" 
                     iconFamily="FontAwesome" 
@@ -471,20 +457,6 @@ const closeEditPanel = () => {
                     >
                       Save
                   </Button>      
-
-
-                  <Button
-                    icon="close" 
-                    iconFamily="FontAwesome" 
-                    iconSize={20}
-                    iconColor={Colors.dark.text}
-                    round uppercase                                         
-                    style={styles.close_button}                                
-                    loading={is_loading}      
-                    onPress={closeAddPanel}                                  
-                    >
-                      Close
-                  </Button>  
                 </Block> 
 
               </Block>
@@ -584,7 +556,7 @@ const closeEditPanel = () => {
 
                 <Block  >
                   <Button
-                    icon="update" 
+                    icon="save" 
                     iconFamily="FontAwesome" 
                     iconSize={20}
                     round uppercase 
@@ -595,20 +567,6 @@ const closeEditPanel = () => {
                     onPress={()=>updateCommodity(form.id)}
                     >
                       Update
-                  </Button>   
-
-
-                  <Button
-                    icon="close" 
-                    iconFamily="FontAwesome" 
-                    iconSize={20}
-                    iconColor={Colors.dark.text}
-                    round uppercase                                         
-                    style={styles.close_button}                                
-                    loading={is_loading}      
-                    onPress={closeEditPanel}                                  
-                    >
-                      Close
                   </Button>      
                 </Block> 
 
@@ -638,7 +596,7 @@ const closeEditPanel = () => {
                               style={styles.input}                                 
                               onChangeText={(value)=>{form.username=value}}
                               editable={false}
-                              value={params[0]['REFERENCE_NO']}
+                              // value={params[0]['RSBSA_CTRL_NO']}
                               />
 
                       </Block>
@@ -654,7 +612,7 @@ const closeEditPanel = () => {
                                   placeholderTextColor={Colors.muted}                 
                                   color={Colors.header}
                                   style={styles.input}                                 
-                                  value={params[0]['INFO_NAME_L']}
+                                  // value={params[0]['INFO_NAME_L']}
                                   editable={false}
                                   
                               />
@@ -667,7 +625,7 @@ const closeEditPanel = () => {
                                   placeholderTextColor={Colors.muted}                 
                                   color={Colors.header}
                                   style={styles.input}                                 
-                                  value={params[0]['INFO_NAME_F']}
+                                  // value={params[0]['INFO_NAME_F']}
                                   editable={false}
                               />
                           </Block>   
@@ -679,7 +637,7 @@ const closeEditPanel = () => {
                                   placeholderTextColor={Colors.muted}                 
                                   color={Colors.header}
                                   style={styles.input}                                 
-                                  value={params[0]['INFO_NAME_M']}
+                                  // value={params[0]['INFO_NAME_M']}
                                   editable={false}
                               />
                           </Block>   
@@ -692,7 +650,7 @@ const closeEditPanel = () => {
                                   placeholderTextColor={Colors.muted}                 
                                   color={Colors.header}
                                   style={styles.input}                                 
-                                  value={params[0]['INFO_NAME_EXT']}
+                                  // value={params[0]['INFO_NAME_EXT']}
                                   editable={false}
                               />
                           </Block>   
@@ -704,11 +662,11 @@ const closeEditPanel = () => {
                                   placeholderTextColor={Colors.muted}                 
                                   color={Colors.header}
                                   style={styles.textArea}                                 
-                                  value={(params[0]['INFO_PERM_ADD_A'] == null ? ' ' : params[0]['INFO_PERM_ADD_A']  + ', ')
-                                        + params[0]['INFO_PERM_BRGY'] + ', ' 
-                                        + params[0]['INFO_PERM_CITY'] + ', ' 
-                                        + params[0]['INFO_PERM_PROV']  
-                                         }
+                                  // value={params[0]['INFO_PERM_ADD_A'] + ','
+                                  //       + params[0]['INFO_PERM_BRGY'] + ',' 
+                                  //       + params[0]['INFO_PERM_CITY'] + ',' 
+                                  //       + params[0]['INFO_PERM_PROV'] + ',' 
+                                  //        }
                                   editable={false}
                               />
                           </Block>   
@@ -721,7 +679,7 @@ const closeEditPanel = () => {
                                   placeholderTextColor={Colors.muted}                 
                                   color={Colors.header}
                                   style={styles.textArea}                                 
-                                  value={params[0]['INFO_PERM_PROV']}
+                                  // value={params[0]['INFO_PERM_PROV']}
                                   editable={false}
                               />
                           </Block>   
@@ -734,7 +692,7 @@ const closeEditPanel = () => {
                                   placeholderTextColor={Colors.muted}                 
                                   color={Colors.header}
                                   style={styles.textArea}                                 
-                                  value={params[0]['INFO_NAME_REG']}
+                                  // value={params[0]['INFO_NAME_REG']}
                                   editable={false}
                               />
                           </Block>   
@@ -778,31 +736,7 @@ const goToNextPage = async () => {
   }
    
   if(currentPage == 2){
-    var fd = new FormData();
-    
-    fd.append('reference_num',params[0].REFERENCE_NO)
-    cardValues.map((item:any)=>{      
-      
-      fd.append('commodities[]',JSON.stringify({commodity:item.Commodity, unit:item.Unit, quantity:item.Quantity, amount:item.Amount, total_amount:item.Total_Amount}));
-    })
-    
-    images.map((item,index)=>{  
-           console.warn(index);
-    fd.append('image'+index,'data:image/jpeg;base64,'+item.uri);      
-    fd.append('type'+index,'image/jpeg');      
-    })
 
-    fd.append('images_count',images.length.toLocaleString());    
-    
-    axios.post(ip_config.ip_address+'vmp-web/public/api/submit-voucher',fd,{headers:{'content-type':'multipart/form-data',accept:'application/json'}})
-    .then((response)=>{                        
-          
-          console.warn(response.data);
-          
-    }).catch((error)=>{            
-      console.warn(error.response)        
-      console.log(error.response)        
-    })   
   }
 
   }
@@ -882,7 +816,7 @@ const goBackPage = async () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,    
+    backgroundColor: '#FBAE14',    
     
   },
   second_container: {
@@ -918,15 +852,14 @@ const styles = StyleSheet.create({
     height: 50,
     width:MyWindow.Width - 220,
     position:'relative'
-  }, 
-  add_button:{    
+  }
+  , 
+  add_button:{
+    
     height: 50,
     width:MyWindow.Width -20,    
-  },   
-  close_button:{    
-    height: 50,
-    width:MyWindow.Width -20,    
-  },
+  }
+  ,
   otp:{textAlign: 'center', fontSize: 25},
   otp_desc:{textAlign: 'center', fontSize: 18},
   root: {flex: 1, padding: 20},  

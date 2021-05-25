@@ -6,7 +6,7 @@
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { BackHandler, ColorSchemeName,StyleSheet } from 'react-native';
+import { ColorSchemeName } from 'react-native';
 
 // screens
 import NotFoundScreen from '../screens/NotFoundScreen';
@@ -21,19 +21,14 @@ import BottomTabNavigator from './BottomTabNavigator';
 import DrawerTabNavigator from './DrawerTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
 import {View,Text} from 'react-native';
-import {Button,Block} from "galio-framework";
-import {ApplicationProvider} from '@ui-kitten/components';
-import * as eva from '@eva-design/eva';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
-    
-      <NavigationContainer
-        linking={LinkingConfiguration}
-        theme={DefaultTheme}>
-        <RootNavigator  />      
-      </NavigationContainer>
-    
+    <NavigationContainer
+      linking={LinkingConfiguration}
+      theme={DefaultTheme}>
+      <RootNavigator  />      
+    </NavigationContainer>
+
 
   );
 }
@@ -43,7 +38,7 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
 const Stack = createStackNavigator<RootStackParamList>();
 
 
-var Custom_Header = () => {return ( <View style={{ backgroundColor: "white" }}>
+var Custom_Header = (props) => {return ( <View style={{ backgroundColor: "white" }}>
 <Text
   style={[
     { color: "black" },
@@ -62,16 +57,15 @@ Helloworld
 function RootNavigator() {
   return (
 
-    <Stack.Navigator screenOptions={{ headerShown: false ,}}  initialRouteName="Root" mode="modal" >
-      <Stack.Screen name="Root" component={BottomTabNavigator}    />      
+    <Stack.Navigator screenOptions={{ headerShown: false }}  initialRouteName="Login" mode="modal" >
+      <Stack.Screen name="Root" component={DrawerTabNavigator}   options={{ headerTitle: props => <Custom_Header {...props} /> }}  />      
       <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />
       <Stack.Screen name="OTPScreen" component={OTPScreen} options={{ title: 'OTP Screen' }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />      
       <Stack.Screen name="ClaimVoucher" component={ClaimVoucherScreen} options={{ 
-        title: 'Claim Voucher',
-        headerShown: true, 
-               
+        title: 'QR Code Authentication',
+        headerShown: true
       }}
       
         
@@ -79,12 +73,3 @@ function RootNavigator() {
     </Stack.Navigator>
   );
 }
-
-
-
-const styles = StyleSheet.create({
-
-  button:{
-    
-  }
-})

@@ -79,17 +79,17 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                 
                 if(response.data[0]['Message'] == 'true'){
                   console.warn(response.data[0]['OTP']);
-                  navigation.replace('OTPScreen');     
-                  AsyncStorage.setItem('otp_code',response.data[0]['OTP'].toLocaleString());
-                  AsyncStorage.setItem('email',response.data[0]['EMAIL'].toLocaleString());
+                  navigation.replace('OTPScreen');              
+                  AsyncStorage.setItem('otp_code',response.data[0]['OTP'].toLocaleString());              
                   setLoading(false);
                 }else{
                   setError(true);
                   setLoading(false);
-                }                
+                }
+                
           }).catch((error)=>{
             setLoading(false);
-            console.warn(error)        
+            console.warn(error.response)        
           })
       }
       else{
@@ -106,6 +106,8 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
 
   const scanbiometrics = async ()=>{
     biometricsAuth()
+
+
   }
 
   const goToForgotPassword = () => {
@@ -167,7 +169,8 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                   <Text h7 style={{color:Colors.danger}}>
                   Incorrect Username or password.</Text>                    
                   :                  
-                  null
+                  <Text h6 style={{color:Colors.base}}>
+                  </Text>                    
                 }
 
                 {is_warning == true ? 
@@ -183,7 +186,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                 <Button
                   icon="login" 
                   iconFamily="FontAwesome" 
-                  iconSize={20}
+                  iconSize={30}
                   round uppercase color="#66BB6A" style={styles.button}                
                   onPress={signIn} loading={is_loading}>
                   Sign In
@@ -198,7 +201,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                  <Button
                   icon="fingerprint" 
                   iconFamily="FontAwesome" 
-                  iconSize={20}
+                  iconSize={30}
                   round 
                   uppercase 
                   color={Colors.info} 
@@ -269,12 +272,12 @@ const styles = StyleSheet.create({
   },
   button:{
     height: 50,
-    width:MyWindow.Width - 65,
+    width:MyWindow.Width - 50,
     position:'relative'
   },
   fp_button:{   
     height: 50,
-    width:MyWindow.Width - 65,
+    width:MyWindow.Width - 50,
     position:'relative',
     
   },  
@@ -285,9 +288,9 @@ const styles = StyleSheet.create({
   sidebarDivider:{
     height:1,
 
-    width:"46.5%",
+    width:"45%",
     backgroundColor:"lightgray",
-    marginVertical:20
+    marginVertical:15
   }
   
 });

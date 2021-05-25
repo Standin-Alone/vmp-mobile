@@ -1,5 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React,{useState,useEffect} from 'react';
+import React,{useState} from 'react';
 import { StyleSheet, 
                   
           View, 
@@ -19,10 +19,7 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
-import {ProgressDialog} from 'react-native-simple-dialogs';
-import * as ip_config from '../ip_config';
-import axios from 'axios';
-import NetInfo from '@react-native-community/netinfo';
+ 
 
 
 const form = {
@@ -37,9 +34,7 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
   const [is_loading,setLoading]  = useState(false);
   const [is_error,setError]  = useState(false);
   const [code,setCode]  = useState('');
-  const [isResend, setIsResend] = useState(false);
-  const [timer, setTimer] = useState(5);
-  const [isShow, setIsShow] = useState(false);
+  
 
   const CELL_COUNT = 4;
   const [value, setValue] = useState('');
@@ -50,29 +45,12 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
     setValue,
   });
 
-  var interval:any;
-
-
-  useEffect(() => {
-    if(isResend == false){
-      
-        interval = window.setTimeout(() => {        
-        setTimer(timer - 1)        
-      }, 2000);  
-      if(timer ==  0){
-        setIsResend(true);
-        clearTimeout(interval);
-      }    
-    } 
-    
-    return () => {              
-    }       
-  }, [isResend,timer])
-
 
 
   
   const verifyOTP = async ()=>{
+
+
     const get_otp = await AsyncStorage.getItem('otp_code');    
     setLoading(true);
     setError(false);
@@ -83,62 +61,34 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
       setLoading(false);
       setCode('');
       setError(true);
-    }      
+    }
+
+      
   }
-
-
-  const resendOTP = async ()=>{    
-    const email = await AsyncStorage.getItem('email');              
-    if(isResend == true ){    
-      setIsShow(true);
-
-    NetInfo.fetch().then((response:any)=>{
-      if(response.isConnected){
-        axios.post(ip_config.ip_address+'vmp-web/public/api/resend-otp',{email:email})
-          .then((response)=>{   
-            setIsShow(false)
-            setIsResend(false)
-            setTimer(5);
-            alert('Your new OTP has already sent to your email.')
-            AsyncStorage.setItem('otp_code',response.data[0]['OTP'].toLocaleString());              
-        }).catch((err)=>console.warn(err.response))
-      }else{
-        setIsShow(false)
-            setIsResend(false)
-            setTimer(5);
-        alert('No internet connection.')
-      }
-    })
-      }else{
-        alert('('+timer+') seconds remaining to resend OTP.')
-      }
-    
-  }
-
   return (
       <View style={styles.container}>
-        <ProgressDialog message="Resending otp to your email..." visible={isShow}/>
         <View style={styles.second_container}>
+
           <KeyboardAvoidingView style={{flex:1}}>
-          <Block>          
+          <Block  >          
               <Image source={Images.DA_Logo} style={styles.logo}/>                
           </Block>
           <Block>
-            <Text style={styles.otp}>One Time Pin</Text>
-            <Text style={styles.otp_desc}>Your one time pin will be sent to your email.</Text>
+            <Text style={styles.otp}>One Time Password</Text>
+            <Text style={styles.otp_desc}>Your one time password will be sent to your email.</Text>
           </Block>
           <Block>                  
             
           <CodeField
               ref={ref}
-              {...props}              
+              {...props}
+              
               value={code}
               onChangeText={(my_code)=>{setCode(my_code)}}
               cellCount={CELL_COUNT}
               rootStyle={styles.codeFieldRoot}
               keyboardType="number-pad"
               textContentType="oneTimeCode"
-              
               renderCell={({index, symbol, isFocused}) => (
                 <Text
                   key={index}
@@ -150,7 +100,9 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
           />  
 
 
-          </Block>        
+          </Block>
+          
+        
               {is_error == true ? 
                 <Block center>
                   <Text h6 style={{color:Colors.danger}}>
@@ -158,21 +110,16 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
                 </Block>
                   :                  
                 null                   
-                }              
+                }
+        
+
+              
           <Block> 
-           
                 <Button
                   round uppercase color="#66BB6A" style={styles.button}                
                   onPress={verifyOTP} loading={is_loading}>
                   Verify Pin
                  </Button>
-                 <Text style={styles.otp_desc} h5>Didn't receive your One Time Pin?
-                 <Text             
-                    style={styles.resend_button}
-                    onPress={resendOTP}>
-                    Click here to resend OTP. ({timer})
-                  </Text>
-                </Text>
             </Block>
 
             </KeyboardAvoidingView>
@@ -201,13 +148,14 @@ const styles = StyleSheet.create({
   },
   form_container:{
     alignItems:'center',
-    marginTop:200    
+    marginTop:200
+    
   },
   logo:{
         width:150,
         height:150,
         borderRadius:40,        
-        left:MyWindow.Width / 2 - 75,
+        left:MyWindow.Width / 2 - 100,
         top:MyWindow.Height / 2 - 465 ,
         resizeMode:'center', 
         alignItems: 'center'     
@@ -216,13 +164,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   }, 
-  resend_button:{   
-    height: 50,
-    width:MyWindow.Width - 50,
-    position:'relative',
-    color:'blue',
-    
-  },  
   button:{
     height: 50,
     width:MyWindow.Width - 50,
@@ -232,19 +173,17 @@ const styles = StyleSheet.create({
   otp:{textAlign: 'center', fontSize: 25},
   otp_desc:{textAlign: 'center', fontSize: 18},
   root: {flex: 1, padding: 20},  
-  codeFieldRoot: {marginTop: 50,marginBottom:50},
+  codeFieldRoot: {marginTop: 20},
   cell: {
     width: 60,
     height: 60,
     lineHeight: 58,
     fontSize: 28,
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: '#00000030',
     textAlign: 'center',
-    
-    
   },
   focusCell: {
-    borderColor: Colors.base,
+    borderColor: '#000',
   }
 });

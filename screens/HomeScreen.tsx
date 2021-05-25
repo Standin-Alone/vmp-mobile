@@ -1,12 +1,12 @@
 import React,{useState} from 'react';
-import { StyleSheet,TouchableOpacity,FlatList} from 'react-native';
+import { StyleSheet,FlatList} from 'react-native';
 
 
 import { Text, View } from '../components/Themed';
 import * as ipconfig from '../ip_config';
 import axios from 'axios';
 import SearchInput, {createFilter} from 'react-native-search-filter';
-import {Block,Button} from 'galio-framework';
+import {Block,Button,Input} from 'galio-framework';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from 'react-native-paper';
 import Images from '../constants/Images';
@@ -44,11 +44,17 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Block>
-        <SearchInput
-          style={styles.searchInput}
+        <Input
+          
           onChangeText = {(value)=>searchVoucher(value)}                    
           placeholder = "Search here..."
-        />
+          style= {styles.searchInput}
+          placeholderTextColor={Colors.muted}
+          icon="search"
+          family="FontAwesome"
+          iconSize={14}
+          iconColor={Colors.base} 
+          />
       </Block>
 
 
@@ -77,7 +83,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1, 
-    
+    backgroundColor:"#ddd"
     
   },
   title: {  
@@ -85,10 +91,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   searchInput:{
-    padding:10,
-    borderColor:"#ddd",
-    borderWidth:2,
-    margin:20
+    padding:2,  
+    width:MyWindow.Width - 20,  
+    margin:10
 
   },
   separator: {
