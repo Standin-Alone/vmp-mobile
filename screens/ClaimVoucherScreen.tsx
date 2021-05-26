@@ -5,7 +5,8 @@ import { StyleSheet,
           Image,           
           KeyboardAvoidingView,
           Picker,
-          FlatList
+          FlatList,
+          Modal
          } from 'react-native';
 import { Card } from 'react-native-paper';
 import { RootStackParamList } from '../types';
@@ -24,7 +25,8 @@ import DraggablePanel from 'react-native-draggable-panel';
 import {ConfirmDialog} from 'react-native-simple-dialogs';
 import * as ImagePicker from 'expo-image-picker';
 
-
+import { Dialog } from 'react-native-simple-dialogs';
+import { selectAssetSource } from 'expo-asset/build/AssetSources';
 const labels = ["Claimer Profile", "Add Commodity","Import Document"]
 
 const customStyles = {    
@@ -67,6 +69,13 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
       id:''
   }); // For Edit Commodity Form
 
+  const [isShowModal,setShowModal] = useState({
+    flag:false,
+    imageIndex:0    
+
+  });
+
+  const [typeOfDocument,setTypeofDocument] = useState('');
   
   const [isDeleteDialog,setDeleteDialog] = useState(false) // Delete Dialog Boolean (Commodity)
   
@@ -157,15 +166,19 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
         }
       }    
     })
+
     
-}
+
+  }
 
 // Take Photo Button
-const openCamera = ()=>{
+const openCamera = async ()=>{
 
-  ImagePicker.launchCameraAsync({mediaTypes:ImagePicker.MediaTypeOptions.Images,base64:true,quality:1}).then((response)=>{    
+  ImagePicker.launchCameraAsync({mediaTypes:ImagePicker.MediaTypeOptions.Images,base64:true,quality:1}).then(async (response)=>{    
     if(response.cancelled != true){
-     setImages([...images,{uri:response.base64}]);    
+
+     setImages([...images,{uri:response.base64,typeOfDocument:''}]);    
+     setShowModal({flag:true});          
     }
   })
   
@@ -199,19 +212,80 @@ const closeEditPanel = () => {
     setEditShowPanel(false)
   }
 }
+
+const selectTypeOfDocument = () =>{
+
+  setShowModal({flag:false});
+  console.warn(typeOfDocument);
+  let imagesState = [...images]; 
+  imagesState[images.length -1 ].typeOfDocument = typeOfDocument; 
+  setImages(imagesState); // ??
+}
   // THIRD FORM
   const importProofScreen = () =>{
     return(
       <Block>
-          
+         
+        <Button
+                icon="camera" 
+                iconFamily="FontAwesome" 
+                iconSize={20}
+                round uppercase 
+                color={Colors.info} 
+                style={styles.add_button}                
+                loading={is_loading}
+                onPress={openCamera }
+                >
+                        Take a photo
+          </Button>
+
+          <View style={styles.divider}/>
       <ScrollView>
 
+      {/* Modal for type of document */}
+      <Dialog visible={isShowModal.flag} title="Select type of document" animationType='fade'>
+        <Block >
+        <Picker       
+            onValueChange={(value)=>setTypeofDocument(value)}
+            selectedValue={typeOfDocument == '' ? 'Picture of Farmer holding commodity' : typeOfDocument}   
+          >
+            <Picker.Item label="Picture of Farmer holding commodity" value="Picture of Farmer holding commodity" />
+            <Picker.Item label="Valid ID" value="Valid ID" />
+            <Picker.Item label="Other documents" value="Other documents/attachments" />
+            
+          </Picker>
+
+        </Block>
+        <Block row>
+          <Button  
+                style={styles.modal_cancel_button} 
+                color="danger"                
+                onPress={()=>{          
+                  images.map((item,index)=>{
+                    console.warn(index);
+                    if(index == images.length - 1 ){
+                      images.splice(index, Number(imageId.id) +1)
+                    }                    
+                })   
+                setShowModal({flag:false})
+                
+              }}
+          >Cancel</Button>
+          <Button  
+                color={Colors.base}
+                style={styles.modal_select_button}                  
+                onPress={()=>selectTypeOfDocument()}
+          >Select</Button>
+          
+        </Block>
+
+      </Dialog>
 
         <FlatList
           data={images}
           renderItem ={({item,index})=>(
             <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
-              <Card.Title title={'Photo'} />
+              <Card.Title title={item.typeOfDocument} />
               <Card.Cover source={{uri:'data:image/jpeg;base64,'+item.uri}} resizeMode={'contain'}/>    
               <Card.Actions >            
 
@@ -227,19 +301,7 @@ const closeEditPanel = () => {
             </Card> 
           )}        
         />
-         <View style={styles.divider}/>
-        <Button
-                icon="camera" 
-                iconFamily="FontAwesome" 
-                iconSize={20}
-                round uppercase 
-                color={Colors.info} 
-                style={styles.add_button}                
-                loading={is_loading}
-                onPress={openCamera }
-                >
-                        Take a photo
-          </Button>
+         
       </ScrollView>
         
 
@@ -305,9 +367,23 @@ const closeEditPanel = () => {
     
   <Block >
       <View  >
+      
+          <Button
+                icon="add" 
+                iconFamily="FontAwesome" 
+                iconSize={20}
+                round uppercase 
+                color={Colors.info} 
+                style={styles.add_button}                
+                loading={is_loading}
+                onPress={addCommodity}
+                >
+                        Add Item
+          </Button>
+
+          <View style={styles.divider}/>
         <ScrollView keyboardShouldPersistTaps='handled'>
-                <FlatList
-                  
+                <FlatList                  
                   data={cardValues}
                   renderItem={({item,index})=>(
                      index == 0 ?  null :
@@ -346,19 +422,7 @@ const closeEditPanel = () => {
                 />
             </ScrollView>
         </View>
-        <View style={styles.divider}/>
-          <Button
-                icon="add" 
-                iconFamily="FontAwesome" 
-                iconSize={20}
-                round uppercase 
-                color={Colors.info} 
-                style={styles.add_button}                
-                loading={is_loading}
-                onPress={addCommodity}
-                >
-                        Add Item
-          </Button>
+     
 
 
           {/* Delete Confirm Dialog (Commodity) */}
@@ -857,9 +921,10 @@ const goBackPage = async () => {
 
                   { currentPage == 1 || currentPage == 2 ? 
                     <Button
-                    round uppercase color={Colors.back} style={styles.button}                
+                    round uppercase color={Colors.dark.background}                     
+                    style={styles.go_back_button}                
                     onPress={goBackPage} loading={is_loading}>
-                        Go back
+                        Go Back
                     </Button>
                     :
                     null                
@@ -919,14 +984,26 @@ const styles = StyleSheet.create({
     width:MyWindow.Width - 220,
     position:'relative'
   }, 
+  go_back_button:{
+    marginRight:20,
+    height: 50,
+    width:MyWindow.Width - 220,
+    position:'relative',
+    borderColor:Colors.base,
+    borderWidth:2,
+    color:Colors.base
+    
+  }, 
   add_button:{    
     height: 50,
     width:MyWindow.Width -20,    
   },   
   close_button:{    
     height: 50,
-    width:MyWindow.Width -20,    
+    width:MyWindow.Width -20,   
+   
   },
+
   otp:{textAlign: 'center', fontSize: 25},
   otp_desc:{textAlign: 'center', fontSize: 18},
   root: {flex: 1, padding: 20},  
@@ -982,10 +1059,20 @@ const styles = StyleSheet.create({
   divider:{
     marginLeft: 25,
     marginRight: 20,
-    paddingTop: 10,
+    marginBottom:20,
+    paddingTop: 5,
     paddingBottom: 10,
     borderBottomColor: '#000',
     borderBottomWidth: 1,
-}
+  },
+  modal_select_button:{
+    marginLeft:50,
+    width:100
+  },
+  modal_cancel_button:{
+    marginRight:-20,
+    width:100
+           
+  }
 
 });

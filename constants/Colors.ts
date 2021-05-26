@@ -25,5 +25,6 @@ export default {
   back: '#ddd',
   danger:'red',
   info: '#00CAC7',
-  warning: '#FF9B05'
+  warning: '#FF9B05',
+  background:'#fff5ab'
 };

@@ -28,8 +28,10 @@ export default function QRCodeScreen() {
 
   useEffect(() => {
     (async () => {
-      if(navigation_state != 'QR_CodeScreen'){
+      if(navigation_state != 'QRCodeScreen'){
         setScanned(true);
+      }else{
+        setScanned(false); 
       }
       const {status} = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission( status === 'granted');    
@@ -88,7 +90,7 @@ export default function QRCodeScreen() {
   return (
     
       <View style={styles.container}>
-        <ProgressDialog message="Scanning QR code..." title="Alert" visible={isShow}/>
+        <ProgressDialog message="Scanning QR code..."  visible={isShow}/>
       
       <BarCodeScanner
         onBarCodeScanned={scanned ? undefined : handleQRCodeScanned}

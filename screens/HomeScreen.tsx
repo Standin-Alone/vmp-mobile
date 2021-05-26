@@ -62,10 +62,7 @@ export default function HomeScreen() {
       </Block>
 
 
-      <Block>
-
-
-            
+      <Block>            
       <ScrollView>
         <FlatList      
           data={scannedVouchers}   

@@ -62,7 +62,7 @@ Helloworld
 function RootNavigator() {
   return (
 
-    <Stack.Navigator screenOptions={{ headerShown: false , cardStyleInterpolator:CardStyleInterpolators.forHorizontalIOS}}  initialRouteName="Login" mode="modal" >
+    <Stack.Navigator screenOptions={{ headerShown: false , cardStyleInterpolator:CardStyleInterpolators.forHorizontalIOS}}  initialRouteName="QRCodeScreen" mode="modal" >
       <Stack.Screen name="Root" component={BottomTabNavigator}    />      
       <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />
