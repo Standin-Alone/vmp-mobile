@@ -75,8 +75,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
 
       if(form.username != "" && form.password != "" ){
         axios.post(ip_config.ip_address+'vmp-web/public/api/sign_in',form)
-          .then((response)=>{                        
-                
+          .then((response)=>{                                        
                 if(response.data[0]['Message'] == 'true'){
                   console.warn(response.data[0]['OTP']);
                   navigation.replace('OTPScreen');     

@@ -67,12 +67,19 @@ export default function HomeScreen() {
         <FlatList      
           data={scannedVouchers}   
           renderItem ={({item,index})=>(
+            item.reference_no != ''  ? 
             <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
               <Card.Title title={item.reference_no} />              
               <Card.Content>
                                   
               </Card.Content>
             </Card> 
+            : <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
+            <Card.Title title="No existing vouchers scanned." />              
+            <Card.Content>
+                                
+            </Card.Content>
+          </Card> 
           )}        
         />
         </ScrollView>

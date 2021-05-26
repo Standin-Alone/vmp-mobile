@@ -864,19 +864,23 @@ const goToNextPage = async () => {
     fd.append('images_count',images.length.toLocaleString());   
     
     NetInfo.fetch().then((response:any)=>{ 
-    
-      axios.post(ip_config.ip_address+'vmp-web/public/api/submit-voucher',fd,{headers:{'content-type':'multipart/form-data',accept:'application/json'}})
-      .then((response)=>{                        
-        let message = response.data[0]['Message']; 
-        if(message == 'true'){
-          setShowProgSubmit(false);
-        }else{
-          setShowProgSubmit(false);
-        }
-                      
-      }).catch((error)=>{            
-        
-      })   
+      if(response.isConnected){ 
+          axios.post(ip_config.ip_address+'vmp-web/public/api/submit-voucher',fd,{headers:{'content-type':'multipart/form-data',accept:'application/json'}})
+          .then((response)=>{                        
+            let message = response.data[0]['Message']; 
+            if(message == 'true'){
+              setShowProgSubmit(false);
+            }else{
+              setShowProgSubmit(false);
+            }
+                          
+          }).catch((error)=>{            
+            
+          })
+      }else{
+        setShowProgSubmit(false);
+        alert('No internet Connection');
+      }
     })  
   }
 
@@ -901,7 +905,7 @@ const goBackPage = async () => {
                 </Block>
                 <Block center space="between">                  
                         <Text style={styles.title}>Available Balance: 
-                          {/* <Text style={{color:Colors.info}}>₱{params[0].Available_Balance}</Text> */}
+                          <Text style={{color:Colors.info}}>₱{params[0].Available_Balance}</Text>
                         </Text>
                 </Block>
                 <StepIndicator
