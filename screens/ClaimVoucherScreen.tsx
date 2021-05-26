@@ -13,7 +13,7 @@ import Images from '../constants/Images';
 import Colors from '../constants/Colors';
 import MyWindow from '../constants/Layout';
 import { Input, Block, Button ,Text} from "galio-framework";
-import {Footer} from 'native-base';
+import {Footer,Body} from 'native-base';
 import axios from 'axios';
 import * as ip_config from '../ip_config';
 import StepIndicator from 'react-native-step-indicator';
@@ -219,8 +219,7 @@ const selectTypeOfDocument = () =>{
   const importProofScreen = () =>{
     return(
       <Block>
-         
-        <Button
+         <Button
                 icon="camera" 
                 iconFamily="FontAwesome" 
                 iconSize={20}
@@ -234,6 +233,8 @@ const selectTypeOfDocument = () =>{
           </Button>
 
           <View style={styles.divider}/>
+        <Body>
+        
       <ScrollView>
 
       {/* Modal for type of document */}
@@ -304,7 +305,7 @@ const selectTypeOfDocument = () =>{
         />
          
       </ScrollView>
-        
+      
 
 
         {/* Delete Confirm Dialog (Commodity) */}
@@ -331,7 +332,7 @@ const selectTypeOfDocument = () =>{
               onPress: () => setDeleteImageDialog(false)
             }}
             />
-
+      </Body>
       </Block>
     )
   }
@@ -367,22 +368,20 @@ const selectTypeOfDocument = () =>{
   return(
     
   <Block >
-      <View  >
-      
-          <Button
-                icon="add" 
-                iconFamily="FontAwesome" 
-                iconSize={20}
-                round uppercase 
-                color={Colors.info} 
-                style={styles.add_button}                
-                loading={is_loading}
-                onPress={addCommodity}
-                >
-                        Add Item
+      <Button
+              icon="add" 
+              iconFamily="FontAwesome" 
+              iconSize={20}
+              round uppercase 
+              color={Colors.info} 
+              style={styles.add_button}                
+              loading={is_loading}
+              onPress={addCommodity}
+              >
+                      Add Item
           </Button>
-
           <View style={styles.divider}/>
+      <Body>              
         <ScrollView keyboardShouldPersistTaps='handled'>
                 <FlatList                  
                   data={cardValues}
@@ -422,7 +421,7 @@ const selectTypeOfDocument = () =>{
                   )}
                 />
             </ScrollView>
-        </View>
+        </Body>
      
 
 
@@ -870,12 +869,15 @@ const goToNextPage = async () => {
             let message = response.data[0]['Message']; 
             if(message == 'true'){
               setShowProgSubmit(false);
+              alert('Succesfull! Claiming voucher redeemed.')
             }else{
+              // alert('Error!Something went wrong.')
+              console.warn(response);
               setShowProgSubmit(false);
             }
                           
           }).catch((error)=>{            
-            
+            console.warn(error.response)
           })
       }else{
         setShowProgSubmit(false);

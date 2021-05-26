@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import { StyleSheet,FlatList} from 'react-native';
 
 
@@ -12,7 +12,7 @@ import { Card } from 'react-native-paper';
 import Images from '../constants/Images';
 import Colors from '../constants/Colors';
 import MyWindow from '../constants/Layout';
-
+import * as ip_config from '../ip_config';
 
 var test_api =  ( )=>{
   
@@ -29,7 +29,17 @@ var test_api =  ( )=>{
 
 
 export default function HomeScreen() {
+  const [form,setForm]  = useState({reference_num:'',password:''});
 
+  useEffect(()=>{
+    
+    axios.post(ip_config.ip_address+'vmp-web/public/api/get_scanned_vouchers',form)
+          .then((response)=>{                                        
+                
+          }).catch((error)=>{
+                    
+          })
+  },[])
 
   const [scannedVouchers , setScannedVouchers] = useState([
       {
