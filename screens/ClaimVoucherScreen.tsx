@@ -5,8 +5,7 @@ import { StyleSheet,
           Image,           
           KeyboardAvoidingView,
           Picker,
-          FlatList,
-          Modal
+          FlatList,          
          } from 'react-native';
 import { Card } from 'react-native-paper';
 import { RootStackParamList } from '../types';
@@ -19,14 +18,15 @@ import axios from 'axios';
 import * as ip_config from '../ip_config';
 import StepIndicator from 'react-native-step-indicator';
 import ViewPager from '@react-native-community/viewpager';
-import { ScrollView, State } from 'react-native-gesture-handler';
-import {Layout, Select, SelectItem} from '@ui-kitten/components';
+import { ScrollView } from 'react-native-gesture-handler';
 import DraggablePanel from 'react-native-draggable-panel';
 import {ConfirmDialog} from 'react-native-simple-dialogs';
 import * as ImagePicker from 'expo-image-picker';
-
+import {ProgressDialog} from 'react-native-simple-dialogs';
 import { Dialog } from 'react-native-simple-dialogs';
-import { selectAssetSource } from 'expo-asset/build/AssetSources';
+import NetInfo from '@react-native-community/netinfo';
+
+
 const labels = ["Claimer Profile", "Add Commodity","Import Document"]
 
 const customStyles = {    
@@ -69,11 +69,9 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
       id:''
   }); // For Edit Commodity Form
 
-  const [isShowModal,setShowModal] = useState({
-    flag:false,
-    imageIndex:0    
+  const [isShowProgSubmit,setShowProgSubmit] = useState(false); // for progress dialog of submit voucher
 
-  });
+  const [isShowModal,setShowModal] = useState(false) // show modal of select document 
 
   const [typeOfDocument,setTypeofDocument] = useState('');
   
@@ -150,7 +148,6 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 
 
   // UPDATE COMMODITY 
-
   const updateCommodity = (id) => {  
     cardValues.map((item,index)=>{      
       if(index == id){
@@ -178,21 +175,17 @@ const openCamera = async ()=>{
     if(response.cancelled != true){
 
      setImages([...images,{uri:response.base64,typeOfDocument:''}]);    
-     setShowModal({flag:true});          
+     setShowModal(true);          
     }
   })
   
 }
 
 
-
 const showDeleteImageDialog = ({index,item}) => {
   setDeleteImageDialog(true);    
   setImageId({...imageId,id:index.toLocaleString()});  
 }
-
-
-
 
 
 const closeAddPanel = () => {
@@ -204,8 +197,7 @@ const closeAddPanel = () => {
 }
 
 
-const closeEditPanel = () => {
-  
+const closeEditPanel = () => {  
   if(isShowEditPanel != true){
     setEditShowPanel(true)
   }else{
@@ -213,13 +205,15 @@ const closeEditPanel = () => {
   }
 }
 
+// Select document function
 const selectTypeOfDocument = () =>{
 
-  setShowModal({flag:false});
-  console.warn(typeOfDocument);
+  setShowModal(false);
+  
   let imagesState = [...images]; 
   imagesState[images.length -1 ].typeOfDocument = typeOfDocument; 
-  setImages(imagesState); // ??
+  setImages(imagesState);
+
 }
   // THIRD FORM
   const importProofScreen = () =>{
@@ -236,22 +230,22 @@ const selectTypeOfDocument = () =>{
                 loading={is_loading}
                 onPress={openCamera }
                 >
-                        Take a photo
+                Take a photo
           </Button>
 
           <View style={styles.divider}/>
       <ScrollView>
 
       {/* Modal for type of document */}
-      <Dialog visible={isShowModal.flag} title="Select type of document" animationType='fade'>
+      <Dialog visible={isShowModal} title="Select type of document" animationType='fade'>
         <Block >
         <Picker       
             onValueChange={(value)=>setTypeofDocument(value)}
-            selectedValue={typeOfDocument == '' ? 'Picture of Farmer holding commodity' : typeOfDocument}   
+            selectedValue={typeOfDocument == '' ? '1' : typeOfDocument}   
           >
-            <Picker.Item label="Picture of Farmer holding commodity" value="Picture of Farmer holding commodity" />
-            <Picker.Item label="Valid ID" value="Valid ID" />
-            <Picker.Item label="Other documents" value="Other documents/attachments" />
+            <Picker.Item label="Farmer with commodity" value="1" />
+            <Picker.Item label="Valid ID with signature" value="2" />
+            <Picker.Item label="Other documents" value="3" />
             
           </Picker>
 
@@ -285,7 +279,14 @@ const selectTypeOfDocument = () =>{
           data={images}
           renderItem ={({item,index})=>(
             <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
-              <Card.Title title={item.typeOfDocument} />
+              <Card.Title title={ item.typeOfDocument == 1 ? 
+                                        "Farmer with commodity":
+                                  item.typeOfDocument == 2 ?
+                                        "Valid ID with signature":
+                                  item.typeOfDocument == 3 ?
+                                        "Other documents" :
+                                  null
+                                } />
               <Card.Cover source={{uri:'data:image/jpeg;base64,'+item.uri}} resizeMode={'contain'}/>    
               <Card.Actions >            
 
@@ -337,7 +338,7 @@ const selectTypeOfDocument = () =>{
 
 
 
-
+// Commodity buttons function edit and delete
 
   const showEditForm = ({index,item}) => {
     setEditShowPanel(true);  
@@ -843,30 +844,40 @@ const goToNextPage = async () => {
    
   if(currentPage == 2){
     var fd = new FormData();
-    
+    setShowProgSubmit(true);
     fd.append('reference_num',params[0].REFERENCE_NO)
+
+    //form append commodities
     cardValues.map((item:any)=>{      
       
       fd.append('commodities[]',JSON.stringify({commodity:item.Commodity, unit:item.Unit, quantity:item.Quantity, amount:item.Amount, total_amount:item.Total_Amount}));
     })
     
+    // form append images 
     images.map((item,index)=>{  
-           console.warn(index);
-    fd.append('image'+index,'data:image/jpeg;base64,'+item.uri);      
-    fd.append('type'+index,'image/jpeg');      
+
+      fd.append('image'+index,'data:image/jpeg;base64,'+item.uri);      
+      fd.append('type'+index,'image/jpeg');      
+      fd.append('document_type'+index,item.typeOfDocument);      
     })
 
-    fd.append('images_count',images.length.toLocaleString());    
+    fd.append('images_count',images.length.toLocaleString());   
     
-    axios.post(ip_config.ip_address+'vmp-web/public/api/submit-voucher',fd,{headers:{'content-type':'multipart/form-data',accept:'application/json'}})
-    .then((response)=>{                        
-          
-          console.warn(response.data);
-          
-    }).catch((error)=>{            
-      console.warn(error.response)        
-      console.log(error.response)        
-    })   
+    NetInfo.fetch().then((response:any)=>{ 
+    
+      axios.post(ip_config.ip_address+'vmp-web/public/api/submit-voucher',fd,{headers:{'content-type':'multipart/form-data',accept:'application/json'}})
+      .then((response)=>{                        
+        let message = response.data[0]['Message']; 
+        if(message == 'true'){
+          setShowProgSubmit(false);
+        }else{
+          setShowProgSubmit(false);
+        }
+                      
+      }).catch((error)=>{            
+        
+      })   
+    })  
   }
 
   }
@@ -882,6 +893,9 @@ const goBackPage = async () => {
       
     <View style={styles.container}>
         <KeyboardAvoidingView style={{flex:1}}>                         
+
+            <ProgressDialog message="Processing..."  visible={isShowProgSubmit}/>
+
                 <Block center space="between">                  
                         {/* <Text style={styles.title}>Claimer Profile</Text> */}
                 </Block>

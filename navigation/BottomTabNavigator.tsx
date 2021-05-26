@@ -96,14 +96,13 @@ function TabOneNavigator() {
           size={50}       
           style={styles.button}
           onPress={()=>Alert.alert("Alert","Do you really want to logout?",
-          [
+          [            
+            {text:"No"},
             {text:"Yes",onPress:()=>{ 
-                  AsyncStorage.clear()
-                  navigation.navigate.replace('Login')
-                
-            }},
-            {text:"No"}
-
+              AsyncStorage.clear()
+              navigation.navigate.replace('Login')
+            
+            }}
           ])}
           
           />) }
