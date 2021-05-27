@@ -1,5 +1,5 @@
 import React , {useState, useEffect}from 'react';
-import { StyleSheet,Button,Image,Dimensions } from 'react-native';
+import { StyleSheet,Button,Image,Dimensions,Alert,BackHandler,AsyncStorage } from 'react-native';
 import {useNavigation, useNavigationState} from '@react-navigation/native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
@@ -10,6 +10,7 @@ import * as ip_config from '../ip_config';
 import { Toast } from 'galio-framework';
 import {ProgressDialog} from 'react-native-simple-dialogs';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import NetInfo from '@react-native-community/netinfo';
 const {width} = Dimensions.get('window');
 const qrSize = width * 0.7;
 
@@ -53,38 +54,48 @@ export default function QRCodeScreen() {
     form ={reference_num : data};
     setScanned(true);
     setIsShow(true);
-
-    axios.post(ip_config.ip_address+'vmp-web/public/api/get_voucher_info',form)
-    .then((response)=>{                          
+  
+    // check internet connection
+    NetInfo.fetch().then((response:any)=>{ 
       
-      if(response.data[0]['Message'] == 'true'){
-        
-        navigation.navigate('ClaimVoucher',response.data[0]['data']);        
-        setScanned(false);
-        setIsShow(false);
-        // Test Available Balance
-        if(response.data[0]['data'].Available_Balance != 0){
-          navigation.navigate('ClaimVoucher',response.data[0]['data']);        
-          setScanned(false);
-          setIsShow(false);
-        }else{
-          alert('Not Enough Balance.')
-          setScanned(false);
-          setIsShow(false);
-        }
-        
-      }else{        
-        alert("Reference Number doesn't exist.")
-        setScanned(false);
-        setIsShow(false);
-      }        
-        
-    }).catch((error)=>{      
-      console.warn(error)    
-      setScanned(false);    
-      setIsShow(false);
-    })
-
+    if(response.isConnected){ 
+        axios.post(ip_config.ip_address+'vmp-web/public/api/get_voucher_info',form)
+        .then((response)=>{                          
+          
+          if(response.data[0]['Message'] == 'true'){
+            
+            navigation.navigate('ClaimVoucher',response.data[0]['data']);                    
+            setScanned(false);
+            setIsShow(false);
+            // Test Available Balance
+            if(response.data[0]['data'].Available_Balance != 0){
+              navigation.navigate('ClaimVoucher',response.data[0]['data']);        
+              setScanned(false);
+              setIsShow(false);
+            }else{
+              alert('Not Enough Balance.')
+              setScanned(false);
+              setIsShow(false);
+            }
+            
+          }else{        
+            alert("Reference Number doesn't exist.")
+            setScanned(false);
+            setIsShow(false);
+          }        
+            
+        }).catch((error)=>{      
+          console.warn(error)    
+          setScanned(false)
+          setIsShow(false)
+        })
+      }else{
+        alert('No Internet Connection.')
+        setScanned(false)
+        setIsShow(false)
+  
+      }
+    });
     
   }
   return (

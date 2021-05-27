@@ -5,10 +5,11 @@
 
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
-import React,{useState} from 'react';
+import { createStackNavigator, } from '@react-navigation/stack';
+import {useNavigation,useNavigationState} from '@react-navigation/native';
+import React,{useState,useEffect,} from 'react';
 
-import {StyleSheet,Alert, AsyncStorage} from 'react-native';
+import {StyleSheet, Alert, AsyncStorage,BackHandler} from 'react-native';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import HomeScreen from '../screens/HomeScreen';
@@ -26,19 +27,46 @@ const BottomTab = AnimatedTabBarNavigator<BottomTabParamList>();
 export default function BottomTabNavigator() {
   const colorScheme = useColorScheme();
   const [isLogout,setLogout] = useState(false);
-  
+  const navigation = useNavigation();
+  const navigation_state = useNavigationState((state) => state.routes[state.index].name);
+  useEffect(() => {
+    if(navigation_state == 'QRCodeScreen' || navigation_state == 'HomeScreen' ){
+    const backAction = ()=>{
+      Alert.alert("Message","Do you really want to logout?",[
+        {
+          text:"No"
+        },
+        {
+          text:"Yes",
+          onPress:()=>
+          {
+            AsyncStorage.clear();
+            navigation.reset({routes: [{ name: 'Login' }]});
+            
+          }
+        }
+
+      ]
+      )
+      return true;
+    }
+    const backHandler = BackHandler.addEventListener("hardwareBackPress",backAction);
+    return ()=>{
+      backHandler
+    }
+  }
+  }, [])
   return (
     <BottomTab.Navigator
 
       initialRouteName="TabOne"
-      tabBarOptions={{ activeTintColor: Colors.base
-
-        
+      tabBarOptions={{ 
+        activeTintColor: Colors.base,
+        activeBackgroundColor :Colors.background        
       }}
 
       appearance={{
         floating:true
-
       }}
       
       >
@@ -50,6 +78,7 @@ export default function BottomTabNavigator() {
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           tabBarLabel:'Home',
+          
           
         
         }}
@@ -95,7 +124,7 @@ function TabOneNavigator() {
           color={Colors.base} 
           size={50}       
           style={styles.button}
-          onPress={()=>Alert.alert("Alert","Do you really want to logout?",
+          onPress={()=>Alert.alert("Message","Do you really want to logout?",
           [            
             {text:"No"},
             {text:"Yes",onPress:()=>{ 

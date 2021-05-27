@@ -1,18 +1,22 @@
 import React,{useEffect, useState} from 'react';
-import { StyleSheet,FlatList} from 'react-native';
+import { StyleSheet, FlatList, Alert, AsyncStorage,BackHandler} from 'react-native';
 
-
+import {useNavigation} from '@react-navigation/native';
 import { Text, View } from '../components/Themed';
 import * as ipconfig from '../ip_config';
 import axios from 'axios';
 import SearchInput, {createFilter} from 'react-native-search-filter';
-import {Block,Button,Input} from 'galio-framework';
+import {Block,Input} from 'galio-framework';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from 'react-native-paper';
 import Images from '../constants/Images';
 import Colors from '../constants/Colors';
 import MyWindow from '../constants/Layout';
 import * as ip_config from '../ip_config';
+
+
+
+
 
 var test_api =  ( )=>{
   
@@ -28,12 +32,13 @@ var test_api =  ( )=>{
 }
 
 
-export default function HomeScreen() {
+export default function HomeScreen() {  
   const [form,setForm]  = useState({reference_num:'',password:''});
+
 
   useEffect(()=>{
     
-    axios.post(ip_config.ip_address+'vmp-web/public/api/get_scanned_vouchers',form)
+    axios.post(ip_config.ip_address+'vmp-web/public/api/get-scanned-vouchers',form)
           .then((response)=>{                                        
                 
           }).catch((error)=>{
@@ -43,7 +48,8 @@ export default function HomeScreen() {
 
   const [scannedVouchers , setScannedVouchers] = useState([
       {
-        reference_no:''
+        reference_no:'DA566AB36L58O7M',
+        claimed_date:'January 4, 2021'
       }]);
 
   const searchVoucher = (value) =>{
@@ -79,17 +85,26 @@ export default function HomeScreen() {
           renderItem ={({item,index})=>(
             item.reference_no != ''  ? 
             <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
-              <Card.Title title={item.reference_no} />              
+              <Card.Title title={item.reference_no}   subtitle={item.claimed_date} />              
               <Card.Content>
                                   
               </Card.Content>
             </Card> 
-            : <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
-            <Card.Title title="No existing vouchers scanned." />              
-            <Card.Content>
+            : 
+            // <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
+            //   <Card.Title title="No existing vouchers scanned." />              
+            //   <Card.Content>
                                 
-            </Card.Content>
-          </Card> 
+            //   </Card.Content>
+            // </Card> 
+
+
+            <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
+              <Card.Title title={item.reference_no} subtitle="sample" />              
+              <Card.Content>
+                                  
+              </Card.Content>
+            </Card> 
           )}        
         />
         </ScrollView>
@@ -123,10 +138,12 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   card:{flex:1,
-    borderRadius:5, 
+    borderRadius:20, 
+    backgroundColor:Colors.background,
     width:MyWindow.Width - 20, 
     alignSelf:'center',
-    marginBottom:20
+    marginBottom:20,
+    
   },
   button:{
     height: 50,

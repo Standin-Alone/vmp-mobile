@@ -3,10 +3,10 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
-import { createStackNavigator,CardStyleInterpolators } from '@react-navigation/stack';
+import { NavigationContainer, DefaultTheme, DarkTheme, useNavigation } from '@react-navigation/native';
+import { createStackNavigator,CardStyleInterpolators,HeaderBackButton } from '@react-navigation/stack';
 import * as React from 'react';
-import { BackHandler, ColorSchemeName,StyleSheet,  } from 'react-native';
+import { BackHandler, ColorSchemeName,StyleSheet, AsyncStorage, Alert  } from 'react-native';
 
 // screens
 import NotFoundScreen from '../screens/NotFoundScreen';
@@ -22,10 +22,9 @@ import DrawerTabNavigator from './DrawerTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
 import {View,Text} from 'react-native';
 import {Button,Block} from "galio-framework";
-import {ApplicationProvider} from '@ui-kitten/components';
-import * as eva from '@eva-design/eva';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+
+
   return (
     
       <NavigationContainer
@@ -57,9 +56,29 @@ Helloworld
 )
  } 
 
+//  const navigation = useNavigation();
+
+const handleBackButton = ()=>{
+  Alert.alert("Message","Do you really want to discard your transaction?",[
+    {
+      text:"No"
+    },
+    {
+      text:"Yes",
+      onPress:()=>
+      {
+        AsyncStorage.clear();        
+        // navigation.reset({routes:[{name:'QRCodeScreen'}]}) 
+      }
+    }
+
+  ]
+  )
+}
 
 
 function RootNavigator() {
+  
   return (
 
     <Stack.Navigator screenOptions={{ headerShown: false , cardStyleInterpolator:CardStyleInterpolators.forHorizontalIOS}}  initialRouteName="QRCodeScreen" mode="modal" >
@@ -68,9 +87,11 @@ function RootNavigator() {
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />
       <Stack.Screen name="OTPScreen" component={OTPScreen} options={{ title: 'OTP Screen' }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />      
-      <Stack.Screen name="ClaimVoucher" component={ClaimVoucherScreen} options={{ 
+      <Stack.Screen name="ClaimVoucher" component={ClaimVoucherScreen}
+      options={{ 
         title: 'Claim Voucher',
         headerShown: true, 
+        
                
       }}
       

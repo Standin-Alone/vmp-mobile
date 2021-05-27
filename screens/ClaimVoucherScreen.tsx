@@ -5,7 +5,10 @@ import { StyleSheet,
           Image,           
           KeyboardAvoidingView,
           Picker,
-          FlatList,          
+          FlatList,        
+          BackHandler,
+          Alert,
+          Modal
          } from 'react-native';
 import { Card } from 'react-native-paper';
 import { RootStackParamList } from '../types';
@@ -13,7 +16,7 @@ import Images from '../constants/Images';
 import Colors from '../constants/Colors';
 import MyWindow from '../constants/Layout';
 import { Input, Block, Button ,Text} from "galio-framework";
-import {Footer,Body} from 'native-base';
+import {Footer,Body, Item} from 'native-base';
 import axios from 'axios';
 import * as ip_config from '../ip_config';
 import StepIndicator from 'react-native-step-indicator';
@@ -25,8 +28,9 @@ import * as ImagePicker from 'expo-image-picker';
 import {ProgressDialog} from 'react-native-simple-dialogs';
 import { Dialog } from 'react-native-simple-dialogs';
 import NetInfo from '@react-native-community/netinfo';
-
-
+import ImageViewer from 'react-native-image-zoom-viewer';
+import Swiper from 'react-native-swiper';
+import { setStatusBarNetworkActivityIndicatorVisible } from 'expo-status-bar';
 const labels = ["Claimer Profile", "Add Commodity","Import Document"]
 
 const customStyles = {    
@@ -73,6 +77,10 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 
   const [isShowModal,setShowModal] = useState(false) // show modal of select document 
 
+  const [isShowImage,setShowImage] = useState(false);
+
+  const [imageURI,setImageURI] = useState('');
+
   const [typeOfDocument,setTypeofDocument] = useState('');
   
   const [isDeleteDialog,setDeleteDialog] = useState(false) // Delete Dialog Boolean (Commodity)
@@ -102,7 +110,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
       if(status !== 'granted'){
         alert('Sorry, we need camera permission to make this work.')
       }
-    };
+    };   
   },)
 
 
@@ -205,7 +213,7 @@ const closeEditPanel = () => {
   }
 }
 
-// Select document function
+// Select button for type of  document function
 const selectTypeOfDocument = () =>{
 
   setShowModal(false);
@@ -214,6 +222,13 @@ const selectTypeOfDocument = () =>{
   imagesState[images.length -1 ].typeOfDocument = typeOfDocument; 
   setImages(imagesState);
 
+}
+
+// show image
+const showImage = (uri:any)=>{
+  setShowImage(true);
+  setImageURI(uri)
+  
 }
   // THIRD FORM
   const importProofScreen = () =>{
@@ -279,7 +294,7 @@ const selectTypeOfDocument = () =>{
         <FlatList
           data={images}
           renderItem ={({item,index})=>(
-            <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
+            <Card elevation={10} style={styles.card} onPress={()=>showImage(item.uri)}>
               <Card.Title title={ item.typeOfDocument == 1 ? 
                                         "Farmer with commodity":
                                   item.typeOfDocument == 2 ?
@@ -305,8 +320,22 @@ const selectTypeOfDocument = () =>{
         />
          
       </ScrollView>
+                                 
       
 
+      {/* SHOW IMAGE MODAL */}
+      <Modal
+          visible={isShowImage}
+          transparent={true}
+          onRequestClose={() => setShowImage(false)}
+          animationType="fade"
+        >
+          <ImageViewer
+            imageUrls={[{url:'data:image/jpeg;base64,'+imageURI}]}
+            index={0}                       
+            
+          />
+      </Modal>
 
         {/* Delete Confirm Dialog (Commodity) */}
         <ConfirmDialog
@@ -453,6 +482,7 @@ const selectTypeOfDocument = () =>{
                 width={MyWindow.Width } 
                 style={{ marginVertical: 20,zIndex:1}}
                 space="between"                                    
+            
                 >   
 
                 <Block center>
@@ -841,16 +871,27 @@ const goToNextPage = async () => {
     viewPager.setPage(currentPage + 1)
   }
    
+  const isCompleteDocument = false;
+  
   if(currentPage == 2){
+
     var fd = new FormData();
     setShowProgSubmit(true);
+
+    var checkFarmerWithCommodity = images.some(item => item.typeOfDocument == 1 );  
+    var checkValidID = images.some(item => item.typeOfDocument == 2);  
+    
     fd.append('reference_num',params[0].REFERENCE_NO)
+
+
 
     //form append commodities
     cardValues.map((item:any)=>{      
       
       fd.append('commodities[]',JSON.stringify({commodity:item.Commodity, unit:item.Unit, quantity:item.Quantity, amount:item.Amount, total_amount:item.Total_Amount}));
     })
+
+
     
     // form append images 
     images.map((item,index)=>{  
@@ -858,12 +899,21 @@ const goToNextPage = async () => {
       fd.append('image'+index,'data:image/jpeg;base64,'+item.uri);      
       fd.append('type'+index,'image/jpeg');      
       fd.append('document_type'+index,item.typeOfDocument);      
+        
+      
+      
     })
+
+    
+    
+    console.warn(checkFarmerWithCommodity)
+    console.warn(checkValidID)
 
     fd.append('images_count',images.length.toLocaleString());   
     
     NetInfo.fetch().then((response:any)=>{ 
       if(response.isConnected){ 
+        if(checkFarmerWithCommodity && checkValidID){
           axios.post(ip_config.ip_address+'vmp-web/public/api/submit-voucher',fd,{headers:{'content-type':'multipart/form-data',accept:'application/json'}})
           .then((response)=>{                        
             let message = response.data[0]['Message']; 
@@ -879,6 +929,11 @@ const goToNextPage = async () => {
           }).catch((error)=>{            
             console.warn(error.response)
           })
+        }else{
+          setShowProgSubmit(false);
+          Alert.alert("Message","Please add pictures of valid ID and picture of farmer with commodity. ")
+
+        }
       }else{
         setShowProgSubmit(false);
         alert('No internet Connection');
@@ -941,7 +996,8 @@ const goBackPage = async () => {
 
                   { currentPage == 1 || currentPage == 2 ? 
                     <Button
-                    round uppercase color={Colors.dark.background}                     
+                    
+                    round uppercase color={Colors.base}                     
                     style={styles.go_back_button}                
                     onPress={goBackPage} loading={is_loading}>
                         Go Back
@@ -1009,9 +1065,7 @@ const styles = StyleSheet.create({
     height: 50,
     width:MyWindow.Width - 220,
     position:'relative',
-    borderColor:Colors.base,
-    borderWidth:2,
-    color:Colors.base
+        
     
   }, 
   add_button:{    

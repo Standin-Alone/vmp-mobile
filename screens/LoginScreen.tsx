@@ -36,7 +36,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
 
 
 
-  const biometricsAuth = async (data:any) => {
+  const biometricsAuth = async () => {
     
     const compatible = await LocalAuthentication.hasHardwareAsync();
     const enrolled = await LocalAuthentication.isEnrolledAsync();
