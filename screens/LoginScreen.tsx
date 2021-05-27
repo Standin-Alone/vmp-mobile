@@ -82,6 +82,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                   AsyncStorage.setItem('email',response.data[0]['EMAIL'].toLocaleString());
                   AsyncStorage.setItem('supplier_id',response.data[0]['SUPPLIER_ID'].toLocaleString());
                   
+                  
                   setLoading(false);
                 }else{
                   setError(true);
