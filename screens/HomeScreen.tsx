@@ -13,7 +13,7 @@ import Images from '../constants/Images';
 import Colors from '../constants/Colors';
 import MyWindow from '../constants/Layout';
 import * as ip_config from '../ip_config';
-
+import NetInfo from '@react-native-community/netinfo';
 
 
 
@@ -46,7 +46,8 @@ export default function HomeScreen() {
     setForm({...form,supplier_id : 1});
 
     setRefreshing(true);
-    
+    NetInfo.fetch().then((response:any)=>{     
+      if(response.isConnected){   
       axios.post(ip_config.ip_address+'vmp-web/public/api/get-scanned-vouchers',form)
         .then((response)=>{                                        
              if(response.status == 200){
@@ -60,7 +61,10 @@ export default function HomeScreen() {
                 setRefreshing(false);
         })
     
-    
+      }else{
+        Alert.alert('Message','No Internet Connection.')              
+      }  
+  });
   }
 
 

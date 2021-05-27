@@ -5,7 +5,8 @@ import { StyleSheet,
           View, 
           Image,           
           KeyboardAvoidingView, 
-          AsyncStorage
+          AsyncStorage,
+          Alert
           
          } from 'react-native';
 
@@ -99,7 +100,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
 
       }    
     }else{
-      alert('No Internet Connection.')      
+      Alert.alert('Message','No Internet Connection.')      
       setLoading(false);
     }    
   })
