@@ -8,7 +8,8 @@ import { StyleSheet,
           FlatList,        
           BackHandler,
           Alert,
-          Modal
+          Modal,
+          AsyncStorage
          } from 'react-native';
 import { Card } from 'react-native-paper';
 import { RootStackParamList } from '../types';
@@ -467,6 +468,7 @@ const showImage = (uri:any)=>{
                           cardValues.splice(index, Number(form.id))
                         }
                     })
+                    
                 }
             }} 
             negativeButton={{
@@ -866,13 +868,44 @@ const showImage = (uri:any)=>{
 
 const goToNextPage = async () => {
   
-  if(labels.length-1 != currentPage){
-    setCurrentPage(currentPage + 1);      
-    viewPager.setPage(currentPage + 1)
+  if(currentPage == 0){
+    if(labels.length-1 != currentPage){
+      setCurrentPage(currentPage + 1);      
+      viewPager.setPage(currentPage + 1)
+    }
   }
-   
-  const isCompleteDocument = false;
+     
+// validate current balance
+  var checkTotalAmount = 0;
+  var currentBalance = params[0].Available_Balance;
+  var computeBalance = 0;
   
+  if(currentPage == 1){
+    var checkCommodity = cardValues.some(item => item.Commodity != '')
+    // Calculate total amount
+    cardValues.map((item:any)=>{      
+      
+      
+      checkTotalAmount =  checkTotalAmount + item.Total_Amount
+    })
+    
+    computeBalance = currentBalance - checkTotalAmount;
+    console.warn(checkTotalAmount);
+     if(checkCommodity == false){
+      Alert.alert('Message',"Please add commodities.")
+    }else if(computeBalance >= 0 && checkCommodity == true){      
+        setCurrentPage(currentPage + 1);      
+        viewPager.setPage(currentPage + 1)      
+    }
+    else{
+      Alert.alert('Message',"The total amount of commodities exceed in your current balance.")
+      
+    }
+
+
+  }
+
+
   if(currentPage == 2){
 
     var fd = new FormData();
@@ -881,7 +914,9 @@ const goToNextPage = async () => {
     var checkFarmerWithCommodity = images.some(item => item.typeOfDocument == 1 );  
     var checkValidID = images.some(item => item.typeOfDocument == 2);  
     
+    const supplier_id = await AsyncStorage.getItem('SUPPLIER_ID');
     fd.append('reference_num',params[0].REFERENCE_NO)
+    fd.append('supplier_id',supplier_id)
 
 
 
@@ -898,16 +933,11 @@ const goToNextPage = async () => {
 
       fd.append('image'+index,'data:image/jpeg;base64,'+item.uri);      
       fd.append('type'+index,'image/jpeg');      
-      fd.append('document_type'+index,item.typeOfDocument);      
-        
-      
-      
+      fd.append('document_type'+index,item.typeOfDocument);                        
     })
 
     
-    
-    console.warn(checkFarmerWithCommodity)
-    console.warn(checkValidID)
+
 
     fd.append('images_count',images.length.toLocaleString());   
     
@@ -921,7 +951,7 @@ const goToNextPage = async () => {
               setShowProgSubmit(false);
               alert('Succesfull! Claiming voucher redeemed.')
             }else{
-              // alert('Error!Something went wrong.')
+              alert('Error!Something went wrong.')
               console.warn(response);
               setShowProgSubmit(false);
             }

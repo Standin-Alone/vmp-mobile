@@ -64,14 +64,15 @@ export default function QRCodeScreen() {
           
           if(response.data[0]['Message'] == 'true'){
             
-            navigation.navigate('ClaimVoucher',response.data[0]['data']);                    
-            setScanned(false);
-            setIsShow(false);
+            // navigation.navigate('ClaimVoucher',response.data[0]['data']);                    
+            // setScanned(false);
+            // setIsShow(false);
             // Test Available Balance
             if(response.data[0]['data'].Available_Balance != 0){
-              navigation.navigate('ClaimVoucher',response.data[0]['data']);        
               setScanned(false);
               setIsShow(false);
+              navigation.navigate('ClaimVoucher',response.data[0]['data']);        
+              
             }else{
               alert('Not Enough Balance.')
               setScanned(false);

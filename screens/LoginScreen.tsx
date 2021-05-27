@@ -79,6 +79,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                   navigation.replace('OTPScreen');     
                   AsyncStorage.setItem('otp_code',response.data[0]['OTP'].toLocaleString());
                   AsyncStorage.setItem('email',response.data[0]['EMAIL'].toLocaleString());
+                  AsyncStorage.setItem('supplier_id',response.data[0]['SUPPLIER_ID'].toLocaleString());
                   setLoading(false);
                 }else{
                   setError(true);
@@ -86,7 +87,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                 }                
           }).catch((error)=>{
             setLoading(false);
-            console.warn(error)        
+            console.warn(error.response)        
           })
       }
       else{
