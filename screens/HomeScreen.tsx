@@ -1,7 +1,7 @@
-import React,{useEffect, useState} from 'react';
-import { StyleSheet, FlatList, Alert, AsyncStorage,BackHandler} from 'react-native';
+import React,{useEffect, useState,useRef} from 'react';
+import { StyleSheet, FlatList, Alert, AsyncStorage,BackHandler,RefreshControl} from 'react-native';
 
-import {useNavigation} from '@react-navigation/native';
+
 import { Text, View } from '../components/Themed';
 import * as ipconfig from '../ip_config';
 import axios from 'axios';
@@ -33,24 +33,93 @@ var test_api =  ( )=>{
 
 
 export default function HomeScreen() {  
-  const [form,setForm]  = useState({reference_num:'',password:''});
+  const [form,setForm]  = useState({supplier_id:''});
+  const [refreshing,setRefreshing]  = useState(false);
+  const [scannedVouchers , setScannedVouchers] = useState([]);
+  const [hasMounted,setHasMounted] = useState(false);
 
+  const getScannedVouchers = async ()=> {
+    const supplier_id =  await AsyncStorage.getItem('supplier_id');
 
-  useEffect(()=>{
     
-    axios.post(ip_config.ip_address+'vmp-web/public/api/get-scanned-vouchers',form)
-          .then((response)=>{                                        
-                
-          }).catch((error)=>{
-                    
-          })
-  },[])
+    
+    setForm({...form,supplier_id : 1});
 
-  const [scannedVouchers , setScannedVouchers] = useState([
-      {
-        reference_no:'DA566AB36L58O7M',
-        claimed_date:'January 4, 2021'
-      }]);
+    setRefreshing(true);
+    
+      axios.post(ip_config.ip_address+'vmp-web/public/api/get-scanned-vouchers',form)
+        .then((response)=>{                                        
+             if(response.status == 200){
+               console.warn(response.data);
+               setScannedVouchers(response.data);
+             }
+             console.warn(scannedVouchers);
+              setRefreshing(false);              
+        }).catch((error)=>{
+                console.warn(error.response)
+                setRefreshing(false);
+        })
+    
+    
+  }
+
+  // useEffect(()=>{
+
+  //   const load_vouchers = async ()=> {
+  //     const supplier_id =  await AsyncStorage.getItem('supplier_id');
+  
+    
+  //     setForm({...form,supplier_id : 1});
+  
+  //     setRefreshing(true);
+      
+  //    axios.post(ip_config.ip_address+'vmp-web/public/api/get-scanned-vouchers',form)
+  //         .then((response)=>{                                        
+  //              if(response.status == 200){
+  //                const my_data = response.data
+  //                setScannedVouchers(my_data);
+  //              }
+               
+  //               setRefreshing(false);              
+  //         }).catch((error)=>{
+  //                 console.warn(error.response)
+  //                 setRefreshing(false);
+  //         })
+          
+      
+        
+  //   }
+
+  //   return ()=>load_vouchers()
+      
+  //   },[scannedVouchers])
+
+
+  useEffect(  ()=>{
+    
+    const fetchData = async()=>{   
+      const supplier_id =  await AsyncStorage.getItem('supplier_id');
+  
+    
+      setForm({...form,supplier_id:1})
+  
+      setRefreshing(true);
+      
+      const result = await axios.post(ip_config.ip_address+'vmp-web/public/api/get-scanned-vouchers',form)
+      if(result.status == 200){
+
+        setScannedVouchers(result.data);  
+        setRefreshing(false);
+      }
+      
+    };
+
+   fetchData();
+          
+                
+      
+    },[form.supplier_id])
+
 
   const searchVoucher = (value) =>{
 
@@ -79,32 +148,39 @@ export default function HomeScreen() {
 
 
       <Block>            
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+
+              refreshing={refreshing}
+              onRefresh={getScannedVouchers}
+              tintColor="#FFF0000"
+              title="Loading.."
+              color="#AF0606"
+              progressBackgroundColor="#FFFF"
+
+              />
+          }
+      >
         <FlatList      
           data={scannedVouchers}   
           renderItem ={({item,index})=>(
-            item.reference_no != ''  ? 
+            
+            item.REFERENCE_NO != ''  ? 
             <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
-              <Card.Title title={item.reference_no}   subtitle={item.claimed_date} />              
+              <Card.Title title={item.REFERENCE_NO}   subtitle={item.CLAIMED_DATE} />              
               <Card.Content>
-                                  
+                    <Text>ASmople</Text>
               </Card.Content>
             </Card> 
             : 
-            // <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
-            //   <Card.Title title="No existing vouchers scanned." />              
-            //   <Card.Content>
-                                
-            //   </Card.Content>
-            // </Card> 
-
-
             <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
-              <Card.Title title={item.reference_no} subtitle="sample" />              
+              <Card.Title title={"No existing vouchers scanned." + item.REFERENCE_NO} subtitle={item.REFERENCE_NO}/>              
               <Card.Content>
-                                  
+                                
               </Card.Content>
             </Card> 
+          
           )}        
         />
         </ScrollView>

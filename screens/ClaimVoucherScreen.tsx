@@ -879,7 +879,7 @@ const goToNextPage = async () => {
   var checkTotalAmount = 0;
   var currentBalance = params[0].Available_Balance;
   var computeBalance = 0;
-  
+  //  ADD COMMODITY NEXT BUTTON
   if(currentPage == 1){
     var checkCommodity = cardValues.some(item => item.Commodity != '')
     // Calculate total amount
@@ -890,7 +890,7 @@ const goToNextPage = async () => {
     })
     
     computeBalance = currentBalance - checkTotalAmount;
-    console.warn(checkTotalAmount);
+    
      if(checkCommodity == false){
       Alert.alert('Message',"Please add commodities.")
     }else if(computeBalance >= 0 && checkCommodity == true){      
@@ -898,14 +898,12 @@ const goToNextPage = async () => {
         viewPager.setPage(currentPage + 1)      
     }
     else{
-      Alert.alert('Message',"The total amount of commodities exceed in your current balance.")
-      
+      Alert.alert('Message',"The total amount of commodities exceed in your current balance.")      
     }
-
-
   }
 
 
+  //  IMPORT DOCUMENT SUBMIT BUTTON
   if(currentPage == 2){
 
     var fd = new FormData();
