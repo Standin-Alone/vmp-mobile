@@ -76,10 +76,12 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                 
                 if(response.data[0]['Message'] == 'true'){
                   console.warn(response.data[0]['OTP']);
+                  console.warn(response.data[0]['SUPPLIER_ID'].toLocaleString())
                   navigation.replace('OTPScreen');     
                   AsyncStorage.setItem('otp_code',response.data[0]['OTP'].toLocaleString());
                   AsyncStorage.setItem('email',response.data[0]['EMAIL'].toLocaleString());
                   AsyncStorage.setItem('supplier_id',response.data[0]['SUPPLIER_ID'].toLocaleString());
+                  
                   setLoading(false);
                 }else{
                   setError(true);

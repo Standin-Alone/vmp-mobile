@@ -33,10 +33,10 @@ var test_api =  ( )=>{
 
 
 export default function HomeScreen() {  
-  const [form,setForm]  = useState({supplier_id:''});
+  const [form,setForm]  = useState({});
   const [refreshing,setRefreshing]  = useState(false);
   const [scannedVouchers , setScannedVouchers] = useState([]);
-  const [hasMounted,setHasMounted] = useState(false);
+  const hasMounted = useRef(false);
 
   const getScannedVouchers = async ()=> {
     const supplier_id =  await AsyncStorage.getItem('supplier_id');
@@ -53,7 +53,7 @@ export default function HomeScreen() {
                console.warn(response.data);
                setScannedVouchers(response.data);
              }
-             console.warn(scannedVouchers);
+            
               setRefreshing(false);              
         }).catch((error)=>{
                 console.warn(error.response)
@@ -63,62 +63,30 @@ export default function HomeScreen() {
     
   }
 
-  // useEffect(()=>{
-
-  //   const load_vouchers = async ()=> {
-  //     const supplier_id =  await AsyncStorage.getItem('supplier_id');
-  
-    
-  //     setForm({...form,supplier_id : 1});
-  
-  //     setRefreshing(true);
-      
-  //    axios.post(ip_config.ip_address+'vmp-web/public/api/get-scanned-vouchers',form)
-  //         .then((response)=>{                                        
-  //              if(response.status == 200){
-  //                const my_data = response.data
-  //                setScannedVouchers(my_data);
-  //              }
-               
-  //               setRefreshing(false);              
-  //         }).catch((error)=>{
-  //                 console.warn(error.response)
-  //                 setRefreshing(false);
-  //         })
-          
-      
-        
-  //   }
-
-  //   return ()=>load_vouchers()
-      
-  //   },[scannedVouchers])
 
 
   useEffect(  ()=>{
     
     const fetchData = async()=>{   
       const supplier_id =  await AsyncStorage.getItem('supplier_id');
-  
-    
-      setForm({...form,supplier_id:1})
-  
       setRefreshing(true);
-      
-      const result = await axios.post(ip_config.ip_address+'vmp-web/public/api/get-scanned-vouchers',form)
+
+      const result = await axios.post(ip_config.ip_address+'vmp-web/public/api/get-scanned-vouchers',{supplier_id: supplier_id})
       if(result.status == 200){
 
         setScannedVouchers(result.data);  
         setRefreshing(false);
+        
+        console.warn(scannedVouchers.length)
       }
       
-    };
-
-   fetchData();
-          
+    };  
+    
+    
+    fetchData();
                 
       
-    },[form.supplier_id])
+    },[])
 
 
   const searchVoucher = (value) =>{
@@ -164,23 +132,28 @@ export default function HomeScreen() {
       >
         <FlatList      
           data={scannedVouchers}   
+          ListEmptyComponent={()=>(
+            <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
+            <Card.Title title="No existing vouchers scanned."/>              
+            <Card.Content>
+                              
+            </Card.Content>
+          </Card> 
+        
+
+          )}
+
           renderItem ={({item,index})=>(
             
-            item.REFERENCE_NO != ''  ? 
+     
             <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
               <Card.Title title={item.REFERENCE_NO}   subtitle={item.CLAIMED_DATE} />              
               <Card.Content>
                     <Text>ASmople</Text>
               </Card.Content>
             </Card> 
-            : 
-            <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
-              <Card.Title title={"No existing vouchers scanned." + item.REFERENCE_NO} subtitle={item.REFERENCE_NO}/>              
-              <Card.Content>
-                                
-              </Card.Content>
-            </Card> 
-          
+       
+           
           )}        
         />
         </ScrollView>
