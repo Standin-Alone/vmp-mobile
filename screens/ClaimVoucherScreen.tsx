@@ -8,9 +8,9 @@ import { StyleSheet,
           FlatList,        
           BackHandler,
           Alert,
-          Modal,
-          AsyncStorage
+          Modal          
          } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card } from 'react-native-paper';
 import { RootStackParamList } from '../types';
 import Images from '../constants/Images';

@@ -11,6 +11,7 @@ export type RootStackParamList = {
   OTPScreen: undefined;
   QRCodeScreen: undefined;
   ClaimVoucher: undefined;
+  AuthenticationScreen:undefined;
 };
 
 export type BottomTabParamList = {

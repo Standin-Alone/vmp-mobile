@@ -30,6 +30,7 @@ export default {
       OTPScreen: 'otp_screen',
       QRCodeScreen: 'qr_code_screen',
       ClaimVoucher: 'claim_voucher_screen',
+      AuthenticationScreen: 'authentication_screen',
     },
   },
 };

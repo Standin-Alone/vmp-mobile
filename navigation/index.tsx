@@ -4,14 +4,15 @@
  *
  */
 import { NavigationContainer, DefaultTheme, DarkTheme, useNavigation } from '@react-navigation/native';
-import { createStackNavigator,CardStyleInterpolators,HeaderBackButton } from '@react-navigation/stack';
-import * as React from 'react';
-import { BackHandler, ColorSchemeName,StyleSheet, AsyncStorage, Alert  } from 'react-native';
+import { createStackNavigator,CardStyleInterpolators,HeaderBackButton, } from '@react-navigation/stack';
+import React,{useState,useEffect,createContext,useMemo,AuthContextValue} from 'react';
+import { BackHandler, ColorSchemeName,StyleSheet, AsyncStorage, Alert } from 'react-native';
 
 // screens
 import NotFoundScreen from '../screens/NotFoundScreen';
 import LoginScreen from '../screens/LoginScreen';
-import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+
+import AuthenticationScreen from '../screens/AuthenticationScreen';
 import OTPScreen from '../screens/OTPScreen';
 import ClaimVoucherScreen from '../screens/ClaimVoucherScreen';
 
@@ -22,16 +23,22 @@ import DrawerTabNavigator from './DrawerTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
 import {View,Text} from 'react-native';
 import {Button,Block} from "galio-framework";
+
+
+
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
 
 
+
+
+
   return (
-    
       <NavigationContainer
         linking={LinkingConfiguration}
         theme={DefaultTheme}>
-        <RootNavigator  />      
+        <RootNavigator/>      
       </NavigationContainer>
+
     
 
   );
@@ -81,12 +88,12 @@ function RootNavigator() {
   
   return (
 
-    <Stack.Navigator screenOptions={{ headerShown: false , cardStyleInterpolator:CardStyleInterpolators.forHorizontalIOS}}  initialRouteName="Login" mode="modal" >
+    <Stack.Navigator screenOptions={{ headerShown: false , cardStyleInterpolator:CardStyleInterpolators.forHorizontalIOS}}  initialRouteName="AuthenticationScreen" mode="modal" >
       <Stack.Screen name="Root" component={BottomTabNavigator}    />      
-      <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
-      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ title: 'Forgot Password' }} />
+      <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login',cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid}} />      
       <Stack.Screen name="OTPScreen" component={OTPScreen} options={{ title: 'OTP Screen' }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />      
+      <Stack.Screen name="AuthenticationScreen" component={AuthenticationScreen} options={{ title: 'AuthenticationScreen' }} />      
       <Stack.Screen name="ClaimVoucher" component={ClaimVoucherScreen}
       options={{ 
         title: 'Claim Voucher',

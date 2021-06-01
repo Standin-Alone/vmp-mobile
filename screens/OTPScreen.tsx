@@ -4,10 +4,10 @@ import { StyleSheet,
                   
           View, 
           Image,           
-          KeyboardAvoidingView,                  
-          AsyncStorage
+          KeyboardAvoidingView               
+          
          } from 'react-native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList } from '../types';
 import Images from '../constants/Images';
 import Colors from '../constants/Colors';
@@ -32,8 +32,9 @@ const form = {
 
 
 
-export default function OTPScreen({navigation,} : StackScreenProps <RootStackParamList, 'Login'>) {
+export default function OTPScreen({navigation,route} : StackScreenProps <RootStackParamList, 'Login'>) {
 
+  const params:any = route.params;
   const [is_loading,setLoading]  = useState(false);
   const [is_error,setError]  = useState(false);
   const [code,setCode]  = useState('');
@@ -80,9 +81,12 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
   
   const verifyOTP = async ()=>{
     const get_otp = await AsyncStorage.getItem('otp_code');    
+      
+    
     setLoading(true);
     setError(false);
     if(code == get_otp){
+      AsyncStorage.setItem('supplier_id',params.supplier_id.toLocaleString());
       navigation.replace('Root');
       setLoading(false);
     }else{      
@@ -125,7 +129,7 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
   return (
       <View style={styles.container}>
         <ProgressDialog message="Resending otp to your email..." visible={isShow}/>
-        <View style={styles.second_container}>
+        
           <KeyboardAvoidingView style={{flex:1}}>
           <Block>          
               <Image source={Images.DA_Logo} style={styles.logo}/>                
@@ -169,8 +173,10 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
           <Block> 
            
                 <Button
-                  round uppercase color="#66BB6A" style={styles.button}                
+                  round
+                   uppercase color="#66BB6A" style={styles.button}                
                   onPress={verifyOTP} loading={is_loading}>
+                  
                   Verify Pin
                  </Button>
                  <Text style={styles.otp_desc} h5>Didn't receive your One Time Pin?
@@ -183,7 +189,7 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
             </Block>
 
             </KeyboardAvoidingView>
-        </View>
+        
       </View>
  
     
@@ -193,7 +199,7 @@ export default function OTPScreen({navigation,} : StackScreenProps <RootStackPar
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.base,    
+    backgroundColor: Colors.backgroundMuted,    
     
   },
   second_container: {
@@ -215,9 +221,11 @@ const styles = StyleSheet.create({
         height:150,
         borderRadius:40,        
         left:MyWindow.Width / 2 - 75,
-        top:MyWindow.Height / 2 - 465 ,
+        top:MyWindow.Height / 2 - 565 ,
         resizeMode:'center', 
-        alignItems: 'center'     
+        alignItems: 'center',
+        marginVertical:MyWindow.Height - 500,
+        marginBottom:MyWindow.Height - 900    
       },
   title: {
     fontSize: 20,
@@ -232,7 +240,7 @@ const styles = StyleSheet.create({
   },  
   button:{
     height: 50,
-    width:MyWindow.Width - 50,
+    width:MyWindow.Width - 30,
     position:'relative'
   }
   ,
@@ -241,7 +249,9 @@ const styles = StyleSheet.create({
   root: {flex: 1, padding: 20},  
   codeFieldRoot: {marginTop: 50,marginBottom:50},
   cell: {
-    width: 60,
+    width: 60,    
+    marginLeft:10,
+    marginRight:20,
     height: 60,
     lineHeight: 58,
     fontSize: 28,

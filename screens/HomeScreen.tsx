@@ -1,7 +1,7 @@
 import React,{useEffect, useState,useRef} from 'react';
-import { StyleSheet, FlatList, Alert, AsyncStorage,BackHandler,RefreshControl} from 'react-native';
+import { StyleSheet, FlatList, Alert,BackHandler,RefreshControl} from 'react-native';
 
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Text, View } from '../components/Themed';
 import * as ipconfig from '../ip_config';
 import axios from 'axios';

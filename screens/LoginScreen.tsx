@@ -5,11 +5,11 @@ import { StyleSheet,
           View, 
           Image,           
           KeyboardAvoidingView, 
-          AsyncStorage,
+      
           Alert
           
          } from 'react-native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList } from '../types';
 import Images from '../constants/Images';
 import Colors from '../constants/Colors';
@@ -76,12 +76,11 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
           .then((response)=>{                        
                 
                 if(response.data[0]['Message'] == 'true'){
-                  console.warn(response.data[0]['OTP']);
-                  console.warn(response.data[0]['SUPPLIER_ID'].toLocaleString())
-                  navigation.replace('OTPScreen');     
+                  
+                  let get_supplier_id = response.data[0]['SUPPLIER_ID'];
                   AsyncStorage.setItem('otp_code',response.data[0]['OTP'].toLocaleString());
                   AsyncStorage.setItem('email',response.data[0]['EMAIL'].toLocaleString());
-                  AsyncStorage.setItem('supplier_id',response.data[0]['SUPPLIER_ID'].toLocaleString());
+                  navigation.replace('OTPScreen',{supplier_id:get_supplier_id});     
                   
                   
                   setLoading(false);
@@ -116,10 +115,10 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
 
   return (
       <View style={styles.container}>
-        <View style={styles.second_container}>
+        
 
           <KeyboardAvoidingView style={{flex:1}}>
-          <Block  >          
+          <Block >          
               <Image source={Images.DA_Logo} style={styles.logo}/>                
           </Block>
           
@@ -188,7 +187,8 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                   icon="login" 
                   iconFamily="FontAwesome" 
                   iconSize={20}
-                  round uppercase color="#66BB6A" style={styles.button}                
+                  round
+                    color="#66BB6A" style={styles.button}                
                   onPress={signIn} loading={is_loading}>
                   Sign In
                  </Button>
@@ -202,20 +202,20 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                  <Button
                   icon="fingerprint" 
                   iconFamily="FontAwesome" 
-                  iconSize={20}
-                  round 
-                  uppercase 
+                  iconSize={20}                  
+                   
+                  round
                   color={Colors.info} 
                   style={styles.fp_button}                                  
                   onPress={scanbiometrics} loading={is_biometrics_loading}
                   
                   >
-                  Use Finger print
+                  Use Fingerprint
                  </Button>
             </Block>
             
             </KeyboardAvoidingView>
-        </View>
+        
       </View>
  
     
@@ -225,7 +225,9 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.base,    
+    backgroundColor: '#F5F5F5',    
+    alignSelf:'center',
+    justifyContent:'center'
     
   },
   second_container: {
@@ -248,9 +250,13 @@ const styles = StyleSheet.create({
         height:150,
         borderRadius:40,        
         left:MyWindow.Width / 2 - 100,
-        top:MyWindow.Height / 2 - 465 ,
+        top:MyWindow.Height / 2 - 565 ,
         resizeMode:'center', 
-        alignItems: 'center'     
+        alignItems: 'center',
+        marginVertical:MyWindow.Height - 500,
+        marginBottom:MyWindow.Height - 900
+        
+        
       },
   title: {
     fontSize: 20,

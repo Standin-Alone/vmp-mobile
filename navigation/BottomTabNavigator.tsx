@@ -9,7 +9,8 @@ import { createStackNavigator, } from '@react-navigation/stack';
 import {useNavigation,useNavigationState} from '@react-navigation/native';
 import React,{useState,useEffect,} from 'react';
 
-import {StyleSheet, Alert, AsyncStorage,BackHandler} from 'react-native';
+import {StyleSheet, Alert,BackHandler} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import HomeScreen from '../screens/HomeScreen';
@@ -31,6 +32,7 @@ export default function BottomTabNavigator() {
   const navigation_state = useNavigationState((state) => state.routes[state.index].name);
   useEffect(() => {
     if(navigation_state == 'QRCodeScreen' || navigation_state == 'HomeScreen' ){
+      console.warn(navigation_state);
     const backAction = ()=>{
       Alert.alert("Message","Do you really want to logout?",[
         {
@@ -40,7 +42,7 @@ export default function BottomTabNavigator() {
           text:"Yes",
           onPress:()=>
           {
-            AsyncStorage.clear();
+            AsyncStorage.clear();            
             navigation.reset({routes: [{ name: 'Login' }]});
             
           }
@@ -51,9 +53,9 @@ export default function BottomTabNavigator() {
       return true;
     }
     const backHandler = BackHandler.addEventListener("hardwareBackPress",backAction);
-    return ()=>{
-      backHandler
-    }
+
+    backHandler
+ 
   }
   }, [])
   return (
@@ -128,8 +130,8 @@ function TabOneNavigator() {
           [            
             {text:"No"},
             {text:"Yes",onPress:()=>{ 
-              AsyncStorage.clear()
-              navigation.navigate.replace('Login')
+              AsyncStorage.removeItem('supplier_id')
+              navigation.replace('AuthenticationScreen')
             
             }}
           ])}
