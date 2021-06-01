@@ -19,6 +19,7 @@ const qrSize = width * 0.7;
 export default function QRCodeScreen() {
 
   var form = {};
+  const sample = this;
   const navigation = useNavigation();
   const navigation_state = useNavigationState((state) => state.routes[state.index].name);
 
@@ -31,15 +32,15 @@ export default function QRCodeScreen() {
 
   useEffect(() => {
     (async () => {
-
       
-      console.warn(navigation_state)
-      if(navigation.isFocused()){
-        setScanned(false)
-        
-      }else{
-        setScanned(true)
-      }
+      navigation.addListener('focus',()=>{        
+        if(navigation.isFocused()){
+          setScanned(false)          
+        }
+      })
+      
+      
+      
       
       if(navigation_state != 'QRCodeScreen'){
         setScanned(true);
@@ -80,8 +81,7 @@ export default function QRCodeScreen() {
             // setScanned(false);
             // setIsShow(false);
             // Test Available Balance
-            if(response.data[0]['data'].Available_Balance != 0){
-              setScanned(false);
+            if(response.data[0]['data'].Available_Balance != 0){              
               setIsShow(false);
               navigation.navigate('ClaimVoucher',response.data[0]['data']);        
               
@@ -115,6 +115,8 @@ export default function QRCodeScreen() {
     
       <View style={styles.container}>
         <ProgressDialog message="Scanning QR code..."  visible={isShow}/>
+      
+
       
       <BarCodeScanner
         onBarCodeScanned={scanned ? undefined : handleQRCodeScanned}
