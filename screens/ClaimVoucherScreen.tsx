@@ -8,7 +8,8 @@ import { StyleSheet,
           FlatList,        
           BackHandler,
           Alert,
-          Modal          
+          Modal,
+          TouchableOpacity      
          } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card } from 'react-native-paper';
@@ -16,7 +17,7 @@ import { RootStackParamList } from '../types';
 import Images from '../constants/Images';
 import Colors from '../constants/Colors';
 import MyWindow from '../constants/Layout';
-import { Input, Block, Button ,Text} from "galio-framework";
+import { Input, Block, Button ,Text,Icon} from "galio-framework";
 import {Footer,Body, Item} from 'native-base';
 import axios from 'axios';
 import * as ip_config from '../ip_config';
@@ -248,6 +249,9 @@ const showImage = (uri:any)=>{
                 >
                 Take a photo
           </Button>
+
+
+
 
           <View style={styles.divider}/>
         <Body>
@@ -906,7 +910,8 @@ if(currentPage == 2){
   var checkFarmerWithCommodity = images.some(item => item.typeOfDocument == 1 );  
   var checkValidID = images.some(item => item.typeOfDocument == 2);  
   
-  const supplier_id = await AsyncStorage.getItem('SUPPLIER_ID');
+  const supplier_id = await AsyncStorage.getItem('supplier_id');
+  console.log(supplier_id);
   fd.append('reference_num',params[0].REFERENCE_NO)
   fd.append('supplier_id',supplier_id)
 
@@ -914,8 +919,9 @@ if(currentPage == 2){
 
   //form append commodities
   cardValues.map((item:any)=>{      
-    
-    fd.append('commodities[]',JSON.stringify({commodity:item.Commodity, unit:item.Unit, quantity:item.Quantity, amount:item.Amount, total_amount:item.Total_Amount}));
+    if(item.Commodity != ''){  
+         fd.append('commodities[]',JSON.stringify({commodity:item.Commodity, unit:item.Unit, quantity:item.Quantity, amount:item.Amount, total_amount:item.Total_Amount}));
+    }
   })
 
 
@@ -942,6 +948,7 @@ if(currentPage == 2){
           if(message == 'true'){
             setShowProgSubmit(false);
             alert('Succesfull! Claiming voucher redeemed.')
+            navigation.replace('QRCodeScreen');
           }else{
             alert('Error!Something went wrong.')
             console.warn(response);

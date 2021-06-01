@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
         top:MyWindow.Height / 2 - 565 ,
         resizeMode:'center', 
         alignItems: 'center',
-        marginVertical:MyWindow.Height - 500,
+        marginVertical:MyWindow.Height / 100 * 25,
         marginBottom:MyWindow.Height - 900
         
         
