@@ -1,6 +1,7 @@
 import React , {useState, useEffect}from 'react';
 import { StyleSheet,Button,Image,Dimensions,Alert,BackHandler,AsyncStorage } from 'react-native';
-import {useNavigation, useNavigationState} from '@react-navigation/native';
+import {useNavigation, useNavigationState,useIsFocused} from '@react-navigation/native';
+
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { BarCodeScanner } from 'expo-barcode-scanner';
@@ -25,10 +26,21 @@ export default function QRCodeScreen() {
   const [scanned,setScanned] = useState(false);
   const [isShow,setIsShow] = useState(false);
   
+  const isFocused = useIsFocused();
 
 
   useEffect(() => {
     (async () => {
+
+      
+      console.warn(navigation_state)
+      if(navigation.isFocused()){
+        setScanned(false)
+        
+      }else{
+        setScanned(true)
+      }
+      
       if(navigation_state != 'QRCodeScreen'){
         setScanned(true);
       }else{
@@ -38,7 +50,7 @@ export default function QRCodeScreen() {
       setHasPermission( status === 'granted');    
               
     })();
-  }, [])
+  }, [navigation_state])
 
 
   if(hasPermission == null){

@@ -30,6 +30,7 @@ import {ProgressDialog} from 'react-native-simple-dialogs';
 import { Dialog } from 'react-native-simple-dialogs';
 import NetInfo from '@react-native-community/netinfo';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import CurrencyInput from 'react-native-currency-input';
 import Swiper from 'react-native-swiper';
 import { setStatusBarNetworkActivityIndicatorVisible } from 'expo-status-bar';
 const labels = ["Claimer Profile", "Add Commodity","Import Document"]
@@ -490,7 +491,7 @@ const showImage = (uri:any)=>{
                 <Block center>
                   <Text style={styles.title}>Add Commodity</Text>
                 </Block>
-                
+              <View style={styles.commodity_panel}  >
                 <Block  >
                   <Text style={styles.commodity}>Select an Commodity</Text>
                   <Picker
@@ -549,7 +550,7 @@ const showImage = (uri:any)=>{
                   value={cardInfo.Amount.toLocaleString()}                                  
                   />
                 </Block>
-
+                   
                 <Block>
                   <Text style={styles.title,{color:'red'}} h4>Total Amount :  ₱{cardInfo.Total_Amount}</Text>
                 </Block>
@@ -561,7 +562,7 @@ const showImage = (uri:any)=>{
                     iconSize={20}
                     round uppercase 
                     color={Colors.base} 
-                    style={styles.add_button}                
+                    style={styles.panel_save_button}                
                     loading={is_loading}      
                     onPress={saveCommodity}              
                     >
@@ -582,7 +583,7 @@ const showImage = (uri:any)=>{
                       Close
                   </Button>  
                 </Block> 
-
+              </View > 
               </Block>
             </DraggablePanel>
 
@@ -596,7 +597,7 @@ const showImage = (uri:any)=>{
              <DraggablePanel visible={isShowEditPanel} onDismiss={()=>{setEditShowPanel(false)}} initialHeight={600}  >
               <Block   
                 width={MyWindow.Width } 
-                style={{ marginVertical: 20,zIndex:1}}
+                style={{ marginVertical: 10,zIndex:1}}
                 space="between"                        
                 >   
                 <Block center>
@@ -606,7 +607,7 @@ const showImage = (uri:any)=>{
                       defaultValue={form.id}
                   />
                 </Block>
-                
+              <View style={styles.commodity_panel}>
                 <Block  >
                   <Text style={styles.commodity}>Select an Commodity</Text>
                   <Picker
@@ -655,6 +656,7 @@ const showImage = (uri:any)=>{
                                 }}
                   value={form.quantity_txt}
                   />
+
                 </Block>
                 
 
@@ -673,6 +675,8 @@ const showImage = (uri:any)=>{
                   value={form.amount_txt}
                   />
 
+
+
                 </Block>
                 <Block>
                   <Text style={styles.title,{color:'red'}} h4>Total Amount :  ₱{form.total_amount_txt}</Text>
@@ -685,7 +689,7 @@ const showImage = (uri:any)=>{
                     iconSize={20}
                     round uppercase 
                     color={Colors.base} 
-                    style={styles.add_button}                
+                    style={styles.panel_save_button}                
                     loading={is_loading}      
 
                     onPress={()=>updateCommodity(form.id)}
@@ -707,7 +711,7 @@ const showImage = (uri:any)=>{
                       Close
                   </Button>      
                 </Block> 
-
+              </View>
               </Block>
             </DraggablePanel>
       </Block>
@@ -862,6 +866,103 @@ const showImage = (uri:any)=>{
   }
 
 
+// FINAL SUBMIT VOUCHER
+const submit_voucher = async ()=>{
+  
+// validate current balance
+var checkTotalAmount = 0;
+var currentBalance = params[0].Available_Balance;
+var computeBalance = 0;
+//  ADD COMMODITY NEXT BUTTON
+if(currentPage == 1){
+  var checkCommodity = cardValues.some(item => item.Commodity != '')
+  // Calculate total amount
+  cardValues.map((item:any)=>{      
+    
+    
+    checkTotalAmount =  checkTotalAmount + item.Total_Amount
+  })
+  
+  computeBalance = currentBalance - checkTotalAmount;
+  
+   if(checkCommodity == false){
+    Alert.alert('Message',"Please add commodities.")
+  }else if(computeBalance >= 0 && checkCommodity == true){      
+      setCurrentPage(currentPage + 1);      
+      viewPager.setPage(currentPage + 1)      
+  }
+  else{
+    Alert.alert('Message',"The total amount of commodities exceed in your current balance.")      
+  }
+}
+
+
+//  IMPORT DOCUMENT SUBMIT BUTTON
+if(currentPage == 2){
+
+  var fd = new FormData();
+  setShowProgSubmit(true);
+
+  var checkFarmerWithCommodity = images.some(item => item.typeOfDocument == 1 );  
+  var checkValidID = images.some(item => item.typeOfDocument == 2);  
+  
+  const supplier_id = await AsyncStorage.getItem('SUPPLIER_ID');
+  fd.append('reference_num',params[0].REFERENCE_NO)
+  fd.append('supplier_id',supplier_id)
+
+
+
+  //form append commodities
+  cardValues.map((item:any)=>{      
+    
+    fd.append('commodities[]',JSON.stringify({commodity:item.Commodity, unit:item.Unit, quantity:item.Quantity, amount:item.Amount, total_amount:item.Total_Amount}));
+  })
+
+
+  
+  // form append images 
+  images.map((item,index)=>{  
+
+    fd.append('image'+index,'data:image/jpeg;base64,'+item.uri);      
+    fd.append('type'+index,'image/jpeg');      
+    fd.append('document_type'+index,item.typeOfDocument);                        
+  })
+
+  
+
+
+  fd.append('images_count',images.length.toLocaleString());   
+  
+  NetInfo.fetch().then((response:any)=>{ 
+    if(response.isConnected){ 
+      if(checkFarmerWithCommodity && checkValidID){
+        axios.post(ip_config.ip_address+'vmp-web/public/api/submit-voucher',fd,{headers:{'content-type':'multipart/form-data',accept:'application/json'}})
+        .then((response)=>{                        
+          let message = response.data[0]['Message']; 
+          if(message == 'true'){
+            setShowProgSubmit(false);
+            alert('Succesfull! Claiming voucher redeemed.')
+          }else{
+            alert('Error!Something went wrong.')
+            console.warn(response);
+            setShowProgSubmit(false);
+          }
+                        
+        }).catch((error)=>{            
+          console.warn(error.response)
+        })
+      }else{
+        setShowProgSubmit(false);
+        Alert.alert("Message","Please add pictures of valid ID and picture of farmer with commodity. ")
+
+      }
+    }else{
+      setShowProgSubmit(false);
+      alert('No internet Connection');
+    }
+  })  
+}
+}
 
 // STEP FORM BUTTON 
 
@@ -875,99 +976,8 @@ const goToNextPage = async () => {
     }
   }
      
-// validate current balance
-  var checkTotalAmount = 0;
-  var currentBalance = params[0].Available_Balance;
-  var computeBalance = 0;
-  //  ADD COMMODITY NEXT BUTTON
-  if(currentPage == 1){
-    var checkCommodity = cardValues.some(item => item.Commodity != '')
-    // Calculate total amount
-    cardValues.map((item:any)=>{      
-      
-      
-      checkTotalAmount =  checkTotalAmount + item.Total_Amount
-    })
-    
-    computeBalance = currentBalance - checkTotalAmount;
-    
-     if(checkCommodity == false){
-      Alert.alert('Message',"Please add commodities.")
-    }else if(computeBalance >= 0 && checkCommodity == true){      
-        setCurrentPage(currentPage + 1);      
-        viewPager.setPage(currentPage + 1)      
-    }
-    else{
-      Alert.alert('Message',"The total amount of commodities exceed in your current balance.")      
-    }
-  }
-
-
-  //  IMPORT DOCUMENT SUBMIT BUTTON
-  if(currentPage == 2){
-
-    var fd = new FormData();
-    setShowProgSubmit(true);
-
-    var checkFarmerWithCommodity = images.some(item => item.typeOfDocument == 1 );  
-    var checkValidID = images.some(item => item.typeOfDocument == 2);  
-    
-    const supplier_id = await AsyncStorage.getItem('SUPPLIER_ID');
-    fd.append('reference_num',params[0].REFERENCE_NO)
-    fd.append('supplier_id',supplier_id)
-
-
-
-    //form append commodities
-    cardValues.map((item:any)=>{      
-      
-      fd.append('commodities[]',JSON.stringify({commodity:item.Commodity, unit:item.Unit, quantity:item.Quantity, amount:item.Amount, total_amount:item.Total_Amount}));
-    })
-
-
-    
-    // form append images 
-    images.map((item,index)=>{  
-
-      fd.append('image'+index,'data:image/jpeg;base64,'+item.uri);      
-      fd.append('type'+index,'image/jpeg');      
-      fd.append('document_type'+index,item.typeOfDocument);                        
-    })
-
-    
-
-
-    fd.append('images_count',images.length.toLocaleString());   
-    
-    NetInfo.fetch().then((response:any)=>{ 
-      if(response.isConnected){ 
-        if(checkFarmerWithCommodity && checkValidID){
-          axios.post(ip_config.ip_address+'vmp-web/public/api/submit-voucher',fd,{headers:{'content-type':'multipart/form-data',accept:'application/json'}})
-          .then((response)=>{                        
-            let message = response.data[0]['Message']; 
-            if(message == 'true'){
-              setShowProgSubmit(false);
-              alert('Succesfull! Claiming voucher redeemed.')
-            }else{
-              alert('Error!Something went wrong.')
-              console.warn(response);
-              setShowProgSubmit(false);
-            }
-                          
-          }).catch((error)=>{            
-            console.warn(error.response)
-          })
-        }else{
-          setShowProgSubmit(false);
-          Alert.alert("Message","Please add pictures of valid ID and picture of farmer with commodity. ")
-
-        }
-      }else{
-        setShowProgSubmit(false);
-        alert('No internet Connection');
-      }
-    })  
-  }
+  submit_voucher()
+  
 
   }
 
@@ -1100,27 +1110,14 @@ const styles = StyleSheet.create({
     height: 50,
     width:MyWindow.Width -20,    
   },   
+  panel_save_button:{
+    height: 50,
+    width:MyWindow.Width - 55,    
+  },
   close_button:{    
     height: 50,
-    width:MyWindow.Width -20,   
+    width:MyWindow.Width -55,   
    
-  },
-
-  otp:{textAlign: 'center', fontSize: 25},
-  otp_desc:{textAlign: 'center', fontSize: 18},
-  root: {flex: 1, padding: 20},  
-  codeFieldRoot: {marginTop: 20},
-  cell: {
-    width: 60,
-    height: 60,
-    lineHeight: 58,
-    fontSize: 28,
-    borderWidth: 2,
-    borderColor: '#00000030',
-    textAlign: 'center',
-  },
-  focusCell: {
-    borderColor: '#000',
   },
   input: {    
     borderColor: Colors.border,
@@ -1152,6 +1149,10 @@ const styles = StyleSheet.create({
     marginVertical:10,
     color:Colors.muted
   },
+  commodity_panel:{
+    marginLeft:MyWindow.Width - 370,
+    marginRight:MyWindow.Width - 370,
+  },
   card:{flex:1,
     borderRadius:5, 
     width:MyWindow.Width - 20, 
@@ -1173,8 +1174,7 @@ const styles = StyleSheet.create({
   },
   modal_cancel_button:{
     marginRight:-20,
-    width:100
-           
+    width:100           
   }
 
 });
