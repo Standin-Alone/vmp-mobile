@@ -217,15 +217,15 @@ const styles = StyleSheet.create({
     marginTop:200    
   },
   logo:{
-        width:150,
-        height:150,
-        borderRadius:40,        
-        left:MyWindow.Width / 2 - 75,
-        top:MyWindow.Height / 2 - 565 ,
-        resizeMode:'center', 
-        alignItems: 'center',
-        marginVertical:MyWindow.Height - 500,
-        marginBottom:MyWindow.Height - 900    
+      width:150,
+      height:150,
+      borderRadius:40,        
+      left:MyWindow.Width / 100 * 30,
+      top:MyWindow.Height / 100 * -10,
+      resizeMode:'center', 
+      alignItems: 'center',
+      marginVertical:MyWindow.Height / 100 * 25,
+      marginBottom:MyWindow.Height / 100 
       },
   title: {
     fontSize: 20,

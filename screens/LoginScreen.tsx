@@ -250,11 +250,11 @@ const styles = StyleSheet.create({
         height:150,
         borderRadius:40,        
         left:MyWindow.Width / 2 - 100,
-        top:MyWindow.Height / 2 - 565 ,
+        top:MyWindow.Height / 100 * -10,
         resizeMode:'center', 
         alignItems: 'center',
         marginVertical:MyWindow.Height / 100 * 25,
-        marginBottom:MyWindow.Height - 900
+        marginBottom:MyWindow.Height / 100 
         
         
       },

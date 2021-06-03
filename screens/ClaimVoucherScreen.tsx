@@ -945,9 +945,11 @@ if(currentPage == 2){
         axios.post(ip_config.ip_address+'vmp-web/public/api/submit-voucher',fd,{headers:{'content-type':'multipart/form-data',accept:'application/json'}})
         .then((response)=>{                        
           let message = response.data[0]['Message']; 
+          
           if(message == 'true'){
             setShowProgSubmit(false);
-            alert('Succesfull! Claiming voucher redeemed.')
+            Alert.alert('Message','Successful! Voucher redeemed.')
+            
             navigation.replace('QRCodeScreen');
           }else{
             alert('Error!Something went wrong.')
@@ -956,6 +958,7 @@ if(currentPage == 2){
           }
                         
         }).catch((error)=>{            
+          setShowProgSubmit(false);
           console.warn(error.response)
         })
       }else{
