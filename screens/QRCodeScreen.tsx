@@ -36,6 +36,8 @@ export default function QRCodeScreen() {
       navigation.addListener('focus',()=>{        
         if(navigation.isFocused()){
           setScanned(false)          
+        }else{
+          setScanned(true)   
         }
       })
       
@@ -117,8 +119,7 @@ export default function QRCodeScreen() {
         <ProgressDialog message="Scanning QR code..."  visible={isShow}/>
       
 
-      
-      <BarCodeScanner
+      { scanned == false ?     <BarCodeScanner
         onBarCodeScanned={scanned ? undefined : handleQRCodeScanned}
         style={[StyleSheet.absoluteFillObject,styles.container]}     
   
@@ -129,6 +130,9 @@ export default function QRCodeScreen() {
           source={Images.qr_frame}
         />
       </BarCodeScanner>
+      : <Text> No Access camera</Text>      
+      }
+  
 
       </View>
     

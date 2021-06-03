@@ -950,7 +950,7 @@ if(currentPage == 2){
             setShowProgSubmit(false);
             Alert.alert('Message','Successful! Voucher redeemed.')
             
-            navigation.replace('QRCodeScreen');
+            navigation.goBack();
           }else{
             alert('Error!Something went wrong.')
             console.warn(response);
