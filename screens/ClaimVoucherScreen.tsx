@@ -120,6 +120,35 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
         alert('Permission to access location was denied')
       }
 
+
+      navigation.addListener('transitionEnd',()=>{
+        if(navigation.isFocused()){
+          const backAction = ()=>{
+            Alert.alert("Message","Do you really want to discard your transaction?",[
+              {
+                text:"No"
+              },
+              {
+                text:"Yes",
+                onPress:()=>
+                {                       
+                  navigation.reset({routes: [{ name: 'QRCodeScreen' }]});
+                  
+                }
+              }
+      
+            ]
+            )
+            return true;
+          }
+          const backHandler = BackHandler.addEventListener("hardwareBackPress",backAction);
+      
+          return () => backHandler.remove();
+       
+
+        }
+
+      })
     })();   
   },)
 
@@ -178,11 +207,13 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 
 // Take Photo Button
 const openCamera = async ()=>{
+  let location = await Location.getCurrentPositionAsync({});
 
+  
   ImagePicker.launchCameraAsync({mediaTypes:ImagePicker.MediaTypeOptions.Images,base64:true,quality:1}).then(async (response)=>{    
     if(response.cancelled != true){
 
-     setImages([...images,{uri:response.base64,typeOfDocument:''}]);    
+     setImages([...images,{uri:response.base64,latitude:location.latitude,longitude:location.longitude,typeOfDocument:''}]);    
      setShowModal(true);          
     }
   })
@@ -985,9 +1016,7 @@ const goToNextPage = async () => {
   }
 
   
-  let location = await Location.getCurrentPositionAsync({});
-
-  console.log(location);
+  
      
   submit_voucher()
   

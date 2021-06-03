@@ -31,8 +31,11 @@ export default function BottomTabNavigator() {
   const navigation = useNavigation();
   const navigation_state = useNavigationState((state) => state.routes[state.index].name);
   useEffect(() => {
-    if(navigation_state == 'QRCodeScreen' || navigation_state == 'HomeScreen' ){
-      console.warn(navigation_state);
+    navigation.addListener('focus',()=>{
+
+      
+    if(navigation.isFocused()){
+      
     const backAction = ()=>{
       Alert.alert("Message","Do you really want to logout?",[
         {
@@ -54,9 +57,13 @@ export default function BottomTabNavigator() {
     }
     const backHandler = BackHandler.addEventListener("hardwareBackPress",backAction);
 
-    backHandler
+    return () => backHandler.remove();
  
-  }
+      }
+
+    })
+
+    
   }, [])
   return (
     <BottomTab.Navigator
@@ -152,7 +159,26 @@ function TabTwoNavigator() {
       <TabTwoStack.Screen
         name="QRCodeScreen"
         component={QRCodeScreen}
-        options={{ headerTitle: 'Scan Voucher' }}
+        options={({navigation})=>({ 
+          headerTitle: 'Scan Voucher' ,          
+          headerRight:props=>{return(<Icon
+          name="logout" family="FontAwesome" 
+          color={Colors.base} 
+          size={50}       
+          style={styles.button}
+          onPress={()=>Alert.alert("Message","Do you really want to logout?",
+          [            
+            {text:"No"},
+            {text:"Yes",onPress:()=>{ 
+              AsyncStorage.removeItem('supplier_id')
+              navigation.replace('AuthenticationScreen')
+            
+            }}
+          ])}
+          
+          />) }
+      
+      })}
       />
     </TabTwoStack.Navigator>
   );

@@ -19,7 +19,6 @@ const qrSize = width * 0.7;
 export default function QRCodeScreen() {
 
   var form = {};
-  const sample = this;
   const navigation = useNavigation();
   const navigation_state = useNavigationState((state) => state.routes[state.index].name);
 
