@@ -33,6 +33,7 @@ import NetInfo from '@react-native-community/netinfo';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import CurrencyInput from 'react-native-currency-input';
 import Swiper from 'react-native-swiper';
+import * as Location from 'expo-location';
 import { setStatusBarNetworkActivityIndicatorVisible } from 'expo-status-bar';
 const labels = ["Claimer Profile", "Add Commodity","Import Document"]
 
@@ -84,7 +85,7 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
 
   const [imageURI,setImageURI] = useState('');
 
-  const [typeOfDocument,setTypeofDocument] = useState('');
+  const [typeOfDocument,setTypeofDocument] = useState(null);
   
   const [isDeleteDialog,setDeleteDialog] = useState(false) // Delete Dialog Boolean (Commodity)
   
@@ -104,32 +105,28 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   var [isShowEditPanel,setEditShowPanel]  = useState(false);  // Show Edit Commodity Form Panel
   var [currentPage,setCurrentPage]  = useState(1);   // index of current page
   
-  
+  const [location, setLocation] = useState(null);
   
   // Set Permission of Camera
   useEffect(() => {
-    async () => {      
+    (async () => {      
+      const status_loc = await Location.requestBackgroundPermissionsAsync()
       const {status} = await ImagePicker.requestCameraPermissionsAsync();
       if(status !== 'granted'){
         alert('Sorry, we need camera permission to make this work.')
       }
-    };   
+
+      if(status_loc.status !== 'granted'){
+        alert('Permission to access location was denied')
+      }
+
+    })();   
   },)
 
 
-  const claimVoucher = async ()=>{
-    setLoading(true);
 
-    axios.post(ip_config.ip_address+'vmp-web/public/api/claim_voucher',form)
-    .then((response)=>{
-        console.warn(response.data);
-        navigation.replace('Root')
-        setLoading(false);
-    }).catch((error)=>{
-    console.warn(error.response.data);
-    setLoading(false);
-    })  
-  }
+
+
 
   var renderViewPage = (data:any) =>{
     return data;
@@ -222,9 +219,8 @@ const selectTypeOfDocument = () =>{
   setShowModal(false);
   
   let imagesState = [...images]; 
-  imagesState[images.length -1 ].typeOfDocument = typeOfDocument; 
+  imagesState[images.length -1 ].typeOfDocument = typeOfDocument == null ? 1 : typeOfDocument; 
   setImages(imagesState);
-
 }
 
 // show image
@@ -263,7 +259,7 @@ const showImage = (uri:any)=>{
         <Block >
         <Picker       
             onValueChange={(value)=>setTypeofDocument(value)}
-            selectedValue={typeOfDocument == '' ? '1' : typeOfDocument}   
+            selectedValue={typeOfDocument}   
           >
             <Picker.Item label="Farmer with commodity" value="1" />
             <Picker.Item label="Valid ID with signature" value="2" />
@@ -877,6 +873,8 @@ const submit_voucher = async ()=>{
 var checkTotalAmount = 0;
 var currentBalance = params[0].Available_Balance;
 var computeBalance = 0;
+
+
 //  ADD COMMODITY NEXT BUTTON
 if(currentPage == 1){
   var checkCommodity = cardValues.some(item => item.Commodity != '')
@@ -985,6 +983,11 @@ const goToNextPage = async () => {
       viewPager.setPage(currentPage + 1)
     }
   }
+
+  
+  let location = await Location.getCurrentPositionAsync({});
+
+  console.log(location);
      
   submit_voucher()
   
