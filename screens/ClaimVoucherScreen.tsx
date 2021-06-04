@@ -110,16 +110,17 @@ export default function ClaimVoucherScreen({navigation,route} : StackScreenProps
   // Set Permission of Camera
   useEffect(() => {
     (async () => {      
-      const status_loc = await Location.requestBackgroundPermissionsAsync()
+      const status_foreground = await Location.requestForegroundPermissionsAsync();      
       const {status} = await ImagePicker.requestCameraPermissionsAsync();
       if(status !== 'granted'){
         alert('Sorry, we need camera permission to make this work.')
       }
 
-      if(status_loc.status !== 'granted'){
+      if(status_foreground.status !== 'granted'){
         alert('Permission to access location was denied')
-      }
+      } 
 
+     
 
       navigation.addListener('transitionEnd',()=>{
         if(navigation.isFocused()){

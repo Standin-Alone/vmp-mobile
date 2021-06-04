@@ -82,10 +82,10 @@ export default function QRCodeScreen() {
             // setScanned(false);
             // setIsShow(false);
             // Test Available Balance
-            if(response.data[0]['data'].Available_Balance != 0){              
+            
+            if(response.data[0]['data'].Available_Balance != undefined ){              
               setIsShow(false);
-              navigation.navigate('ClaimVoucher',response.data[0]['data']);        
-              
+              navigation.navigate('ClaimVoucher',response.data[0]['data']);                      
             }else{
               alert('Not Enough Balance.')
               setScanned(false);
