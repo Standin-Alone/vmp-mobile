@@ -8536,6 +8536,11 @@ react-native-linear-gradient@^2.5.6:
   resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
   integrity sha512-HDwEaXcQIuXXCV70O+bK1rizFong3wj+5Q/jSyifKFLg0VWF95xh8XQgfzXwtq0NggL9vNjPKXa016KuFu+VFg==
 
+react-native-mask-text@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/react-native-mask-text/-/react-native-mask-text-0.1.5.tgz#86cb9f197c813b5556a81e45114f6d5b25ba516e"
+  integrity sha512-EmvqUEOihY1dWSPYGsZIx97UjIsjF611njsGYJ1vmEVgJL+N1QoD6ikOqSGjTtiPgzBdt/DcQibRfmpr87zGlQ==
+
 react-native-otp-inputs@^7.0.3:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/react-native-otp-inputs/-/react-native-otp-inputs-7.0.3.tgz#f341284ff5f865239c59f0aad008994e26b114cb"
@@ -8629,11 +8634,6 @@ react-native-swiper@^1.6.0:
   integrity sha512-OnkTTZi+9uZUgy0uz1I9oYDhCU3z36lZn+LFsk9FXPRelxb/KeABzvPs3r3SrHWy1aA67KGtSFj0xNK2QD0NJQ==
   dependencies:
     prop-types "^15.5.10"
-
-react-native-text-input-mask@^3.1.4:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/react-native-text-input-mask/-/react-native-text-input-mask-3.1.4.tgz#9b09d97a910ce8c24024d6187256b07c73e173ac"
-  integrity sha512-XhTPL1/Pv0kyuH8TMJGaxfnq5su9e+4G2PLngiismZ4xbP8+W/1ZEH4KQJQV+QkE2I5Oi+lPJXB2E47s60/OBA==
 
 react-native-vector-icons@^7.0.0:
   version "7.1.0"
