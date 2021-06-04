@@ -211,7 +211,8 @@ const openCamera = async ()=>{
   let location = await Location.getCurrentPositionAsync({});
 
   
-  ImagePicker.launchCameraAsync({mediaTypes:ImagePicker.MediaTypeOptions.Images,base64:true,quality:0}).then(async (response)=>{    
+  ImagePicker.launchCameraAsync({mediaTypes:ImagePicker.MediaTypeOptions.Images,base64:true,quality:0,exif:true,aspect:[8000,8000]}).then(async (response)=>{    
+    console.warn(response.exif)
     if(response.cancelled != true){
 
      setImages([...images,{uri:response.base64,latitude:location.latitude,longitude:location.longitude,typeOfDocument:''}]);    
@@ -512,7 +513,7 @@ const showImage = (uri:any)=>{
 
 
           {/* Add Commodity Form */}
-            <DraggablePanel visible={isShowPanel} onDismiss={()=>{setShowPanel(false)}} initialHeight={600}  >
+            <DraggablePanel visible={isShowPanel} onDismiss={()=>{setShowPanel(false)}} initialHeight={600}  animationDuration={200} >
               <Block   
                 width={MyWindow.Width } 
                 style={{ marginVertical: 20,zIndex:1}}
@@ -574,7 +575,7 @@ const showImage = (uri:any)=>{
                   style={styles.unit_input}
                   help="Amount"                                    
                   rounded
-                  type="decimal-pad"
+                  type="numeric"
                   onChangeText={(value)=>{                          
                                     setCardInfo({...cardInfo,Amount:value}) 
                                     setCardInfo((prevState)=>({...prevState,Total_Amount:prevState.Amount * prevState.Quantity}))
@@ -626,7 +627,7 @@ const showImage = (uri:any)=>{
 
              {/* Edit Commodity Form */}
 
-             <DraggablePanel visible={isShowEditPanel} onDismiss={()=>{setEditShowPanel(false)}} initialHeight={600}  >
+             <DraggablePanel visible={isShowEditPanel} onDismiss={()=>{setEditShowPanel(false)}} initialHeight={600}  animationDuration={200} >
               <Block   
                 width={MyWindow.Width } 
                 style={{ marginVertical: 10,zIndex:1}}

@@ -70,7 +70,7 @@
     "react-native-simple-dialogs": "^1.4.0",
     "react-native-step-indicator": "^1.0.3",
     "react-native-svg": "12.1.0",
-    "react-native-swiper": "^1.6.0",
+    "react-native-swiper": "^1.6.0",    
     "react-native-web": "~0.13.12"
   },
   "devDependencies": {
