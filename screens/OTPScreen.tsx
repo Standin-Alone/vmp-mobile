@@ -39,7 +39,7 @@ export default function OTPScreen({navigation,route} : StackScreenProps <RootSta
   const [is_error,setError]  = useState(false);
   const [code,setCode]  = useState('');
   const [isResend, setIsResend] = useState(false);
-  const [timer, setTimer] = useState(5);
+  const [timer, setTimer] = useState(60);
   const [isShow, setIsShow] = useState(false);
 
   const CELL_COUNT = 4;
@@ -106,7 +106,7 @@ export default function OTPScreen({navigation,route} : StackScreenProps <RootSta
       if(response.isConnected){
         axios.post(ip_config.ip_address+'vmp-web/public/api/resend-otp',{email:email})
           .then((response)=>{   
-            setTimer(5);
+            setTimer(60);
             setIsShow(false)
             setIsResend(false)            
             otp_timer();
@@ -116,7 +116,7 @@ export default function OTPScreen({navigation,route} : StackScreenProps <RootSta
       }else{
         setIsShow(false)
             setIsResend(false)
-            setTimer(5);
+            setTimer(60);
         alert('No internet connection.')
       }
     })

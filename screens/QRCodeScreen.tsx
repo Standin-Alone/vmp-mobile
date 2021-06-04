@@ -83,7 +83,7 @@ export default function QRCodeScreen() {
             // setIsShow(false);
             // Test Available Balance
             
-            if(response.data[0]['data'].Available_Balance != undefined ){              
+            if(response.data[0]['data'][0].Available_Balance != 0.00 ){              
               setIsShow(false);
               navigation.navigate('ClaimVoucher',response.data[0]['data']);                      
             }else{
