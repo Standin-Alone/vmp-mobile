@@ -684,7 +684,7 @@ const showImage = (uri:any)=>{
                   rounded
                   type="numeric"
                   onChangeText={(value)=>{
-                                  setForm({...form,quantity_txt:value})
+                                  setForm({...form,quantity_txt:value.match})
                                   setForm((prevState)=>({...prevState,total_amount_txt:prevState.amount_txt * prevState.quantity_txt}))                
                                 }}
                   value={form.quantity_txt}
