@@ -82,10 +82,12 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                   AsyncStorage.setItem('email',response.data[0]['EMAIL'].toLocaleString());
                   navigation.replace('OTPScreen',{supplier_id:get_supplier_id});     
                   
-                  
+                  setWarning(false);             
                   setLoading(false);
+                  setError(false);
                 }else{
                   setError(true);
+                  setWarning(false);             
                   setLoading(false);
                 }                
           }).catch((error)=>{
@@ -94,7 +96,8 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
           })
       }
       else{
-        setWarning(true);
+        setError(false);
+        setWarning(true);        
         setLoading(false);
 
       }    
