@@ -211,7 +211,7 @@ const openCamera = async ()=>{
   let location = await Location.getCurrentPositionAsync({});
 
   
-  ImagePicker.launchCameraAsync({mediaTypes:ImagePicker.MediaTypeOptions.Images,base64:true,quality:1}).then(async (response)=>{    
+  ImagePicker.launchCameraAsync({mediaTypes:ImagePicker.MediaTypeOptions.Images,base64:true,quality:0}).then(async (response)=>{    
     if(response.cancelled != true){
 
      setImages([...images,{uri:response.base64,latitude:location.latitude,longitude:location.longitude,typeOfDocument:''}]);    
