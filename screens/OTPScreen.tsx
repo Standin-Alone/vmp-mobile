@@ -42,7 +42,7 @@ export default function OTPScreen({navigation,route} : StackScreenProps <RootSta
   const [timer, setTimer] = useState(60);
   const [isShow, setIsShow] = useState(false);
 
-  const CELL_COUNT = 4;
+  const CELL_COUNT = 6;
   const [value, setValue] = useState('');
   const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
   
@@ -246,19 +246,18 @@ const styles = StyleSheet.create({
   ,
   otp:{textAlign: 'center', fontSize: 25},
   otp_desc:{textAlign: 'center', fontSize: 18},
-  root: {flex: 1, padding: 20},  
+  root: {flex: 1, padding: 50},  
   codeFieldRoot: {marginTop: 50,marginBottom:50},
   cell: {
-    width: 60,    
-    marginLeft:10,
-    marginRight:20,
-    height: 60,
+    width: 50,    
+    marginHorizontal:MyWindow.Width / 100 * 1,
+    height: 50,
     lineHeight: 58,
     fontSize: 28,
     borderWidth: 3,
     borderColor: '#00000030',
     textAlign: 'center',
-    
+        
     
   },
   focusCell: {
