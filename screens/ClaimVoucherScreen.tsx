@@ -32,7 +32,6 @@ import { ProgressDialog } from "react-native-simple-dialogs";
 import { Dialog } from "react-native-simple-dialogs";
 import NetInfo from "@react-native-community/netinfo";
 import ImageViewer from "react-native-image-zoom-viewer";
-
 import * as Location from "expo-location";
 
 import Spinner from "react-native-loading-spinner-overlay";
@@ -114,8 +113,6 @@ export default function ClaimVoucherScreen({
   var [isShowPanel, setShowPanel] = useState(false); // Show Add Commodity Form Panel
   var [isShowEditPanel, setEditShowPanel] = useState(false); // Show Edit Commodity Form Panel
   var [currentPage, setCurrentPage] = useState(1); // index of current page
-
-  const [location, setLocation] = useState(null);
 
   // Set Permission of Camera
   useEffect(() => {
@@ -604,7 +601,7 @@ export default function ClaimVoucherScreen({
                 />
               </Block>
 
-              <Block>
+              <Block>                
                 <Input
                   placeholder="0"
                   color={Colors.muted}
@@ -621,12 +618,16 @@ export default function ClaimVoucherScreen({
                   }}
                   value={cardInfo.Amount.toLocaleString()}
                 />
+
+                
               </Block>
 
               <Block>
                 <Text style={(styles.title, { color: "red" })} h4>
                   Total Amount : ₱{cardInfo.Total_Amount}
                 </Text>
+                
+                
               </Block>
 
               <Block>
@@ -1262,4 +1263,11 @@ const styles = StyleSheet.create({
     marginRight: -20,
     width: 100,
   },
+  price:{
+    borderWidth:1,
+    borderColor:'#ddd',
+    borderRadius:20,
+    padding:10,
+    backgroundColor:Colors.light.background
+  }
 });

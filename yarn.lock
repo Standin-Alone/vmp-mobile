@@ -8851,6 +8851,11 @@ react-native-loading-spinner-overlay@^2.0.0:
   dependencies:
     prop-types "^15.6.2"
 
+react-native-mask-input@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-mask-input/-/react-native-mask-input-1.0.2.tgz#e6819b55a2456c43cad7bb329745ac214593a28c"
+  integrity sha512-oqzdUwOWnE/aq7+rRZwvB4t+bjG7KTCLNejaIGYzL4ixiIcTSUvA1evmVUUAvRC0do1HcNGRbEjZARBhQt9KqQ==
+
 react-native-mask-text@^0.1.5:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/react-native-mask-text/-/react-native-mask-text-0.1.5.tgz#86cb9f197c813b5556a81e45114f6d5b25ba516e"

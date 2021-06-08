@@ -18,12 +18,14 @@ import * as ip_config from "../ip_config";
 import * as LocalAuthentication from "expo-local-authentication";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import NetInfo from "@react-native-community/netinfo";
+import MaskInput,{createNumberMask } from 'react-native-mask-input';
 
 export default function LoginScreen({
   navigation,
 }: StackScreenProps<RootStackParamList, "Login">) {
   const [form, setForm] = useState({ username: "", password: "" });
   const [is_loading, setLoading] = useState(false);
+  const [price,setPrice] = useState('');
   const [is_error, setError] = useState(false);
   const [is_warning, setWarning] = useState(false);
   const [is_biometrics_loading, setBiometricsLoading] = useState(false);
@@ -161,7 +163,7 @@ export default function LoginScreen({
         <Block>
           <Image source={Images.DA_Logo} style={styles.logo} />
         </Block>
-
+      
         <Block>
           <Input
             placeholder="Username..."
@@ -268,7 +270,7 @@ const styles = StyleSheet.create({
   form_container: {
     alignItems: "center",
     marginTop: 200,
-  },
+  },  
   logo: {
     width: 150,
     height: 150,
