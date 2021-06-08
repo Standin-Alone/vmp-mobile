@@ -901,7 +901,7 @@ const showImage = (uri:any)=>{
 
 // FINAL SUBMIT VOUCHER
 const submit_voucher = async ()=>{
-  
+let location = await Location.getCurrentPositionAsync({});
 // validate current balance
 var checkTotalAmount = 0;
 var currentBalance = params[0].Available_Balance;
@@ -934,18 +934,20 @@ if(currentPage == 1){
 
 //  IMPORT DOCUMENT SUBMIT BUTTON
 if(currentPage == 2){
-
+  
   var fd = new FormData();
   setShowProgSubmit(true);
 
   var checkFarmerWithCommodity = images.some(item => item.typeOfDocument == 1 );  
   var checkValidID = images.some(item => item.typeOfDocument == 2);  
-  
+  var lat = location.coords.latitude;
+  var long = location.coords.longitude;
   const supplier_id = await AsyncStorage.getItem('supplier_id');
   console.log(supplier_id);
   fd.append('reference_num',params[0].REFERENCE_NO)
   fd.append('supplier_id',supplier_id)
-
+  fd.append('latitude',lat)
+  fd.append('longitude',long)
 
 
   //form append commodities
@@ -973,25 +975,32 @@ if(currentPage == 2){
   NetInfo.fetch().then((response:any)=>{ 
     if(response.isConnected){ 
       if(checkFarmerWithCommodity && checkValidID){
-        axios.post(ip_config.ip_address+'vmp-web/public/api/submit-voucher',fd,{headers:{'content-type':'multipart/form-data',accept:'application/json'}})
-        .then((response)=>{                        
-          let message = response.data[0]['Message']; 
-          
-          if(message == 'true'){
-            setShowProgSubmit(false);
-            Alert.alert('Message','Successful! Voucher redeemed.')
+
+        if(lat != undefined && long != undefined) {
+
+       
+          axios.post(ip_config.ip_address+'vmp-web/public/api/submit-voucher',fd,{headers:{'content-type':'multipart/form-data',accept:'application/json'}})
+          .then((response)=>{                        
+            let message = response.data[0]['Message']; 
             
-            navigation.goBack();
-          }else{
-            alert('Error!Something went wrong.')
-            console.warn(response);
+            if(message == 'true'){
+              setShowProgSubmit(false);
+              Alert.alert('Message','Successful! Voucher redeemed.')
+              
+              navigation.goBack();
+            }else{
+              alert('Error!Something went wrong.')
+              console.warn(response);
+              setShowProgSubmit(false);
+            }
+                          
+          }).catch((error)=>{            
             setShowProgSubmit(false);
-          }
-                        
-        }).catch((error)=>{            
-          setShowProgSubmit(false);
-          console.warn(error.response)
-        })
+            console.warn(error.response)
+          })
+        }else{
+          Alert.alert("Message","Please turn on your location first")
+        }
       }else{
         setShowProgSubmit(false);
         Alert.alert("Message","Please add pictures of valid ID and picture of farmer with commodity. ")

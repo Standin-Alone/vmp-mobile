@@ -42,8 +42,8 @@ export default function HomeScreen() {
     const supplier_id =  await AsyncStorage.getItem('supplier_id');
 
     
-      console.warn(supplier_id)
-    setForm({...form,supplier_id : 1});
+      
+    setForm({...form,supplier_id : supplier_id});
 
     setRefreshing(true);
     NetInfo.fetch().then((response:any)=>{     
@@ -79,10 +79,9 @@ export default function HomeScreen() {
 
       const result = await axios.post(ip_config.ip_address+'vmp-web/public/api/get-scanned-vouchers',{supplier_id: supplier_id})
       if(result.status == 200){
-        alert('200')
+        
         setScannedVouchers(result.data);  
-        setRefreshing(false);
-                
+        setRefreshing(false);                
       }
       
     };  
