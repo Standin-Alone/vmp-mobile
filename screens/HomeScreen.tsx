@@ -36,8 +36,9 @@ export default function HomeScreen() {
   const [form,setForm]  = useState({});
   const [refreshing,setRefreshing]  = useState(false);
   const [scannedVouchers , setScannedVouchers] = useState([]);
+  const [search,setSearch] = useState('');
   const hasMounted = useRef(false);
-
+  const KEYS_TO_FILTERS = ['REFERENCE_NO','NAME']
   const getScannedVouchers = async ()=> {
     const supplier_id =  await AsyncStorage.getItem('supplier_id');
 
@@ -98,6 +99,8 @@ export default function HomeScreen() {
 
 
   }
+
+  const filteredVouchers = scannedVouchers.filter(createFilter(search,KEYS_TO_FILTERS))
   return (
     <View style={styles.container}>
       <Block>
@@ -109,7 +112,7 @@ export default function HomeScreen() {
           icon="search"                 
           iconColor={Colors.base}
           iconSize={20}                                          
-          onChangeText = {(value)=>searchVoucher(value)}                    
+          onChangeText = {(value)=>setSearch(value)}                    
           placeholder = "Search here..."                  
           icon="search"
           family="FontAwesome"
@@ -135,7 +138,7 @@ export default function HomeScreen() {
           }
       >
         <FlatList      
-          data={scannedVouchers}   
+          data={scannedVouchers ? filteredVouchers : null}   
           ListEmptyComponent={()=>(
             <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
             <Card.Title title="No existing vouchers scanned."/>              
@@ -153,7 +156,7 @@ export default function HomeScreen() {
             <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
               <Card.Title title={item.REFERENCE_NO}   subtitle={new Date(item.CLAIMED_DATE).toDateString()} />              
               <Card.Content>
-                    {/* <Text>ASmople</Text> */}
+                    <Text style={styles.name}>{item.NAME}</Text>
               </Card.Content>
             </Card> 
        
@@ -203,4 +206,7 @@ const styles = StyleSheet.create({
     width:MyWindow.Width - 65,
     position:'relative'
   },
+  name:{
+    color:'black'
+  }
 });
