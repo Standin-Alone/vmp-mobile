@@ -14,8 +14,7 @@ import Colors from '../constants/Colors';
 import MyWindow from '../constants/Layout';
 import * as ip_config from '../ip_config';
 import NetInfo from '@react-native-community/netinfo';
-
-
+import Spinner from 'react-native-loading-spinner-overlay';
 
 
 var test_api =  ( )=>{
@@ -35,7 +34,9 @@ var test_api =  ( )=>{
 export default function HomeScreen() {  
   const [form,setForm]  = useState({});
   const [refreshing,setRefreshing]  = useState(false);
+  const [isLoading,setLoading]  = useState(false);
   const [scannedVouchers , setScannedVouchers] = useState([]);
+
   const [search,setSearch] = useState('');
   const hasMounted = useRef(false);
   const KEYS_TO_FILTERS = ['REFERENCE_NO','NAME']
@@ -103,6 +104,10 @@ export default function HomeScreen() {
   const filteredVouchers = scannedVouchers.filter(createFilter(search,KEYS_TO_FILTERS))
   return (
     <View style={styles.container}>
+      <Spinner
+        visible={isLoading}
+        color={Colors.base}
+      />
       <Block>
         <Input
           style={styles.searchInput}          
@@ -112,7 +117,11 @@ export default function HomeScreen() {
           icon="search"                 
           iconColor={Colors.base}
           iconSize={20}                                          
-          onChangeText = {(value)=>setSearch(value)}                    
+          onChangeText = {(value)=>
+                          {
+                            setLoading(true);
+                            setSearch(value)                            
+                          }}                    
           placeholder = "Search here..."                  
           icon="search"
           family="FontAwesome"

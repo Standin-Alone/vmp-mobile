@@ -167,7 +167,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
 
   return (
       <View style={styles.container}>
-        
+          
 
           <KeyboardAvoidingView style={{flex:1}}>
           <Block >          

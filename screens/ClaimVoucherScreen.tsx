@@ -31,10 +31,13 @@ import {ProgressDialog} from 'react-native-simple-dialogs';
 import { Dialog } from 'react-native-simple-dialogs';
 import NetInfo from '@react-native-community/netinfo';
 import ImageViewer from 'react-native-image-zoom-viewer';
-import CurrencyInput from 'react-native-currency-input';
-import Swiper from 'react-native-swiper';
+
 import * as Location from 'expo-location';
-import { setStatusBarNetworkActivityIndicatorVisible } from 'expo-status-bar';
+
+import Spinner from 'react-native-loading-spinner-overlay';
+
+
+
 const labels = ["Claimer Profile", "Add Commodity","Import Document"]
 
 const customStyles = {    
@@ -1044,10 +1047,12 @@ const goBackPage = async () => {
   return (
       
     <View style={styles.container}>
+      <Spinner
+        visible={isShowProgSubmit}
+        color={Colors.base}
+      />
         <KeyboardAvoidingView style={{flex:1}}>                         
-
-            <ProgressDialog message="Processing..."  visible={isShowProgSubmit}/>
-
+            
                 <Block center space="between">                  
                         {/* <Text style={styles.title}>Claimer Profile</Text> */}
                 </Block>
