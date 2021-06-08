@@ -3,109 +3,89 @@
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
 
-import { Ionicons } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator, } from '@react-navigation/stack';
-import {useNavigation,useNavigationState} from '@react-navigation/native';
-import React,{useState,useEffect,} from 'react';
+import { Ionicons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
+import { useNavigation, useNavigationState } from "@react-navigation/native";
+import React, { useState, useEffect } from "react";
 
-import {StyleSheet, Alert,BackHandler} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
-import HomeScreen from '../screens/HomeScreen';
-import QRCodeScreen from '../screens/QRCodeScreen';
-import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types';
+import { StyleSheet, Alert, BackHandler } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Colors from "../constants/Colors";
+import useColorScheme from "../hooks/useColorScheme";
+import HomeScreen from "../screens/HomeScreen";
+import QRCodeScreen from "../screens/QRCodeScreen";
+import { BottomTabParamList, TabOneParamList, TabTwoParamList } from "../types";
 import { AnimatedTabBarNavigator } from "react-native-animated-nav-tab-bar";
-import {Button,Block,Icon} from "galio-framework";
-import {ConfirmDialog} from 'react-native-simple-dialogs';
+import { Button, Block, Icon } from "galio-framework";
+import { ConfirmDialog } from "react-native-simple-dialogs";
 
 const BottomTab = AnimatedTabBarNavigator<BottomTabParamList>();
 
-
-
-
 export default function BottomTabNavigator() {
   const colorScheme = useColorScheme();
-  const [isLogout,setLogout] = useState(false);
+  const [isLogout, setLogout] = useState(false);
   const navigation = useNavigation();
-  const navigation_state = useNavigationState((state) => state.routes[state.index].name);
+  const navigation_state = useNavigationState(
+    (state) => state.routes[state.index].name
+  );
   useEffect(() => {
-    navigation.addListener('focus',()=>{
+    navigation.addListener("focus", () => {
+      if (navigation.isFocused()) {
+        const backAction = () => {
+          Alert.alert("Message", "Do you really want to logout?", [
+            {
+              text: "No",
+            },
+            {
+              text: "Yes",
+              onPress: () => {
+                AsyncStorage.removeItem("otp_code");
+                AsyncStorage.removeItem("email");
+                navigation.reset({ routes: [{ name: "Login" }] });
+              },
+            },
+          ]);
+          return true;
+        };
+        const backHandler = BackHandler.addEventListener(
+          "hardwareBackPress",
+          backAction
+        );
 
-      
-    if(navigation.isFocused()){
-      
-    const backAction = ()=>{
-      Alert.alert("Message","Do you really want to logout?",[
-        {
-          text:"No"
-        },
-        {
-          text:"Yes",
-          onPress:()=>
-          {
-            AsyncStorage.removeItem('otp_code');
-            AsyncStorage.removeItem('email');            
-            navigation.reset({routes: [{ name: 'Login' }]});
-            
-          }
-        }
-
-      ]
-      )
-      return true;
-    }
-    const backHandler = BackHandler.addEventListener("hardwareBackPress",backAction);
-
-    return () => backHandler.remove();
- 
+        return () => backHandler.remove();
       }
-
-    })
-
-    
-  }, [])
+    });
+  }, []);
   return (
     <BottomTab.Navigator
-
       initialRouteName="TabOne"
-      tabBarOptions={{ 
+      tabBarOptions={{
         activeTintColor: Colors.base,
-        activeBackgroundColor :Colors.background        
+        activeBackgroundColor: Colors.background,
       }}
-
       appearance={{
-        floating:true
+        floating: true,
       }}
-      
-      >
-
-
+    >
       <BottomTab.Screen
         name="HomeScreen"
         component={TabOneNavigator}
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          tabBarLabel:'Home',
-          
-          
-        
+          tabBarLabel: "Home",
         }}
-        
-        />
-
-
-
+      />
 
       <BottomTab.Screen
         name="TabTwo"
         component={TabTwoNavigator}
         options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="qr-code" color={color} />,
-          tabBarLabel:'Scan Voucher'            
-        }
-      }
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="qr-code" color={color} />
+          ),
+          tabBarLabel: "Scan Voucher",
+        }}
       />
     </BottomTab.Navigator>
   );
@@ -113,7 +93,10 @@ export default function BottomTabNavigator() {
 
 // You can explore the built-in icon families and icons on the web at:
 // https://icons.expo.fyi/
-function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>['name']; color: string }) {
+function TabBarIcon(props: {
+  name: React.ComponentProps<typeof Ionicons>["name"];
+  color: string;
+}) {
   return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;
 }
 
@@ -127,27 +110,33 @@ function TabOneNavigator() {
       <TabOneStack.Screen
         name="HomeScreen"
         component={HomeScreen}
-        options={({navigation})=>({ 
-          headerTitle: 'Home' ,          
-          headerRight:props=>{return(<Icon
-          name="logout" family="FontAwesome" 
-          color={Colors.base} 
-          size={50}       
-          style={styles.button}
-          onPress={()=>Alert.alert("Message","Do you really want to logout?",
-          [            
-            {text:"No"},
-            {text:"Yes",onPress:()=>{ 
-              AsyncStorage.removeItem('otp_code');
-              AsyncStorage.removeItem('email');
-              navigation.replace('AuthenticationScreen')
-            
-            }}
-          ])}
-          
-          />) }
-      
-      })}
+        options={({ navigation }) => ({
+          headerTitle: "Home",
+          headerRight: (props) => {
+            return (
+              <Icon
+                name="logout"
+                family="FontAwesome"
+                color={Colors.base}
+                size={50}
+                style={styles.button}
+                onPress={() =>
+                  Alert.alert("Message", "Do you really want to logout?", [
+                    { text: "No" },
+                    {
+                      text: "Yes",
+                      onPress: () => {
+                        AsyncStorage.removeItem("otp_code");
+                        AsyncStorage.removeItem("email");
+                        navigation.replace("AuthenticationScreen");
+                      },
+                    },
+                  ])
+                }
+              />
+            );
+          },
+        })}
       />
     </TabOneStack.Navigator>
   );
@@ -161,39 +150,40 @@ function TabTwoNavigator() {
       <TabTwoStack.Screen
         name="QRCodeScreen"
         component={QRCodeScreen}
-        options={({navigation})=>({ 
-          headerTitle: 'Scan Voucher' ,          
-          headerRight:props=>{return(<Icon
-          name="logout" family="FontAwesome" 
-          color={Colors.base} 
-          size={50}       
-          style={styles.button}
-          onPress={()=>Alert.alert("Message","Do you really want to logout?",
-          [            
-            {text:"No"},
-            {text:"Yes",onPress:()=>{ 
-              AsyncStorage.removeItem('otp_code');
-              AsyncStorage.removeItem('email'); 
-              navigation.replace('AuthenticationScreen')
-            
-            }}
-          ])}
-          
-          />) }
-      
-      })}
+        options={({ navigation }) => ({
+          headerTitle: "Scan Voucher",
+          headerRight: (props) => {
+            return (
+              <Icon
+                name="logout"
+                family="FontAwesome"
+                color={Colors.base}
+                size={50}
+                style={styles.button}
+                onPress={() =>
+                  Alert.alert("Message", "Do you really want to logout?", [
+                    { text: "No" },
+                    {
+                      text: "Yes",
+                      onPress: () => {
+                        AsyncStorage.removeItem("otp_code");
+                        AsyncStorage.removeItem("email");
+                        navigation.replace("AuthenticationScreen");
+                      },
+                    },
+                  ])
+                }
+              />
+            );
+          },
+        })}
       />
     </TabTwoStack.Navigator>
   );
 }
 
-
-
 const styles = StyleSheet.create({
-
-  button:{
-
-  marginRight:10
-
-  }
-})
+  button: {
+    marginRight: 10,
+  },
+});
