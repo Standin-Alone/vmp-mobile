@@ -24,7 +24,7 @@ var test_api =  ( )=>{
     console.warn(response.data['message'])
     
   }).catch((error)=>{
-    console.warn(error);
+    console.warn(error.response);
   });
   
   
@@ -34,7 +34,7 @@ var test_api =  ( )=>{
 export default function HomeScreen() {  
   const [form,setForm]  = useState({});
   const [refreshing,setRefreshing]  = useState(false);
-  const [isLoading,setLoading]  = useState(false);
+  
   const [scannedVouchers , setScannedVouchers] = useState([]);
 
   const [search,setSearch] = useState('');
@@ -78,14 +78,19 @@ export default function HomeScreen() {
       console.warn(supplier_id)
       setRefreshing(true);
 
-
-      const result = await axios.post(ip_config.ip_address+'vmp-web/public/api/get-scanned-vouchers',{supplier_id: supplier_id})
-      if(result.status == 200){
-        
-        setScannedVouchers(result.data);  
-        setRefreshing(false);                
-      }
-      
+      NetInfo.fetch().then(async (response:any)=>{  
+        if(response.isConnected){   
+            const result = await axios.post(ip_config.ip_address+'vmp-web/public/api/get-scanned-vouchers',{supplier_id: supplier_id})
+            if(result.status == 200){
+              
+              setScannedVouchers(result.data);  
+              setRefreshing(false);                
+            }
+        }else{
+            Alert.alert('Message','No Internet Connection.')      
+            setRefreshing(false); 
+        } 
+    });
     };  
     
     
@@ -105,7 +110,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Spinner
-        visible={isLoading}
+        visible={refreshing}
         color={Colors.base}
       />
       <Block>
@@ -119,7 +124,7 @@ export default function HomeScreen() {
           iconSize={20}                                          
           onChangeText = {(value)=>
                           {
-                            setLoading(true);
+                            
                             setSearch(value)                            
                           }}                    
           placeholder = "Search here..."                  
