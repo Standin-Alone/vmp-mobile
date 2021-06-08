@@ -42,7 +42,7 @@ export default function HomeScreen() {
     const supplier_id =  await AsyncStorage.getItem('supplier_id');
 
     
-    
+      console.warn(supplier_id)
     setForm({...form,supplier_id : 1});
 
     setRefreshing(true);
@@ -73,15 +73,16 @@ export default function HomeScreen() {
     
     const fetchData = async()=>{   
       const supplier_id =  await AsyncStorage.getItem('supplier_id');
+      console.warn(supplier_id)
       setRefreshing(true);
+
 
       const result = await axios.post(ip_config.ip_address+'vmp-web/public/api/get-scanned-vouchers',{supplier_id: supplier_id})
       if(result.status == 200){
-
+        alert('200')
         setScannedVouchers(result.data);  
         setRefreshing(false);
-        
-        console.warn(scannedVouchers.length)
+                
       }
       
     };  
@@ -151,9 +152,9 @@ export default function HomeScreen() {
             
      
             <Card elevation={10} style={styles.card} onPress={()=>alert('sample')}>
-              <Card.Title title={item.REFERENCE_NO}   subtitle={item.CLAIMED_DATE} />              
+              <Card.Title title={item.REFERENCE_NO}   subtitle={new Date(item.CLAIMED_DATE).toDateString()} />              
               <Card.Content>
-                    <Text>ASmople</Text>
+                    {/* <Text>ASmople</Text> */}
               </Card.Content>
             </Card> 
        

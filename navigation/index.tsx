@@ -88,7 +88,7 @@ function RootNavigator() {
   
   return (
 
-    <Stack.Navigator screenOptions={{ headerShown: false , cardStyleInterpolator:CardStyleInterpolators.forHorizontalIOS}}  initialRouteName="ClaimVoucher" mode="modal" >
+    <Stack.Navigator screenOptions={{ headerShown: false , cardStyleInterpolator:CardStyleInterpolators.forHorizontalIOS}}  initialRouteName="AuthenticationScreen" mode="modal" >
       <Stack.Screen name="Root" component={BottomTabNavigator}    />      
       <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login',cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid}} />      
       <Stack.Screen name="OTPScreen" component={OTPScreen} options={{ title: 'OTP Screen' }} />

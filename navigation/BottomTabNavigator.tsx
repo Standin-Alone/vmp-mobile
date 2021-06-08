@@ -45,7 +45,8 @@ export default function BottomTabNavigator() {
           text:"Yes",
           onPress:()=>
           {
-            AsyncStorage.clear();            
+            AsyncStorage.removeItem('otp_code');
+            AsyncStorage.removeItem('email');            
             navigation.reset({routes: [{ name: 'Login' }]});
             
           }
@@ -137,7 +138,8 @@ function TabOneNavigator() {
           [            
             {text:"No"},
             {text:"Yes",onPress:()=>{ 
-              AsyncStorage.removeItem('supplier_id')
+              AsyncStorage.removeItem('otp_code');
+              AsyncStorage.removeItem('email');
               navigation.replace('AuthenticationScreen')
             
             }}
@@ -170,7 +172,8 @@ function TabTwoNavigator() {
           [            
             {text:"No"},
             {text:"Yes",onPress:()=>{ 
-              AsyncStorage.removeItem('supplier_id')
+              AsyncStorage.removeItem('otp_code');
+              AsyncStorage.removeItem('email'); 
               navigation.replace('AuthenticationScreen')
             
             }}

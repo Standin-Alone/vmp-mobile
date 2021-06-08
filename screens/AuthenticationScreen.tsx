@@ -35,7 +35,7 @@ export default function AuthenticationScreen({navigation,} : StackScreenProps <R
         session_userID = await AsyncStorage.getItem('supplier_id');        
         console.warn(session_userID);
         if( session_userID != null){
-            navigation.replace('Root');
+            navigation.replace('Login');
         }else{
           navigation.replace('Login');
         }

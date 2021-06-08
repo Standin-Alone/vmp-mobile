@@ -1,13 +1,11 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { StyleSheet, 
                  
           View, 
           Image,           
-          KeyboardAvoidingView, 
-      
-          Alert
-          
+          KeyboardAvoidingView,       
+          Alert          
          } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList } from '../types';
@@ -34,10 +32,23 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
   const [is_error,setError]  = useState(false);
   const [is_warning,setWarning]  = useState(false);
   const [is_biometrics_loading,setBiometricsLoading]  = useState(false);
+  const [isFingerPrint, setFingerPrint] = useState(false);
 
 
+  useEffect( () => {
+    const checkFingerPrint = async()=>{
+      const is_finger_print = await AsyncStorage.getItem('is_fingerprint')      
+      if(is_finger_print == 'true'){
+        setFingerPrint(true)
+      }else{
+        setFingerPrint(false)
+      }
+    }
 
-  const biometricsAuth = async () => {
+   checkFingerPrint()
+  }, [])
+
+  const biometricsAuth = async (param_supplier_id,is_fp_btn) => {
     
     const compatible = await LocalAuthentication.hasHardwareAsync();
     const enrolled = await LocalAuthentication.isEnrolledAsync();
@@ -52,15 +63,38 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
     {
       alert("This devices doesn't have  biometric authentication enabled. ")
     }
-  
-    if(!result.success)
-    throw `${result.error} - Authentication unsuccessfull.`
-    else {
-        console.warn(enrolled)
-      setBiometricsLoading(false)
-    }
+   
+
+      
+      if(result.success)
+      {   
+
+      
+        if(is_fp_btn == false){
+        AsyncStorage.setItem('supplier_id',param_supplier_id.toLocaleString());
+        setBiometricsLoading(false)
+        navigation.replace('OTPScreen',{supplier_id:param_supplier_id});     
+        
+        
+        }else{
+          setBiometricsLoading(false)
+          const supplier_id = await AsyncStorage.getItem('supplier_id');
+          AsyncStorage.setItem('supplier_id',supplier_id);
+          navigation.replace('Root');             
+          
+        }
+        
+      }
+      else {
+        throw `${result.error} - Authentication unsuccessful.`
+      }
+    
   }
-  
+
+  const scanbiometrics = (param_supplier_id,is_fp_btn)=>{
+    
+    biometricsAuth(param_supplier_id,is_fp_btn)
+  }
   const signIn =  ()=>{
 
     setLoading(true);  
@@ -73,15 +107,32 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
 
       if(form.username != "" && form.password != "" ){
         axios.post(ip_config.ip_address+'vmp-web/public/api/sign_in',form)
-          .then((response)=>{                        
+          .then((response)=>{      
+              console.warn(response)                  
+                let get_supplier_id = response.data[0]['SUPPLIER_ID'];
                 
                 if(response.data[0]['Message'] == 'true'){
-                  
-                  let get_supplier_id = response.data[0]['SUPPLIER_ID'];
                   AsyncStorage.setItem('otp_code',response.data[0]['OTP'].toLocaleString());
-                  AsyncStorage.setItem('email',response.data[0]['EMAIL'].toLocaleString());
-                  navigation.replace('OTPScreen',{supplier_id:get_supplier_id});     
-                  
+                  AsyncStorage.setItem('email',response.data[0]['EMAIL'].toLocaleString());  
+                  if(isFingerPrint == false ){
+                    AsyncStorage.setItem('is_fingerprint','false');
+                    Alert.alert('Message','Do you want to enable login with fingerprint?',[
+                      { text:'Disable',
+                        onPress: ()=>{
+                          navigation.replace('OTPScreen',{supplier_id:get_supplier_id});     
+                          AsyncStorage.setItem('is_fingerprint','false');
+                        }                                        
+                      },
+                      { text:'Enable',
+                        onPress: ()=> {
+                          AsyncStorage.setItem('is_fingerprint','true');                          
+                          scanbiometrics(get_supplier_id,false)
+                        }
+                      }
+                    ])
+                  }else{                    
+                    navigation.replace('OTPScreen',{supplier_id:get_supplier_id});     
+                  }
                   setWarning(false);             
                   setLoading(false);
                   setError(false);
@@ -108,9 +159,7 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
   })
   }
 
-  const scanbiometrics = async ()=>{
-    biometricsAuth()
-  }
+ 
 
   const goToForgotPassword = () => {
     navigation.navigate('ForgotPassword')
@@ -141,6 +190,10 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                  onChangeText={(value)=>setForm({...form,username:value})}                 
                  
                  />
+
+
+           
+
                 
             </Block>
 
@@ -201,20 +254,35 @@ export default function LoginScreen({navigation,} : StackScreenProps <RootStackP
                     
                   <View style={styles.sidebarDivider}></View>
                  </Block>
-                
+{/*                 
                  <Button
                   icon="fingerprint" 
                   iconFamily="FontAwesome" 
-                  iconSize={20}                  
-                   
+                  iconSize={20}                                    
                   round
                   color={Colors.info} 
-                  style={styles.fp_button}                                  
-                  onPress={scanbiometrics} loading={is_biometrics_loading}
-                  
+                  style={styles.fp_button}
+                  onPress={scanbiometrics} loading={is_biometrics_loading}                  
                   >
                   Use Fingerprint
-                 </Button>
+                 </Button> */}
+
+
+
+            
+            {
+              isFingerPrint == true ?
+                  <Icon
+                  name="fingerprint" family="fontawesome" 
+                  color={Colors.base} 
+                  size={60}       
+                  style={styles.fp_icon}
+                  onPress={()=>scanbiometrics(0,true)}                  
+                  />:
+                  null
+            }
+                 
+                 
             </Block>
             
             </KeyboardAvoidingView>
@@ -232,17 +300,7 @@ const styles = StyleSheet.create({
     alignSelf:'center',
     justifyContent:'center'
     
-  },
-  second_container: {
-    flex:1,
-    backgroundColor: '#F5F5F5',
-    alignItems: 'center',
-    borderTopEndRadius:40,
-    borderTopStartRadius:40,
-    resizeMode:'contain',
-    top:150,
-    justifyContent: 'center',    
-  },
+  },  
   form_container:{
     alignItems:'center',
     marginTop:200
@@ -264,25 +322,19 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+  }, 
+  fp_icon:{
+    marginHorizontal:MyWindow.Width  / 100 * 35
   },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
-  },
-  linkText: {
-    fontSize: 14,
-    color: '#2e78b7',
-  },
-
   input: {    
     borderColor: Colors.border,
     height: 50,
-    width:MyWindow.Width - 50,
+    width:MyWindow.Width - 40,
     backgroundColor: '#FFFFFF'
   },
   button:{
     height: 50,
-    width:MyWindow.Width - 65,
+    width:MyWindow.Width - 55,
     position:'relative'
   },
   fp_button:{   
@@ -291,10 +343,6 @@ const styles = StyleSheet.create({
     position:'relative',
     
   },  
-  // fp_button:{   
-  //   color:'#2e78b7' ,
-    
-  // },  
   sidebarDivider:{
     height:1,
 
