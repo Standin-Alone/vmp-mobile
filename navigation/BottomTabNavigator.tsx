@@ -33,7 +33,7 @@ export default function BottomTabNavigator() {
     navigation.addListener("focus", () => {
       if (navigation.isFocused()) {
         const backAction = () => {
-          Alert.alert("Message", "Do you really want to logout?", [
+          Alert.alert("Message", "Are you sure you want to logout?", [
             {
               text: "No",
             },
@@ -121,7 +121,7 @@ function TabOneNavigator() {
                 size={50}
                 style={styles.button}
                 onPress={() =>
-                  Alert.alert("Message", "Do you really want to logout?", [
+                  Alert.alert("Message", "Are you sure you want to logout?", [
                     { text: "No" },
                     {
                       text: "Yes",
@@ -161,7 +161,7 @@ function TabTwoNavigator() {
                 size={50}
                 style={styles.button}
                 onPress={() =>
-                  Alert.alert("Message", "Do you really want to logout?", [
+                  Alert.alert("Message", "Are you sure you want to logout?", [
                     { text: "No" },
                     {
                       text: "Yes",
