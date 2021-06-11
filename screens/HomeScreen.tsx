@@ -141,6 +141,9 @@ export default function HomeScreen() {
           }
         >
           <FlatList
+
+            onEndReached={scannedVouchers}
+            onEndReachedThreshold={0.7}
             data={scannedVouchers ? filteredVouchers : null}
             ListEmptyComponent={() => (
               <Card
