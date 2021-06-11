@@ -9,13 +9,12 @@ import {
   FlatList,
   BackHandler,
   Alert,
-  Modal,
-  TouchableOpacity,
+  Modal,  
+  TextInput
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Card } from "react-native-paper";
 import { RootStackParamList } from "../types";
-import Images from "../constants/Images";
 import Colors from "../constants/Colors";
 import MyWindow from "../constants/Layout";
 import { Input, Block, Button, Text, Icon } from "galio-framework";
@@ -33,6 +32,7 @@ import { Dialog } from "react-native-simple-dialogs";
 import NetInfo from "@react-native-community/netinfo";
 import ImageViewer from "react-native-image-zoom-viewer";
 import * as Location from "expo-location";
+import NumberFormat from 'react-number-format';
 
 import Spinner from "react-native-loading-spinner-overlay";
 
@@ -602,29 +602,65 @@ export default function ClaimVoucherScreen({
               </Block>
 
               <Block>                
-                <Input
-                  placeholder="0"
-                  color={Colors.muted}
-                  style={styles.unit_input}
-                  help="Amount"
-                  rounded
-                  type="numeric"
-                  onChangeText={(value) => {
-                    setCardInfo({ ...cardInfo, Amount: value });
-                    setCardInfo((prevState) => ({
-                      ...prevState,
-                      Total_Amount: prevState.Amount * prevState.Quantity,
-                    }));
-                  }}
-                  value={cardInfo.Amount.toLocaleString()}
+              
+                
+
+                <NumberFormat
+                    value={cardInfo.Amount}
+                    displayType={'text'}
+                    thousandSeparator={true}
+                    
+                    renderText = {(values)=>{
+                      
+                      return (
+                        <Input
+                        placeholder="0"
+                        color={Colors.muted}
+                        style={styles.unit_input}
+                        help="Amount"
+                        rounded
+                        type="numeric"
+                        onChangeText={(value) => {
+                          setCardInfo({ ...cardInfo, Amount:value});
+                          setCardInfo((prevState) => ({
+                            ...prevState,
+                            Total_Amount: prevState.Amount * prevState.Quantity,
+                          }));
+                        }}
+                        value={values}
+                      />
+                      )
+                    }}
+                
                 />
+
+
+                {/* old */}
+
+                {/* <Input
+                    placeholder="0"
+                    color={Colors.muted}
+                    style={styles.unit_input}
+                    help="Amount"
+                    rounded
+                    type="numeric"
+                    onChangeText={(value) => {
+                      setCardInfo({ ...cardInfo, Amount:value});
+                      setCardInfo((prevState) => ({
+                        ...prevState,
+                        Total_Amount: prevState.Amount * prevState.Quantity,
+                      }));
+                    }}
+                    value={cardInfo.Amount.toLocaleString()}
+                  /> */}
+              
 
                 
               </Block>
 
               <Block>
                 <Text style={(styles.title, { color: "red" })} h4>
-                  Total Amount : ₱{cardInfo.Total_Amount}
+                  Total Amount : PHP{cardInfo.Total_Amount}
                 </Text>
                 
                 
@@ -1093,7 +1129,7 @@ export default function ClaimVoucherScreen({
           <Text style={styles.title}>
             Available Balance:
             <Text style={{ color: Colors.info }}>
-              ₱{params[0].Available_Balance}
+              PHP{params[0].Available_Balance}
             </Text>
           </Text>
         </Block>
