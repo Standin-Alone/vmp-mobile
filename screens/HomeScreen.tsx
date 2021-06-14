@@ -29,6 +29,7 @@ var test_api = () => {
       console.warn(response.data["message"]);
     })
     .catch((error) => {
+      Alert.alert('Error!','Something went wrong.')
       console.warn(error.response);
     });
 };
@@ -64,6 +65,7 @@ export default function HomeScreen() {
             setRefreshing(false);
           })
           .catch((error) => {
+            Alert.alert('Error!','Something went wrong.')
             console.warn(error.response);
             setRefreshing(false);
           });

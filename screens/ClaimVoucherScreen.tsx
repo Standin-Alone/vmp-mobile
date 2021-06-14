@@ -660,7 +660,7 @@ export default function ClaimVoucherScreen({
 
               <Block>
                 <Text style={(styles.title, { color: "red" })} h4>
-                  Total Amount : PHP{cardInfo.Total_Amount}
+                  Total Amount : ₱{cardInfo.Total_Amount}
                 </Text>
                 
                 
@@ -776,7 +776,7 @@ export default function ClaimVoucherScreen({
                   help="Amount"
                   rounded
                   type="decimal-pad"
-                  onChangeText={(value) => {
+                  onChangeText={(value) => {                    
                     setForm({ ...form, amount_txt: value });
                     setForm((prevState) => ({
                       ...prevState,
