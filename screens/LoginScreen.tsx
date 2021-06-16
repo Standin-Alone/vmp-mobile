@@ -147,7 +147,7 @@ export default function LoginScreen({
           setLoading(false);
         }
       } else {
-        Alert.alert("Message", "No Internet Connection.");
+        Alert.alert("Error", "No Internet Connection.");
         setLoading(false);
       }
     });
@@ -294,6 +294,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: MyWindow.Width - 40,
     backgroundColor: "#FFFFFF",
+    // fontFamily:'playfair-regular'
   },
   button: {
     height: 50,

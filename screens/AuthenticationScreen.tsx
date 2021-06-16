@@ -27,13 +27,22 @@ export default function AuthenticationScreen({
   useEffect(() => {
     let session_userID;
     const checkUserID = async () => {
+      NetInfo.fetch().then(async (response)=>{
+        if(response.isConnected){
+
+      
       session_userID = await AsyncStorage.getItem("supplier_id");
       console.warn(session_userID);
       if (session_userID != null) {
-        // navigation.replace("Login");
+        navigation.replace("Login");
       } else {
-        // navigation.replace("Login");
+        navigation.replace("Login");
       }
+    }else{
+      Alert.alert("Error", "No Internet Connection.");
+
+    }
+    })
     };
 
     const timeout = window.setTimeout(() => checkUserID(), 2000);
@@ -71,6 +80,7 @@ const styles = StyleSheet.create({
   },
   title: {    
     fontSize: 25,    
+    fontFamily:'playfair-regular',
     alignSelf: "center"
     
   },
