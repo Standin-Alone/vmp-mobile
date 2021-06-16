@@ -30,22 +30,48 @@ export default function AuthenticationScreen({
       session_userID = await AsyncStorage.getItem("supplier_id");
       console.warn(session_userID);
       if (session_userID != null) {
-        navigation.replace("Login");
+        // navigation.replace("Login");
       } else {
-        navigation.replace("Login");
+        // navigation.replace("Login");
       }
     };
-    checkUserID();
+
+    const timeout = window.setTimeout(() => checkUserID(), 2000);
   }, []);
 
-  return <View style={styles.container}></View>;
+  return (
+    <View style={styles.container}>
+      <Block>
+        <Image source={Images.DA_Logo} style={styles.logo} />
+      </Block>
+      <View style={styles.title_container}>
+        <Text style={styles.title}>Department of Agriculture</Text>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
-    alignSelf: "center",
-    justifyContent: "center",
+    backgroundColor: Colors.base,
+  },
+  logo: {
+    width: 200,
+    height: 200,
+    borderRadius: 40,
+    left: (MyWindow.Width / 100) * 25,
+    top: (MyWindow.Height / 100) * -10,    
+    alignItems: "center",
+    marginVertical: (MyWindow.Height / 100) * 35,
+    marginBottom: MyWindow.Height / 100,
+  },
+  title_container: {
+    marginVertical: (MyWindow.Height / 100) ,
+  },
+  title: {    
+    fontSize: 25,    
+    alignSelf: "center"
+    
   },
 });
