@@ -68,10 +68,10 @@ const styles = StyleSheet.create({
   logo: {
     width: 200,
     height: 200,
-    borderRadius: 40,
-    left: (MyWindow.Width / 100) * 25,
+    borderRadius: 40,    
+    left: (MyWindow.Width / 100),
     top: (MyWindow.Height / 100) * -10,    
-    alignItems: "center",
+    alignSelf:'center',
     marginVertical: (MyWindow.Height / 100) * 35,
     marginBottom: MyWindow.Height / 100,
   },
@@ -81,7 +81,8 @@ const styles = StyleSheet.create({
   title: {    
     fontSize: 25,    
     fontFamily:'playfair-regular',
-    alignSelf: "center"
+    alignSelf: "center",
+    color:'white'
     
   },
 });

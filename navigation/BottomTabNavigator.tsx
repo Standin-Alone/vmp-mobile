@@ -8,7 +8,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useNavigation, useNavigationState } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
-
+import { StackActions } from '@react-navigation/native';
 import { StyleSheet, Alert, BackHandler } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Colors from "../constants/Colors";
@@ -41,8 +41,11 @@ export default function BottomTabNavigator() {
               text: "Yes",
               onPress: () => {
                 AsyncStorage.removeItem("otp_code");
-                AsyncStorage.removeItem("email");
-                navigation.reset({ routes: [{ name: "Login" }] });
+                AsyncStorage.removeItem("email");              
+                navigation.dispatch(
+                  StackActions.replace('AuthenticationScreen')
+                );
+                
               },
             },
           ]);
@@ -52,8 +55,11 @@ export default function BottomTabNavigator() {
           "hardwareBackPress",
           backAction
         );
-
-        return () => backHandler.remove();
+        backHandler
+        return () => {
+        
+        BackHandler.removeEventListener('hardwareBackPress',backAction)
+      };
       }
     });
   }, []);

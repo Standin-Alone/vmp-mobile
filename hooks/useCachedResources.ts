@@ -17,6 +17,9 @@ export default function useCachedResources() {
           ...Ionicons.font,
           'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
           'playfair-regular': require('../assets/fonts/PlayfairDisplay-Regular.ttf'),
+          'roboto-regular': require('../assets/fonts/Roboto-Regular.ttf'),
+          'roboto-thin': require('../assets/fonts/Roboto-Thin.ttf'),
+          'roboto-light': require('../assets/fonts/Roboto-Light.ttf'),
         });
       } catch (e) {
         // We might want to provide this error information to an error reporting service

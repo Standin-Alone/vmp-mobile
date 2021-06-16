@@ -84,6 +84,8 @@ export default function LoginScreen({
     NetInfo.fetch().then((response: any) => {
       if (response.isConnected) {
         if (form.username != "" && form.password != "") {
+          setWarning(false);
+          setError(false);
           axios
             .post(ip_config.ip_address + "vmp-web/public/api/sign_in", form)
             .then((response) => {
@@ -147,7 +149,7 @@ export default function LoginScreen({
           setLoading(false);
         }
       } else {
-        Alert.alert("Error", "No Internet Connection.");
+        Alert.alert("Message", "No Internet Connection.");
         setLoading(false);
       }
     });
@@ -168,7 +170,7 @@ export default function LoginScreen({
           <Input
             placeholder="Username..."
             placeholderTextColor={Colors.muted}
-            color={Colors.header}
+            color={Colors.base}
             style={styles.input}
             family="FontAwesome"
             right
@@ -183,7 +185,7 @@ export default function LoginScreen({
           <Input
             placeholder="Password..."
             placeholderTextColor={Colors.muted}
-            color={Colors.header}
+            color={Colors.base}
             style={styles.input}
             viewPass
             password
@@ -294,7 +296,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: MyWindow.Width - 40,
     backgroundColor: "#FFFFFF",
-    // fontFamily:'playfair-regular'
+    fontFamily:'playfair-regular'
   },
   button: {
     height: 50,

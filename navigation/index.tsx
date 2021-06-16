@@ -60,37 +60,10 @@ export default function Navigation({
 // Read more here: https://reactnavigation.org/docs/modal
 const Stack = createStackNavigator<RootStackParamList>();
 
-var Custom_Header = () => {
-  return (
-    <View style={{ backgroundColor: "white" }}>
-      <Text
-        style={[
-          { color: "black" },
-          // Platform.OS === "android" ? { fontSize: 20 } : { fontSize: 1 }
-        ]}
-      >
-        Helloworld
-      </Text>
-    </View>
-  );
-};
 
 //  const navigation = useNavigation();
 
-const handleBackButton = () => {
-  Alert.alert("Message", "Do you really want to discard your transaction?", [
-    {
-      text: "No",
-    },
-    {
-      text: "Yes",
-      onPress: () => {
-        AsyncStorage.clear();
-        // navigation.reset({routes:[{name:'QRCodeScreen'}]})
-      },
-    },
-  ]);
-};
+
 
 function RootNavigator() {
   return (
