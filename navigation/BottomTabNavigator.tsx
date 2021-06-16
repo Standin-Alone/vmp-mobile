@@ -8,7 +8,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useNavigation, useNavigationState } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
-import { StackActions } from '@react-navigation/native';
+import { StackActions } from "@react-navigation/native";
 import { StyleSheet, Alert, BackHandler } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Colors from "../constants/Colors";
@@ -29,39 +29,29 @@ export default function BottomTabNavigator() {
   const navigation_state = useNavigationState(
     (state) => state.routes[state.index].name
   );
+
+  const backAction = () => {
+    Alert.alert("Message", "Are you sure you want to logout?", [
+      {
+        text: "No",
+      },
+      {
+        text: "Yes",
+        onPress: () => {
+          alert("helo");
+          AsyncStorage.removeItem("otp_code");
+          AsyncStorage.removeItem("email");
+          navigation.dispatch(StackActions.replace("AuthenticationScreen"));
+        },
+      },
+    ]);
+    return true;
+  };
+
   useEffect(() => {
-    navigation.addListener("focus", () => {
-      if (navigation.isFocused()) {
-        const backAction = () => {
-          Alert.alert("Message", "Are you sure you want to logout?", [
-            {
-              text: "No",
-            },
-            {
-              text: "Yes",
-              onPress: () => {
-                AsyncStorage.removeItem("otp_code");
-                AsyncStorage.removeItem("email");              
-                navigation.dispatch(
-                  StackActions.replace('AuthenticationScreen')
-                );
-                
-              },
-            },
-          ]);
-          return true;
-        };
-        const backHandler = BackHandler.addEventListener(
-          "hardwareBackPress",
-          backAction
-        );
-        backHandler
-        return () => {
-        
-        BackHandler.removeEventListener('hardwareBackPress',backAction)
-      };
-      }
-    });
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
   }, []);
   return (
     <BottomTab.Navigator
