@@ -38,7 +38,7 @@ export default function BottomTabNavigator() {
       {
         text: "Yes",
         onPress: () => {
-          alert("helo");
+          
           AsyncStorage.removeItem("otp_code");
           AsyncStorage.removeItem("email");
           navigation.dispatch(StackActions.replace("AuthenticationScreen"));

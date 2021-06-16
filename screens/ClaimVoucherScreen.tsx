@@ -33,7 +33,7 @@ import NetInfo from "@react-native-community/netinfo";
 import ImageViewer from "react-native-image-zoom-viewer";
 import * as Location from "expo-location";
 import NumberFormat from 'react-number-format';
-
+import FastImage from 'react-native-fast-image'
 import Spinner from "react-native-loading-spinner-overlay";
 
 const labels = ["Claimer Profile", "Add Commodity", "Import Document"];
@@ -382,9 +382,13 @@ export default function ClaimVoucherScreen({
             onRequestClose={() => setShowImage(false)}
             animationType="fade"
           >
-            <ImageViewer
+            {/* <ImageViewer
               imageUrls={[{ url: "data:image/jpeg;base64," + imageURI }]}
               index={0}
+            /> */}
+
+            <FastImage
+              source={{uri:"data:image/jpeg;base64," + imageURI }}
             />
           </Modal>
 
