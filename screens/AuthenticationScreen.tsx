@@ -27,22 +27,15 @@ export default function AuthenticationScreen({
   useEffect(() => {
     let session_userID;
     const checkUserID = async () => {
-      NetInfo.fetch().then(async (response)=>{
-        if(response.isConnected){
-
-      
-      session_userID = await AsyncStorage.getItem("supplier_id");
-      console.warn(session_userID);
-      if (session_userID != null) {
-        navigation.replace("Login");
-      } else {
-        navigation.replace("Login");
-      }
-    }else{
-      Alert.alert("Error", "No Internet Connection.");
-
-    }
-    })
+      NetInfo.fetch().then(async (response) => {
+        if (response.isConnected) {
+          session_userID = await AsyncStorage.getItem("supplier_id");
+          console.warn(session_userID);
+          navigation.replace("Login");
+        } else {
+          Alert.alert("Error", "No Internet Connection.");
+        }
+      });
     };
 
     const timeout = window.setTimeout(() => checkUserID(), 2000);
@@ -68,21 +61,20 @@ const styles = StyleSheet.create({
   logo: {
     width: 200,
     height: 200,
-    borderRadius: 40,    
-    left: (MyWindow.Width / 100),
-    top: (MyWindow.Height / 100) * -10,    
-    alignSelf:'center',
+    borderRadius: 40,
+    left: MyWindow.Width / 100,
+    top: (MyWindow.Height / 100) * -10,
+    alignSelf: "center",
     marginVertical: (MyWindow.Height / 100) * 35,
     marginBottom: MyWindow.Height / 100,
   },
   title_container: {
-    marginVertical: (MyWindow.Height / 100) ,
+    marginVertical: MyWindow.Height / 100,
   },
-  title: {    
-    fontSize: 25,    
-    fontFamily:'playfair-regular',
+  title: {
+    fontSize: 25,
+    fontFamily: "playfair-regular",
     alignSelf: "center",
-    color:'white'
-    
+    color: "white",
   },
 });

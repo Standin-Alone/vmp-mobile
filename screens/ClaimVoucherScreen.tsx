@@ -1178,7 +1178,7 @@ export default function ClaimVoucherScreen({
             round
             uppercase
             color="#66BB6A"
-            style={styles.button}
+            style={currentPage == 0 ? styles.first_step_button : styles.button}
             onPress={goToNextPage}
             loading={is_loading}
           >
@@ -1223,15 +1223,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   button: {
-    marginRight: 20,
+    marginRight: 10,
     height: 50,
-    width: MyWindow.Width - 220,
+    width: MyWindow.Width / 100  * 45,
+    position: "relative",
+  },
+  first_step_button: {    
+    height: 50,
+    width: MyWindow.Width / 100 * 100,
     position: "relative",
   },
   go_back_button: {
-    marginRight: 20,
+    marginRight: 10,
     height: 50,
-    width: MyWindow.Width - 220,
+    width: MyWindow.Width /100  * 45,
     position: "relative",
   },
   add_button: {
@@ -1303,6 +1308,8 @@ const styles = StyleSheet.create({
     marginRight: -20,
     width: 100,
   },
+
+  
   price:{
     borderWidth:1,
     borderColor:'#ddd',
