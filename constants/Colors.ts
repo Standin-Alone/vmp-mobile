@@ -21,7 +21,7 @@ export default {
   header: '#2c2c2c',
   border: '#CAD1D7',
   base: '#66BB6A',
-  white: '#000',
+  white: '#ffffff',
   back: '#ddd',
   danger:'red',
   info: '#00CAC7',

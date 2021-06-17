@@ -1129,14 +1129,32 @@ export default function ClaimVoucherScreen({
         <Block center space="between">
           {/* <Text style={styles.title}>Claimer Profile</Text> */}
         </Block>
-        <Block center space="between">
-          <Text style={styles.title}>
-            Available Balance:
-            <Text style={{ color: Colors.info }}>
-              PHP{params[0].Available_Balance}
+        <Card
+          style={styles.balance_card}
+          >
+        <Card.Content>
+        <Icon
+          name="dollar"
+          family="antdesign"
+          color={Colors.white}
+          size={70}
+          style={styles.balance_icon}
+          />
+        
+        
+
+        <View style={{alignSelf:'center'}}>
+          <Text style={styles.balance_title}>
+            Available Balance: {"\n"} {"\n"}
+            <Text style={styles.balance_text}>
+            ₱{params[0].Available_Balance}
             </Text>
           </Text>
-        </Block>
+        </View>
+          
+        
+        </Card.Content>
+        </Card>
         <StepIndicator
           customStyles={customStyles}
           stepCount={3}
@@ -1219,7 +1237,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: "bold",
   },
   button: {
@@ -1290,6 +1308,28 @@ const styles = StyleSheet.create({
     width: MyWindow.Width - 20,
     alignSelf: "center",
     marginBottom: 20,
+  },
+  balance_card: {  
+    borderRadius: 10,
+    backgroundColor:Colors.info,
+    width: MyWindow.Width - 20,
+    height: MyWindow.Height / 100 * 15,
+    alignSelf: "center",
+    marginBottom: 20,
+    marginTop:20,
+  },
+  balance_icon:{
+    position:'absolute',
+    margin: MyWindow.Width / 100 * 5  
+  },
+  balance_title:{
+    color: Colors.white,
+    fontSize:16
+  },
+  balance_text:{
+    color: Colors.white,
+    fontSize:32,
+    fontWeight:'bold'
   },
   divider: {
     marginLeft: 25,
