@@ -1135,7 +1135,7 @@ export default function ClaimVoucherScreen({
         <Card.Content>
         <Icon
           name="dollar"
-          family="antdesign"
+          family="FontAwesome"
           color={Colors.white}
           size={70}
           style={styles.balance_icon}
