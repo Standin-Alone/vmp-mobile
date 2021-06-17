@@ -9,8 +9,8 @@ import {
   FlatList,
   BackHandler,
   Alert,
-  Modal,  
-  TextInput
+  Modal,
+  TextInput,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Card } from "react-native-paper";
@@ -32,8 +32,8 @@ import { Dialog } from "react-native-simple-dialogs";
 import NetInfo from "@react-native-community/netinfo";
 import ImageViewer from "react-native-image-zoom-viewer";
 import * as Location from "expo-location";
-import NumberFormat from 'react-number-format';
-import FastImage from 'react-native-fast-image'
+import NumberFormat from "react-number-format";
+import FastImage from "react-native-fast-image";
 import Spinner from "react-native-loading-spinner-overlay";
 
 const labels = ["Claimer Profile", "Add Commodity", "Import Document"];
@@ -387,9 +387,7 @@ export default function ClaimVoucherScreen({
               index={0}
             /> */}
 
-            <FastImage
-              source={{uri:"data:image/jpeg;base64," + imageURI }}
-            />
+            <FastImage source={{ uri: "data:image/jpeg;base64," + imageURI }} />
           </Modal>
 
           {/* Delete Confirm Dialog (Commodity) */}
@@ -605,19 +603,14 @@ export default function ClaimVoucherScreen({
                 />
               </Block>
 
-              <Block>                
-              
-                
-
+              <Block>
                 <NumberFormat
-                    value={cardInfo.Amount}
-                    displayType={'text'}
-                    thousandSeparator={true}
-                    
-                    renderText = {(values)=>{
-                      
-                      return (
-                        <Input
+                  value={cardInfo.Amount}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  renderText={(values) => {
+                    return (
+                      <Input
                         placeholder="0"
                         color={Colors.muted}
                         style={styles.unit_input}
@@ -625,7 +618,7 @@ export default function ClaimVoucherScreen({
                         rounded
                         type="numeric"
                         onChangeText={(value) => {
-                          setCardInfo({ ...cardInfo, Amount:value});
+                          setCardInfo({ ...cardInfo, Amount: value });
                           setCardInfo((prevState) => ({
                             ...prevState,
                             Total_Amount: prevState.Amount * prevState.Quantity,
@@ -633,11 +626,9 @@ export default function ClaimVoucherScreen({
                         }}
                         value={values}
                       />
-                      )
-                    }}
-                
+                    );
+                  }}
                 />
-
 
                 {/* old */}
 
@@ -657,17 +648,12 @@ export default function ClaimVoucherScreen({
                     }}
                     value={cardInfo.Amount.toLocaleString()}
                   /> */}
-              
-
-                
               </Block>
 
               <Block>
                 <Text style={(styles.title, { color: "red" })} h4>
                   Total Amount : ₱{cardInfo.Total_Amount}
                 </Text>
-                
-                
               </Block>
 
               <Block>
@@ -780,7 +766,7 @@ export default function ClaimVoucherScreen({
                   help="Amount"
                   rounded
                   type="decimal-pad"
-                  onChangeText={(value) => {                    
+                  onChangeText={(value) => {
                     setForm({ ...form, amount_txt: value });
                     setForm((prevState) => ({
                       ...prevState,
@@ -1129,31 +1115,25 @@ export default function ClaimVoucherScreen({
         <Block center space="between">
           {/* <Text style={styles.title}>Claimer Profile</Text> */}
         </Block>
-        <Card
-          style={styles.balance_card}
-          >
-        <Card.Content>
-        <Icon
-          name="dollar"
-          family="FontAwesome"
-          color={Colors.white}
-          size={70}
-          style={styles.balance_icon}
-          />
-        
-        
+        <Card style={styles.balance_card}>
+          <Card.Content>
+            <Icon
+              name="dollar"
+              family="FontAwesome"
+              color={Colors.white}
+              size={70}
+              style={styles.balance_icon}
+            />
 
-        <View style={{alignSelf:'center'}}>
-          <Text style={styles.balance_title}>
-            Available Balance: {"\n"} {"\n"}
-            <Text style={styles.balance_text}>
-            ₱{params[0].Available_Balance}
-            </Text>
-          </Text>
-        </View>
-          
-        
-        </Card.Content>
+            <View style={{ alignSelf: "center" }}>
+              <Text style={styles.balance_title}>
+                Available Balance: {"\n"} {"\n"}
+                <Text style={styles.balance_text}>
+                  ₱{params[0].Available_Balance}
+                </Text>
+              </Text>
+            </View>
+          </Card.Content>
         </Card>
         <StepIndicator
           customStyles={customStyles}
@@ -1243,18 +1223,18 @@ const styles = StyleSheet.create({
   button: {
     marginRight: 10,
     height: 50,
-    width: MyWindow.Width / 100  * 45,
+    width: (MyWindow.Width / 100) * 45,
     position: "relative",
   },
-  first_step_button: {    
+  first_step_button: {
     height: 50,
-    width: MyWindow.Width / 100 * 100,
+    width: (MyWindow.Width / 100) * 100,
     position: "relative",
   },
   go_back_button: {
     marginRight: 10,
     height: 50,
-    width: MyWindow.Width /100  * 45,
+    width: (MyWindow.Width / 100) * 45,
     position: "relative",
   },
   add_button: {
@@ -1309,27 +1289,27 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginBottom: 20,
   },
-  balance_card: {  
+  balance_card: {
     borderRadius: 10,
-    backgroundColor:Colors.info,
+    backgroundColor: Colors.info,
     width: MyWindow.Width - 20,
-    height: MyWindow.Height / 100 * 15,
+    height: (MyWindow.Height / 100) * 15,
     alignSelf: "center",
     marginBottom: 20,
-    marginTop:20,
+    marginTop: 20,
   },
-  balance_icon:{
-    position:'absolute',
-    margin: MyWindow.Width / 100 * 5  
+  balance_icon: {
+    position: "absolute",
+    margin: (MyWindow.Width / 100) * 5,
   },
-  balance_title:{
+  balance_title: {
     color: Colors.white,
-    fontSize:16
+    fontSize: 16,
   },
-  balance_text:{
+  balance_text: {
     color: Colors.white,
-    fontSize:32,
-    fontWeight:'bold'
+    fontSize: 32,
+    fontWeight: "bold",
   },
   divider: {
     marginLeft: 25,
@@ -1349,12 +1329,11 @@ const styles = StyleSheet.create({
     width: 100,
   },
 
-  
-  price:{
-    borderWidth:1,
-    borderColor:'#ddd',
-    borderRadius:20,
-    padding:10,
-    backgroundColor:Colors.light.background
-  }
+  price: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 20,
+    padding: 10,
+    backgroundColor: Colors.light.background,
+  },
 });
