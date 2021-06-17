@@ -18,14 +18,14 @@ import * as ip_config from "../ip_config";
 import * as LocalAuthentication from "expo-local-authentication";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import NetInfo from "@react-native-community/netinfo";
-import MaskInput,{createNumberMask } from 'react-native-mask-input';
+import MaskInput, { createNumberMask } from "react-native-mask-input";
 
 export default function LoginScreen({
   navigation,
 }: StackScreenProps<RootStackParamList, "Login">) {
   const [form, setForm] = useState({ username: "", password: "" });
   const [is_loading, setLoading] = useState(false);
-  const [price,setPrice] = useState('');
+  const [price, setPrice] = useState("");
   const [is_error, setError] = useState(false);
   const [is_warning, setWarning] = useState(false);
   const [is_biometrics_loading, setBiometricsLoading] = useState(false);
@@ -47,9 +47,12 @@ export default function LoginScreen({
   const biometricsAuth = async (param_supplier_id, is_fp_btn) => {
     const compatible = await LocalAuthentication.hasHardwareAsync();
     const enrolled = await LocalAuthentication.isEnrolledAsync();
-    const result = await LocalAuthentication.authenticateAsync();
+    const result = await LocalAuthentication.authenticateAsync({
+      disableDeviceFallback: true,
+      cancelLabel: "Cancel",
+    });
 
-    if (compatible) {
+    if (!compatible) {
       alert("this device is not compatible for biometric.");
     }
 
@@ -102,36 +105,33 @@ export default function LoginScreen({
                   "email",
                   response.data[0]["EMAIL"].toLocaleString()
                 );
-                
-                if (isFingerPrint == false) {
-                  if(check_compatible){
 
-                  
-                  
-                  AsyncStorage.setItem("is_fingerprint", "false");
-                  Alert.alert(
-                    "Message",
-                    "Do you want to enable login with fingerprint?",
-                    [
-                      {
-                        text: "Disable",
-                        onPress: () => {
-                          navigation.replace("OTPScreen", {
-                            supplier_id: get_supplier_id,
-                          });
-                          AsyncStorage.setItem("is_fingerprint", "false");
+                if (isFingerPrint == false) {
+                  if (check_compatible) {
+                    AsyncStorage.setItem("is_fingerprint", "false");
+                    Alert.alert(
+                      "Message",
+                      "Do you want to enable login with fingerprint?",
+                      [
+                        {
+                          text: "Disable",
+                          onPress: () => {
+                            navigation.replace("OTPScreen", {
+                              supplier_id: get_supplier_id,
+                            });
+                            AsyncStorage.setItem("is_fingerprint", "false");
+                          },
                         },
-                      },
-                      {
-                        text: "Enable",
-                        onPress: () => {
-                          AsyncStorage.setItem("is_fingerprint", "true");
-                          scanbiometrics(get_supplier_id, false);
+                        {
+                          text: "Enable",
+                          onPress: () => {
+                            AsyncStorage.setItem("is_fingerprint", "true");
+                            scanbiometrics(get_supplier_id, false);
+                          },
                         },
-                      },
-                    ]
-                  );
-                  }else{
+                      ]
+                    );
+                  } else {
                     navigation.replace("OTPScreen", {
                       supplier_id: get_supplier_id,
                     });
@@ -176,7 +176,7 @@ export default function LoginScreen({
         <Block>
           <Image source={Images.DA_Logo} style={styles.logo} />
         </Block>
-      
+
         <Block>
           <Input
             placeholder="Username..."
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   form_container: {
     alignItems: "center",
     marginTop: 200,
-  },  
+  },
   logo: {
     width: 150,
     height: 150,
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: MyWindow.Width - 40,
     backgroundColor: "#FFFFFF",
-    fontFamily:'playfair-regular'
+    fontFamily: "playfair-regular",
   },
   button: {
     height: 50,
