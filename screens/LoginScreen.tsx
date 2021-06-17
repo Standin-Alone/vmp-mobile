@@ -49,7 +49,7 @@ export default function LoginScreen({
     const enrolled = await LocalAuthentication.isEnrolledAsync();
     const result = await LocalAuthentication.authenticateAsync();
 
-    if (!compatible) {
+    if (compatible) {
       alert("this device is not compatible for biometric.");
     }
 
@@ -81,11 +81,12 @@ export default function LoginScreen({
     setError(false);
 
     //Check internet connection
-    NetInfo.fetch().then((response: any) => {
+    NetInfo.fetch().then(async (response: any) => {
       if (response.isConnected) {
         if (form.username != "" && form.password != "") {
           setWarning(false);
           setError(false);
+          const check_compatible = await LocalAuthentication.hasHardwareAsync();
           axios
             .post(ip_config.ip_address + "vmp-web/public/api/sign_in", form)
             .then((response) => {
@@ -101,7 +102,12 @@ export default function LoginScreen({
                   "email",
                   response.data[0]["EMAIL"].toLocaleString()
                 );
+                
                 if (isFingerPrint == false) {
+                  if(check_compatible){
+
+                  
+                  
                   AsyncStorage.setItem("is_fingerprint", "false");
                   Alert.alert(
                     "Message",
@@ -125,6 +131,11 @@ export default function LoginScreen({
                       },
                     ]
                   );
+                  }else{
+                    navigation.replace("OTPScreen", {
+                      supplier_id: get_supplier_id,
+                    });
+                  }
                 } else {
                   navigation.replace("OTPScreen", {
                     supplier_id: get_supplier_id,
