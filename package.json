@@ -68,6 +68,7 @@
     "react-native-loading-spinner-overlay": "^2.0.0",
     "react-native-mask-input": "^1.0.2",
     "react-native-mask-text": "^0.1.5",
+    "react-native-numeric-input": "^1.9.0",
     "react-native-otp-inputs": "^7.0.3",
     "react-native-paper": "^4.8.1",
     "react-native-phone-input": "^1.0.9",

@@ -9,6 +9,7 @@ export type RootStackParamList = {
   Login: undefined;
   ForgotPassword: undefined;
   OTPScreen: undefined;
+  FarmerProfileScreen: undefined;
   QRCodeScreen: undefined;
   ClaimVoucher: undefined;
   AuthenticationScreen:undefined;

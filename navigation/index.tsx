@@ -37,6 +37,10 @@ import AuthenticationScreen from "../screens/AuthenticationScreen";
 import OTPScreen from "../screens/OTPScreen";
 import ClaimVoucherScreen from "../screens/ClaimVoucherScreen";
 
+
+
+import FarmerProfileScreen from "../screens/voucher/FarmerProfileScreen";
+
 import { RootStackParamList } from "../types";
 import BottomTabNavigator from "./BottomTabNavigator";
 import DrawerTabNavigator from "./DrawerTabNavigator";
@@ -100,6 +104,7 @@ function RootNavigator() {
         component={AuthenticationScreen}
         options={{ title: "AuthenticationScreen" }}
       />
+      
       <Stack.Screen
         name="ClaimVoucher"
         component={ClaimVoucherScreen}
@@ -107,6 +112,16 @@ function RootNavigator() {
           title: "Claim Voucher",
           headerShown: true,
         }}
+      />
+
+
+      <Stack.Screen
+        name="FarmerProfileScreen"
+        component={FarmerProfileScreen}
+        options={{ title: "Farmer Profile ",
+                    headerTransparent: true,
+                    headerShown: true, 
+                    headerTitleAlign: 'center'}}
       />
     </Stack.Navigator>
   );

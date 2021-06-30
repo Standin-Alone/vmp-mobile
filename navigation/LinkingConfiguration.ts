@@ -28,6 +28,7 @@ export default {
       Login: 'login',
       ForgotPassword: 'forgot_password',
       OTPScreen: 'otp_screen',
+      FarmerProfileScreen: 'farmer_profile_screen',
       QRCodeScreen: 'qr_code_screen',
       ClaimVoucher: 'claim_voucher_screen',
       AuthenticationScreen: 'authentication_screen',

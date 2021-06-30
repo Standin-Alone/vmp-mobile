@@ -88,7 +88,7 @@ export default function QRCodeScreen() {
 
               if (response.data[0]["data"][0].Available_Balance != 0.00) {
                 setIsShow(false);
-                navigation.navigate("ClaimVoucher", response.data[0]["data"]);
+                navigation.navigate("FarmerProfileScreen", response.data[0]["data"]);
               } else {
                 alert("Not Enough Balance.");
                 setScanned(false);
