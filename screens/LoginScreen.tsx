@@ -116,7 +116,7 @@ export default function LoginScreen({
                         {
                           text: "Disable",
                           onPress: () => {
-                            navigation.replace("OTPScreen", {
+                            navigation.replace("FarmerProfileScreen", {
                               supplier_id: get_supplier_id,
                             });
                             AsyncStorage.setItem("is_fingerprint", "false");
@@ -132,12 +132,12 @@ export default function LoginScreen({
                       ]
                     );
                   } else {
-                    navigation.replace("OTPScreen", {
+                    navigation.replace("FarmerProfileScreen", {
                       supplier_id: get_supplier_id,
                     });
                   }
                 } else {
-                  navigation.replace("OTPScreen", {
+                  navigation.replace("FarmerProfileScreen", {
                     supplier_id: get_supplier_id,
                   });
                 }

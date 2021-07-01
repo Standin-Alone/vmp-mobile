@@ -20,6 +20,7 @@ export default function useCachedResources() {
           'roboto-regular': require('../assets/fonts/Roboto-Regular.ttf'),
           'roboto-thin': require('../assets/fonts/Roboto-Thin.ttf'),
           'roboto-light': require('../assets/fonts/Roboto-Light.ttf'),
+          'calibri-light': require('../assets/fonts/calibril.ttf'),
         });
       } catch (e) {
         // We might want to provide this error information to an error reporting service
