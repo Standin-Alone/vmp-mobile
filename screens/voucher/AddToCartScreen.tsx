@@ -54,11 +54,27 @@ export default function FarmerProfileScreen({
                             elevation={20}    
                             onPress={() => alert("sample")}
                             style={styles.card}
+
+                           
                         >
-                            <Card.Cover source={Images.egg} />
-                            <Card.Title title="No existing vouchers scanned." />
+                            <Card.Cover resizeMode="contain" source={Images.tray_egg} />
+                            <Card.Title title="Egg"   right = {()=>(
+                                <Button
+                                size="small"
+                                icon="add"
+                                iconFamily="material"
+                                iconSize={20}
+                                color="success"
+                                style={{ right: 0 }}
+                            
+                            >
+                            Add
+                            </Button>
+                            )}/>
                             <Card.Content>
-                            <Text>Card Text</Text>
+                            <Card.Actions>
+                               
+                            </Card.Actions>
                             
                             </Card.Content>
                             
