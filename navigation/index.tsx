@@ -40,6 +40,7 @@ import ClaimVoucherScreen from "../screens/ClaimVoucherScreen";
 
 
 import FarmerProfileScreen from "../screens/voucher/FarmerProfileScreen";
+import AddToCartScreen from "../screens/voucher/AddToCartScreen";
 
 import { RootStackParamList } from "../types";
 import BottomTabNavigator from "./BottomTabNavigator";
@@ -76,7 +77,7 @@ function RootNavigator() {
         headerShown: false,
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       }}
-      initialRouteName="AuthenticationScreen"
+      initialRouteName="AddToCartScreen"
       mode="modal"
     >
       <Stack.Screen name="Root" component={BottomTabNavigator} />
@@ -119,6 +120,15 @@ function RootNavigator() {
         name="FarmerProfileScreen"
         component={FarmerProfileScreen}
         options={{ title: "Farmer Profile ",
+                    headerTransparent: true,
+                    headerShown: true, 
+                    headerTitleAlign: 'center'}}
+      />
+
+      <Stack.Screen
+        name="AddToCartScreen"
+        component={AddToCartScreen}
+        options={{ title: "Commodities",
                     headerTransparent: true,
                     headerShown: true, 
                     headerTitleAlign: 'center'}}

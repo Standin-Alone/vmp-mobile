@@ -7,7 +7,8 @@ import Images from "../../constants/Images";
 import Colors from "../../constants/Colors";
 import MyWindow from "../../constants/Layout";
 import { Card } from "react-native-paper";
-import { Block, Button, Text } from "galio-framework";
+import { ScrollView } from "react-native-gesture-handler";
+import { Block, Button, Text,Icon } from "galio-framework";
 import {
   CodeField,
   Cursor,
@@ -23,51 +24,133 @@ export default function FarmerProfileScreen({
   navigation,
   route,
 }: StackScreenProps<RootStackParamList, "FarmerProfileScreen">) {
+
+  const params = route.params;
+
+  const claimVoucher = () => { 
+    navigation.navigate('AddToCartScreen',params);    
+  }
+
   return (
     <View style={styles.container}>
       
       <View style={styles.farmer_header} > 
           <Image source={Images.farmer} style={styles.logo} />
           <Text style={styles.name}>John Edcel Zenarosa</Text>
+          <Card
+            elevation={10}
+            style={styles.balance_card}  
+            mode="outlined"             
+            >
+                <Card.Title title={params[0].Available_Balance}  subtitle="Current Balance" 
+                  left={()=>
+                    <Text style={{color:Colors.base,fontFamily:'calibri-light',fontSize:50,fontWeight:'bold'}}>
+                          &#8369;
+                    </Text>
+                  }/>                
+        </Card>
       </View>
       <View style={styles.details_view}>
         <Text style={styles.details_text}>Details</Text>        
-        
+    
         <View style={styles.details_content}>
 
-           
-            <Text style={styles.detail_info_title}>Reference No</Text>        
-            <Text style={styles.detail_info_value}>DASDAS</Text>    
-      
-            <Text style={styles.detail_info_title}>Permanent Address</Text>        
-            <Text style={styles.detail_info_value}>DASDAS</Text> 
+        <View style={{flexDirection:"row",marginBottom:40}}>
+            <View style={{flex:1}}>
+                <Text style={styles.detail_info_title} >Reference No</Text>     
+            </View>
+            <View style={{flex:1}}>
+                <Text style={styles.detail_info_value}>{params[0].reference_no}</Text>    
+            </View>
+        </View>
+        
+        <View style={{flexDirection:"row",marginBottom:50}}>
+            <View style={{flex:1}}>
+                <Text style={styles.detail_info_title} >Region </Text>     
+            </View>
+            <View style={{flex:1}}>
+                <Text style={styles.detail_info_value}>{params[0].Region}</Text>    
+            </View>
+        </View>
 
-            <Text style={styles.detail_info_title}>Province Name</Text>        
-            <Text style={styles.detail_info_value}>DASDAS</Text> 
+        <View style={{flexDirection:"row",marginBottom:40}}>
+            <View style={{flex:1}}>
+                <Text style={styles.detail_info_title} >Province </Text>     
+            </View>
+            <View style={{flex:1}}>
+                <Text style={styles.detail_info_value}>{params[0].Province}</Text>    
+            </View>
+        </View>
 
-            <Text style={styles.detail_info_title}>Municipality  </Text>        
-            <Text style={styles.detail_info_value}>DASDAS</Text> 
-            
+        <View style={{flexDirection:"row",marginBottom:40}}>
+            <View style={{flex:1}}>
+                <Text style={styles.detail_info_title} >Municipality </Text>     
+            </View>
+            <View style={{flex:1}}>
+                <Text style={styles.detail_info_value}>{params[0].Municipality}</Text>    
+            </View>
+        </View>
+
+        <View style={{flexDirection:"row",marginBottom:40}}>
+            <View style={{flex:1}}>
+                <Text style={styles.detail_info_title} >Barangay </Text>     
+            </View>
+            <View style={{flex:1}}>
+                <Text style={styles.detail_info_value}>{params[0].Barangay}</Text>    
+            </View>
+        </View>
+
         </View>
       </View> 
 
 
 
       <View style={styles.history_view}>
-        <Text style={styles.history_text}>Claim History</Text>        
+        <Text style={styles.history_text}>Recent Claiming</Text>        
         
         <View style={styles.history_content}>
-        <Card
-            elevation={10}
-            style={styles.card}                
-            >
-                <Card.Title title="No existing vouchers scanned." />
-                <Card.Content></Card.Content>
-              </Card>
-            
+        <ScrollView style={{backgroundColor:'red',height:100}}> 
+          <Card
+              elevation={10}
+              style={styles.card}  
+              mode="outlined"             
+              >
+                  <Card.Title title="Total Amount "  subtitle="June 26, 2021" 
+                    left={()=>
+                      <Icon
+                      name="history"
+                      family="FontAwesome"
+                      color={Colors.base}
+                      size={30}
+                    />  
+                    }/>
+                  <Card.Content>
+                        <Text >
+                          
+                        </Text>
+                  </Card.Content>
+          </Card>
+          {/* <Card
+              elevation={10}
+              style={styles.card}                
+              >
+                  <Card.Title title="No history of Claiming" />
+                  <Card.Content></Card.Content>
+          </Card> */}
+        </ScrollView> 
         </View>
       </View> 
 
+
+      <Button
+    
+          uppercase
+          color={Colors.base}
+          style={styles.next_button}
+          onPress = {claimVoucher}
+            >
+             Claim Voucher
+    </Button>
     
     </View>
   );
@@ -86,7 +169,7 @@ const styles = StyleSheet.create({
   },
   farmer_header:{
     flex:1,
-    left:20,
+    left:20,    
     width: (MyWindow.Width / 100) * 90,    
   },
  
@@ -110,11 +193,13 @@ const styles = StyleSheet.create({
     fontFamily:'calibri-light',
     left:20,
     display:'flex',    
-    top:(MyWindow.Height / 100) * -60,
+    top:(MyWindow.Height / 100) * -43,
+    
   },
   details_text:{
     fontSize:25,
-    marginVertical:20
+    marginBottom:20
+    
   },
   details_info:{
     top:20,
@@ -125,17 +210,16 @@ const styles = StyleSheet.create({
   detail_info_title:{
    
     color:'#9E9FA0',
-    marginRight:50,  
+    justifyContent:'flex-start', 
     fontFamily:'calibri-light',
     fontSize:20,
 
   },
   detail_info_value:{
-    marginBottom:10,
     color:'#000000',
     fontFamily:'calibri-light',
     fontSize:20,    
-    alignSelf:'flex-end',
+    justifyContent:'flex-start', 
   }, 
 
   history_content:{  
@@ -149,7 +233,7 @@ const styles = StyleSheet.create({
     fontFamily:'calibri-light',
     left:20,
     display:'flex',    
-    top:(MyWindow.Height / 100) * -40,
+    top:(MyWindow.Height / 100) * -20,
   },
   history_text:{
     fontSize:25,
@@ -175,6 +259,12 @@ const styles = StyleSheet.create({
     fontFamily:'calibri-light',
     fontSize:20,    
     alignSelf:'flex-end',
+  },
+  next_button :{
+    width:(MyWindow.Width) / 100 * 95,
+  },
+  balance_card:{
+    marginTop:90
   }
 
 

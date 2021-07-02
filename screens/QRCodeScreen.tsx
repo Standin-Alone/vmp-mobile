@@ -70,7 +70,7 @@ export default function QRCodeScreen() {
     form = { reference_num: data };
     setScanned(true);
     setIsShow(true);
-
+    console.warn(form);
     // check internet connection
     NetInfo.fetch().then((response: any) => {
       if (response.isConnected) {
@@ -80,6 +80,7 @@ export default function QRCodeScreen() {
             form
           )
           .then((response) => {
+            
             if (response.data[0]["Message"] == "true") {
               // navigation.navigate('ClaimVoucher',response.data[0]['data']);
               // setScanned(false);

@@ -8,11 +8,12 @@ export type RootStackParamList = {
   NotFound: undefined;
   Login: undefined;
   ForgotPassword: undefined;
-  OTPScreen: undefined;
-  FarmerProfileScreen: undefined;
+  OTPScreen: undefined;  
   QRCodeScreen: undefined;
   ClaimVoucher: undefined;
   AuthenticationScreen:undefined;
+  FarmerProfileScreen: undefined;
+  AddToCartScreen: undefined;
 };
 
 export type BottomTabParamList = {
