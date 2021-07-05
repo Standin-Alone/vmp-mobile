@@ -78,7 +78,7 @@ function RootNavigator() {
         headerShown: false,
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       }}
-      initialRouteName="AddToCartScreen"
+      initialRouteName="AuthenticationScreen"
       mode="modal"
     >
       <Stack.Screen name="Root" component={BottomTabNavigator} />
@@ -135,14 +135,14 @@ function RootNavigator() {
                     headerTitleAlign: 'center'}}
       />
 
-      <Stack.Screen
+      {/* <Stack.Screen
         name="ViewCartScreen"
         component={ViewCartScreen}
         options={{ title: "Commodities",
                     headerTransparent: true,
                     headerShown: true, 
                     headerTitleAlign: 'center'}}
-      />
+      /> */}
     </Stack.Navigator>
   );
 }

@@ -25,7 +25,6 @@ const viewCartPanel = (props)=>(
           onPress={() => props.passedSetState(false)}
         />
 
-
     </DraggablePanel>
 )
 
