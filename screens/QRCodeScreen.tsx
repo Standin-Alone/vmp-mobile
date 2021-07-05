@@ -24,6 +24,7 @@ import { Toast } from "galio-framework";
 import { ProgressDialog } from "react-native-simple-dialogs";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import NetInfo from "@react-native-community/netinfo";
+import { Camera } from 'expo-camera';
 const { width } = Dimensions.get("window");
 const qrSize = width * 0.7;
 
@@ -87,9 +88,9 @@ export default function QRCodeScreen() {
               // setIsShow(false);
               // Test Available Balance
 
-              if (response.data[0]["data"][0].Available_Balance != 0.00) {
+              if (response.data[0]["data"][0].Available_Balance != 0.00) {                
                 setIsShow(false);
-                navigation.navigate("FarmerProfileScreen", response.data[0]["data"]);
+                navigation.navigate("FarmerProfileScreen",{data:response.data[0]["data"],program_items:response.data[0]["program_items"]});
               } else {
                 alert("Not Enough Balance.");
                 setScanned(false);
@@ -117,13 +118,18 @@ export default function QRCodeScreen() {
     <View style={styles.container}>
       <ProgressDialog message="Scanning QR code..." visible={isShow} />
 
-      {scanned == false ? (
-        <BarCodeScanner
-          onBarCodeScanned={scanned ? undefined : handleQRCodeScanned}
-          style={[StyleSheet.absoluteFillObject, styles.container]}
+
+
+      {scanned == false ? (        
+
+        <Camera
+        onBarCodeScanned={scanned ? undefined : handleQRCodeScanned}
+        ratio='16:9'
+        style={[StyleSheet.absoluteFillObject,styles.container]}
         >
-          <Image style={styles.qr} source={Images.qr_frame} />
-        </BarCodeScanner>
+        <Image style={styles.qr} source={Images.qr_frame} />
+        </Camera>
+
       ) : (
         <Text> No Access camera</Text>
       )}
@@ -134,14 +140,17 @@ export default function QRCodeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+      alignItems: "center",
+    
+    
+    
   },
+  
   barcodescanner: {
-    alignItems: "center",
-    backgroundColor: "#ecf0f1",
-    width: width,
-    height: width,
+    
+    marginBottom:20
+    
+    
   },
   title: {
     fontSize: 20,

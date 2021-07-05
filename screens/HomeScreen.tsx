@@ -51,24 +51,24 @@ export default function HomeScreen() {
     setRefreshing(true);
     NetInfo.fetch().then((response: any) => {
       if (response.isConnected) {
-        axios
-          .post(
-            ip_config.ip_address + "vmp-web/api/get-scanned-vouchers",
-            form
-          )
-          .then((response) => {
-            if (response.status == 200) {
-              console.warn(response.data);
-              setScannedVouchers(response.data);
-            }
+        // axios
+        //   .post(
+        //     ip_config.ip_address + "vmp-web/api/get-scanned-vouchers",
+        //     form
+        //   )
+        //   .then((response) => {
+        //     if (response.status == 200) {
+        //       console.warn(response.data);
+        //       setScannedVouchers(response.data);
+        //     }
 
-            setRefreshing(false);
-          })
-          .catch((error) => {
-            Alert.alert('Error!','Something went wrong.')
-            console.warn(error.response);
-            setRefreshing(false);
-          });
+        //     setRefreshing(false);
+        //   })
+        //   .catch((error) => {
+        //     Alert.alert('Error!','Something went wrong.')
+        //     console.warn(error.response);
+        //     setRefreshing(false);
+        //   });
       } else {
         Alert.alert("Message", "No Internet Connection.");
       }

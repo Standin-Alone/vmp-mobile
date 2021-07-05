@@ -42,7 +42,7 @@ export default function FarmerProfileScreen({
             style={styles.balance_card}  
             mode="outlined"             
             >
-                <Card.Title title={params[0].Available_Balance}  subtitle="Current Balance" 
+                <Card.Title title={params.data[0].Available_Balance}  subtitle="Current Balance" 
                   left={()=>
                     <Text style={{color:Colors.base,fontFamily:'calibri-light',fontSize:50,fontWeight:'bold'}}>
                           &#8369;
@@ -60,7 +60,7 @@ export default function FarmerProfileScreen({
                 <Text style={styles.detail_info_title} >Reference No</Text>     
             </View>
             <View style={{flex:1}}>
-                <Text style={styles.detail_info_value}>{params[0].reference_no}</Text>    
+                <Text style={styles.detail_info_value}>{params.data[0].reference_no}</Text>    
             </View>
         </View>
         
@@ -69,7 +69,7 @@ export default function FarmerProfileScreen({
                 <Text style={styles.detail_info_title} >Region </Text>     
             </View>
             <View style={{flex:1}}>
-                <Text style={styles.detail_info_value}>{params[0].Region}</Text>    
+                <Text style={styles.detail_info_value}>{params.data[0].Region}</Text>    
             </View>
         </View>
 
@@ -78,7 +78,7 @@ export default function FarmerProfileScreen({
                 <Text style={styles.detail_info_title} >Province </Text>     
             </View>
             <View style={{flex:1}}>
-                <Text style={styles.detail_info_value}>{params[0].Province}</Text>    
+                <Text style={styles.detail_info_value}>{params.data[0].Province}</Text>    
             </View>
         </View>
 
@@ -87,7 +87,7 @@ export default function FarmerProfileScreen({
                 <Text style={styles.detail_info_title} >Municipality </Text>     
             </View>
             <View style={{flex:1}}>
-                <Text style={styles.detail_info_value}>{params[0].Municipality}</Text>    
+                <Text style={styles.detail_info_value}>{params.data[0].Municipality}</Text>    
             </View>
         </View>
 
@@ -96,7 +96,7 @@ export default function FarmerProfileScreen({
                 <Text style={styles.detail_info_title} >Barangay </Text>     
             </View>
             <View style={{flex:1}}>
-                <Text style={styles.detail_info_value}>{params[0].Barangay}</Text>    
+                <Text style={styles.detail_info_value}>{params.data[0].Barangay}</Text>    
             </View>
         </View>
 
