@@ -91,7 +91,7 @@ export default function LoginScreen({
           setError(false);
           const check_compatible = await LocalAuthentication.hasHardwareAsync();
           axios
-            .post(ip_config.ip_address + "vmp-web/public/api/sign_in", form)
+            .post(ip_config.ip_address + "vmp-web/api/sign_in", form)
             .then((response) => {
               console.warn(response);
               let get_supplier_id = response.data[0]["SUPPLIER_ID"];

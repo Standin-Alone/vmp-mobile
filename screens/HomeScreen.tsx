@@ -53,7 +53,7 @@ export default function HomeScreen() {
       if (response.isConnected) {
         axios
           .post(
-            ip_config.ip_address + "vmp-web/public/api/get-scanned-vouchers",
+            ip_config.ip_address + "vmp-web/api/get-scanned-vouchers",
             form
           )
           .then((response) => {

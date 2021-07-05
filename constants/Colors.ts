@@ -27,5 +27,6 @@ export default {
   info: '#00CAC7',
   warning: '#FF9B05',
   background:'#fff5ab',
-  backgroundMuted: '#F5F5F5'
+  backgroundMuted: '#F5F5F5',
+  add:'#01B763'
 };

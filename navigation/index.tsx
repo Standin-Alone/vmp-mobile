@@ -41,6 +41,7 @@ import ClaimVoucherScreen from "../screens/ClaimVoucherScreen";
 
 import FarmerProfileScreen from "../screens/voucher/FarmerProfileScreen";
 import AddToCartScreen from "../screens/voucher/AddToCartScreen";
+import ViewCartScreen from "../screens/voucher/ViewCartScreen";
 
 import { RootStackParamList } from "../types";
 import BottomTabNavigator from "./BottomTabNavigator";
@@ -128,6 +129,15 @@ function RootNavigator() {
       <Stack.Screen
         name="AddToCartScreen"
         component={AddToCartScreen}
+        options={{ title: "Commodities",
+                    headerTransparent: true,
+                    headerShown: true, 
+                    headerTitleAlign: 'center'}}
+      />
+
+      <Stack.Screen
+        name="ViewCartScreen"
+        component={ViewCartScreen}
         options={{ title: "Commodities",
                     headerTransparent: true,
                     headerShown: true, 

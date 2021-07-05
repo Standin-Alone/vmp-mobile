@@ -14,6 +14,7 @@ export type RootStackParamList = {
   AuthenticationScreen:undefined;
   FarmerProfileScreen: undefined;
   AddToCartScreen: undefined;
+  ViewCartScreen: undefined;
 };
 
 export type BottomTabParamList = {
