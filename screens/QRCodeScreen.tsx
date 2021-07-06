@@ -71,13 +71,13 @@ export default function QRCodeScreen() {
     form = { reference_num: data };
     setScanned(true);
     setIsShow(true);
-    console.warn(form);
+    
     // check internet connection
     NetInfo.fetch().then((response: any) => {
       if (response.isConnected) {
         axios
           .post(
-            ip_config.ip_address + "vmp-web/public/api/get_voucher_info",
+            ip_config.ip_address + "vmp-web/api/get_voucher_info",
             form
           )
           .then((response) => {
@@ -147,7 +147,6 @@ const styles = StyleSheet.create({
   },
   
   barcodescanner: {
-    
     marginBottom:20
     
     
@@ -162,7 +161,7 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   qr: {
-    marginTop: "20%",
+    marginTop: "50%",
     marginBottom: "20%",
     width: qrSize,
     height: qrSize,

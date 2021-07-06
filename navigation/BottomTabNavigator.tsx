@@ -80,6 +80,7 @@ export default function BottomTabNavigator() {
             <TabBarIcon name="qr-code" color={color} />
           ),
           tabBarLabel: "Scan Voucher",
+          
         }}
       />
     </BottomTab.Navigator>
@@ -131,6 +132,7 @@ function TabOneNavigator() {
               />
             );
           },
+          
         })}
       />
     </TabOneStack.Navigator>
@@ -171,6 +173,10 @@ function TabTwoNavigator() {
               />
             );
           },
+          headerTransparent: true,
+          headerShown: true, 
+          headerTitleAlign: 'center',
+          headerTintColor:Colors.white
         })}
       />
     </TabTwoStack.Navigator>

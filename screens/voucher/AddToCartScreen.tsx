@@ -4,13 +4,13 @@ import {
   StyleSheet,
   View,
   Image,
-  KeyboardAvoidingView,
+
   FlatList,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootStackParamList } from "../../types";
 import { Footer, Body, Item } from "native-base";
-import Images from "../../constants/Images";
+
 import Colors from "../../constants/Colors";
 import MyWindow from "../../constants/Layout";
 import { Card } from "react-native-paper";
@@ -20,10 +20,8 @@ import NumberFormat from "react-number-format";
 import NumericInput from "react-native-numeric-input";
 
 
-import * as ip_config from "../../ip_config";
-import axios from "axios";
 import NetInfo from "@react-native-community/netinfo";
-import { color, interpolate } from "react-native-reanimated";
+
 
 export default function FarmerProfileScreen({
   navigation,
@@ -33,7 +31,9 @@ export default function FarmerProfileScreen({
   const [data, setData] = useState([]);
   const [isShowPanel, setShowPanel] = useState(false);
   const [showCart,setShowCart] = useState(false);
+  
   const [selectedCommodity, setSelectedCommodity] = useState({
+    image:'',
     name: "",
     ceiling_amount: 0,
     quantity: 1,
@@ -46,25 +46,19 @@ export default function FarmerProfileScreen({
 
   const [spiel, setSpiel] = useState({
     message: "",
-    color: theme.COLORS.ERROR,
+    status:'success'
   });
   const [cart, setCart] = useState([]);
   useEffect(() => {
-    const fetch_commodities = () => {
-      axios
-        .post(ip_config.ip_address + "vmp-web/api/get-items", params)
-        .then((response) => {
-          setData(response.data);
-        });
-    };
-
-    fetch_commodities();
+    
+    setData(params.program_items);
   }, []);
 
   //  open add to cart panel
-  const openAddPanel = (item_name, amount) => {
+  const openAddPanel = (item_name, amount,image) => {
     setShowPanel(true);
     setSelectedCommodity({
+      image:image,
       name: item_name,
       ceiling_amount: amount,
       total_amount: 0.0,
@@ -74,27 +68,31 @@ export default function FarmerProfileScreen({
   };
 
   //  add to cart
-  const addToCart = () => {
- 
-    setCart((prevState) => [...prevState, selectedCommodity]);
-    setShowPanel(false);
+  const addToCart = (total_amount,limit_price) => {
+    if(total_amount <= limit_price ){
+      setCart((prevState) => [...prevState, selectedCommodity]);
+      setShowPanel(false);
+    }
+    
   };
   return (
     <View style={styles.container}>
+
+      {/* COMMODITIES LIST */}
       <FlatList
         nestedScrollEnabled
         data={data}
         style={styles.flat_list}
         ListEmptyComponent={() => (
           <Card elevation={20} style={styles.card}>
-            <Card.Cover resizeMode="contain" source={Images.tray_egg} />
+            
             <Card.Title title="None" />
-            <Card.Content></Card.Content>
+            
           </Card>
         )}
         renderItem={({ item, index }) => (
           <Card elevation={10} style={styles.card}>
-            <Card.Cover resizeMode="contain" source={Images.egg} />
+            <Card.Cover resizeMode="contain" source={{uri:'data:image/jpeg;base64,'+item.base64}} />
             <Card.Title
               title={item.item_name}
               subtitle={"₱" + item.ceiling_amount}
@@ -107,7 +105,7 @@ export default function FarmerProfileScreen({
                   color={Colors.add}
                   style={{ right: 0 }}
                   onPress={() =>
-                    openAddPanel(item.item_name, item.ceiling_amount)
+                    openAddPanel(item.item_name, item.ceiling_amount,item.base64)
                   }
                 >
                   Add
@@ -141,7 +139,7 @@ export default function FarmerProfileScreen({
           onPress={() => setShowPanel(false)}
         />
 
-        <Image source={Images.egg} style={styles.commodity_image} />
+        <Image source={{uri:'data:image/jpeg;base64,'+selectedCommodity.image}} style={styles.commodity_image} />
 
         <View style={{ alignItems: "center", top: 20 }}>
           {/* Add Quantity */}
@@ -149,13 +147,21 @@ export default function FarmerProfileScreen({
             value={selectedCommodity.quantity}
             onChange={(value) => {
               var total_amount = parseFloat(selectedCommodity.price) * value;
+            console.warn(total_amount);
+            if (isNaN(total_amount) || total_amount <= selectedCommodity.ceiling_amount) {
               setSelectedCommodity((prevState) => ({
+                image: prevState.image,
                 name: prevState.name,
                 ceiling_amount: prevState.ceiling_amount,
                 quantity: value,
                 price: prevState.price,
                 total_amount: total_amount,
               }));
+              setSpiel({message:'',status:'success'});
+            }else{
+              setSpiel({message:'You exceed on the limit price ',status:'error'});
+            }
+
             }}
             minValue={1}
             maxValue={99999}
@@ -178,30 +184,38 @@ export default function FarmerProfileScreen({
             decimalScale={2}
             thousandSeparator={true}
             onValueChange={(values) => {
+
               const { formattedValue, value } = values;
 
               var converted_value = parseFloat(value);
               var total_amount = converted_value * selectedCommodity.quantity;
 
-              if (converted_value <= selectedCommodity.ceiling_amount) {
+              if (isNaN(total_amount) || total_amount <= selectedCommodity.ceiling_amount) {
                 setSelectedCommodity((prevState) => ({
+                  image: prevState.image,
                   name: prevState.name,
                   ceiling_amount: prevState.ceiling_amount,
                   quantity: prevState.quantity,
                   price: converted_value,
                   total_amount: total_amount,
                 }));
+                setSpiel({message:'',status:'success'});
+              }else{
+                setSpiel({message:'You exceed on the limit price ',status:'error'});
               }
             }}
+
             renderText={(values, props) => {
               return (
                 <Input
                   placeholder="0"
                   color={Colors.muted}
-                  style={styles.amount_input}
+                  style={[styles.amount_input,
+                    (spiel.status == 'error' ? {borderColor:Colors.danger} : {borderColor:Colors.base} )                    
+                  ]}
                   label="Enter Amount:"
                   help={
-                    "Your ceiling amount is  ₱" +
+                    "Your limit amount is  ₱" +
                     selectedCommodity.ceiling_amount
                   }
                   bottomHelp={true}
@@ -209,6 +223,7 @@ export default function FarmerProfileScreen({
                   type="numeric"
                   onChangeText={(orig_val) => {
                     setSelectedCommodity((prevState) => ({
+                      image: prevState.image,
                       name: prevState.name,
                       ceiling_amount: prevState.ceiling_amount,
                       quantity: prevState.quantity,
@@ -217,9 +232,14 @@ export default function FarmerProfileScreen({
                   }}
                   value={values}
                 />
+
+                
+                
+                
               );
             }}
           />
+          {spiel.status == 'error' ? <Text style={styles.spiel}> {spiel.message} </Text>: null}
 
           <View style={styles.details_content}>
             <View style={{ flexDirection: "row", marginBottom: 50 }}>
@@ -238,6 +258,7 @@ export default function FarmerProfileScreen({
             </View>
           </View>
         </View>
+        {/* ADD TO CART BUTTON */}
         <Button
           size="small"
           icon="add-shopping-cart"
@@ -245,14 +266,15 @@ export default function FarmerProfileScreen({
           iconSize={20}
           color={Colors.add}
           style={styles.add_to_cart_button}
-          onPress={() => addToCart()}
+          onPress={() => addToCart(selectedCommodity.total_amount,selectedCommodity.ceiling_amount)}
         >
           Add To Cart
         </Button>
       </DraggablePanel>            
+      {/* VIEW CART BUTTON */}
       <Footer style={{ backgroundColor: "white" }}>
         <Button uppercase color={Colors.base} style={styles.cart_button}
-          // onPress={()=>navigation.navigate('ViewCartScreen')}
+          onPress={()=>navigation.navigate('ViewCartScreen',cart)}
         >
           <View style={{ flexDirection: "row" }}>
             <Text style={styles.cart_title_button}>
@@ -277,7 +299,7 @@ const styles = StyleSheet.create({
   },
   add_to_cart_button: {
     width: (MyWindow.Width / 100) * 95,
-    position: "absolute",
+    position: "absolute",    
     bottom: 0,
   },
   cart_title_button: {
@@ -344,8 +366,9 @@ const styles = StyleSheet.create({
   detail_info_value: {
     color: Colors.add,
     fontFamily: "calibri-light",
-    fontSize: 30,
+    fontSize: 25,
     justifyContent: "flex-start",
+    
   },
   detail_info_title: {
     color: "#9E9FA0",
@@ -361,5 +384,10 @@ const styles = StyleSheet.create({
     fontSize:20,
     fontWeight:'bold',
     fontFamily:'calibri-light',
-    position: "relative"}
+    position: "relative"},
+  spiel:{
+    color:Colors.danger,
+    bottom:10,
+    fontFamily:'calibri-light' }
+
 });

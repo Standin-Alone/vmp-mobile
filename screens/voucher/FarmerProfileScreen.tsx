@@ -8,17 +8,8 @@ import Colors from "../../constants/Colors";
 import MyWindow from "../../constants/Layout";
 import { Card } from "react-native-paper";
 import { ScrollView } from "react-native-gesture-handler";
-import { Block, Button, Text,Icon } from "galio-framework";
-import {
-  CodeField,
-  Cursor,
-  useBlurOnFulfill,
-  useClearByFocusCell,
-} from "react-native-confirmation-code-field";
-import { ProgressDialog } from "react-native-simple-dialogs";
-import * as ip_config from "../ip_config";
-import axios from "axios";
-import NetInfo from "@react-native-community/netinfo";
+import { Button, Text,Icon } from "galio-framework";
+
 
 export default function FarmerProfileScreen({
   navigation,

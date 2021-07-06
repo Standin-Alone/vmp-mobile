@@ -353,6 +353,7 @@ export default function ClaimVoucherScreen({
                         : null
                     }
                   />
+                  
                   <Card.Cover
                     source={{ uri: "data:image/jpeg;base64," + item.uri }}
                     resizeMode={"contain"}
