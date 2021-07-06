@@ -25,22 +25,33 @@ export default function ViewCartScreen({
 }: StackScreenProps<RootStackParamList, "ViewCartScreen">) {
   const params = route.params;
   const [data, setData] = useState([]);
+  const [new_cart, setNewCart] = useState([]);
   useEffect(() => {
     setData(params);
   });
   const [selectedId, setSelectedId] = useState(null);
-  const leftContent = (index) => (
-    <Button
-      size="small"
-      icon="trash"
-      iconFamily="entypo"
-      iconSize={20}
+  const leftContent = (delete_index) => (
+    <View style={{top:20}}>
+      <Icon
+      name="trash"
+      family="entypo"
       color={Colors.danger}
-      onlyIcon
-      onPress={() => {
-        setSelectedId(index);
+      size={40}      
+      onPress={() =>{
+        
+        
+
+        
+         let new_data = data;
+         new_data.splice(delete_index,delete_index+1);
+         setNewCart(new_data);
+        if(data.length == 0){
+          navigation.goBack();
+        }
+
       }}
-    ></Button>
+    />
+    </View>
   );
 
   return (
@@ -48,16 +59,17 @@ export default function ViewCartScreen({
       <FlatList
         nestedScrollEnabled
         data={data}
+        extraData={new_cart}
         style={styles.flat_list}
-        ListEmptyComponent={() => (
-          <Card elevation={10}>
-            <Card.Title title="None" />
-          </Card>
-        )}
-        extraData={selectedId}
+        // ListEmptyComponent={() => (
+        //   <Card elevation={10}>
+        //     <Card.Title title="None" />
+        //   </Card>
+        // )}
+        
         renderItem={({ item, index }) => (
           <Swipeable renderLeftActions={() => leftContent(index)}>
-            {/* <Card elevation={20} >            
+            <Card elevation={20} >            
             <Card.Title 
             title={item.name}
 
@@ -89,27 +101,49 @@ export default function ViewCartScreen({
               />
             }
             />
-
-        
-            <Card.Content>
-
-
-
-            </Card.Content>
-          </Card> */}
+          </Card>
           </Swipeable>
         )}
       />
 
       <Card style={styles.cart_details}>
-        <Card.Title title="Details" />
+        <Card.Title title="Details" titleStyle={styles.details_title}/>
         <Card.Content>
-          <View style={{ flexDirection: "row", marginBottom: 40 }}>
+          <View style={{ flexDirection: "row", marginBottom: 20 }}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.detail_info_title}>Reference No</Text>
+              <Text style={styles.detail_info_title}>Current Balance:</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.detail_info_value}></Text>
+              <Text style={styles.detail_info_value}>₱1230.00</Text>
+            </View>
+          </View>
+
+          <View style={{ flexDirection: "row", marginBottom: 20 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.detail_info_title}>Total:</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.detail_info_value}>₱800.00</Text>
+            </View>
+          </View>
+
+
+          <View style={{ flexDirection: "row", marginBottom: 20 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.detail_info_title}>
+              - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+              </Text>
+            </View>
+          
+          </View>
+
+
+          <View style={{ flexDirection: "row", marginBottom: 20 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.detail_info_title}>Remaining Balance:</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.remaining_balance}>₱430.00</Text>
             </View>
           </View>
         </Card.Content>
@@ -136,8 +170,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   cart_details: {
-    height: (MyWindow.Height / 100) * 50,
-    marginHorizontal: (MyWindow.Width / 100) * 5,
+    height: (MyWindow.Height / 100) * 30,
+    marginHorizontal: (MyWindow.Width / 100) * 2,
     borderRadius: 20,
     marginBottom: 20,
   },
@@ -159,9 +193,21 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   detail_info_value: {
-    color: "#000000",
+    color: Colors.base,
     fontFamily: "calibri-light",
     fontSize: 20,
+    justifyContent: "flex-start",
+  },
+  details_title:{
+    fontFamily: "calibri-light",
+    fontSize:25,
+    fontWeight:'bold'
+  },
+  remaining_balance: {
+    color: Colors.base,
+    fontFamily: "calibri-light",
+    fontSize: 20,
+    fontWeight:'bold',
     justifyContent: "flex-start",
   },
 });

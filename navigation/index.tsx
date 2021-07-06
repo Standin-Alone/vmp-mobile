@@ -79,7 +79,7 @@ function RootNavigator() {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         
       }}
-      initialRouteName="ViewCartScreen"
+      initialRouteName="Root"
       mode="modal"
     >
       <Stack.Screen name="Root" component={BottomTabNavigator} />
