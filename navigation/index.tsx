@@ -40,8 +40,16 @@ import ClaimVoucherScreen from "../screens/ClaimVoucherScreen";
 
 
 import FarmerProfileScreen from "../screens/voucher/FarmerProfileScreen";
+
+
+// CCSF
+import FertilizerScreen from "../screens/voucher/FertilizerScreen";
+
+// CCSF
 import AddToCartScreen from "../screens/voucher/AddToCartScreen";
 import ViewCartScreen from "../screens/voucher/ViewCartScreen";
+
+
 
 import { RootStackParamList } from "../types";
 import BottomTabNavigator from "./BottomTabNavigator";
@@ -127,6 +135,7 @@ function RootNavigator() {
                     headerTitleAlign: 'center'}}
       />
 
+      {/* CCSF */}
       <Stack.Screen
         name="AddToCartScreen"
         component={AddToCartScreen}
@@ -135,7 +144,9 @@ function RootNavigator() {
                     headerShown: true, 
                     headerTitleAlign: 'center'}}
       />
-
+  
+  
+    {/* CCSF */}
       <Stack.Screen
         name="ViewCartScreen"
         component={ViewCartScreen}
@@ -143,8 +154,19 @@ function RootNavigator() {
                     headerTransparent: true,
                     headerShown: true, 
                     headerTitleAlign: 'center',
-                    cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
-                    gestureEnabled:true
+                    cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS                    
+                  
+                  }}
+      />
+
+    {/* RRP */}
+       <Stack.Screen
+        name="FertilizerScreen"
+        component={FertilizerScreen}
+        options={{ title: "Claim Fertilizer",
+                    headerTransparent: true,
+                    headerShown: true, 
+                    headerTitleAlign: 'center',                                        
                   
                   }}
       />

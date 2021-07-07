@@ -19,6 +19,7 @@ import NumericInput from "react-native-numeric-input";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { Block, Button, Text, Icon, Input, theme } from "galio-framework";
 import { initialWindowMetrics } from "react-native-safe-area-context";
+import { supportedAuthenticationTypesAsync } from "expo-local-authentication";
 export default function ViewCartScreen({
   navigation,
   route,
@@ -26,32 +27,101 @@ export default function ViewCartScreen({
   const params = route.params;
   const [data, setData] = useState([]);
   const [new_cart, setNewCart] = useState([]);
-  useEffect(() => {
-    setData(params);
+  const [total, setTotal] = useState(0.0);
+  let sum = 0;
+  useEffect(() => {    
+    setData(params.cart);
+    
+    setTotal(
+      params.cart
+        .reduce((prev, current) => prev + current.total_amount, 0)
+        .toFixed(2)
+    );
   });
-  const [selectedId, setSelectedId] = useState(null);
-  const leftContent = (delete_index) => (
-    <View style={{top:20}}>
+
+  // RIGHT CONTENT OF CARD
+  const rightContent = (delete_index) => (
+    <View style={{ top: 20 }}>
       <Icon
-      name="trash"
-      family="entypo"
-      color={Colors.danger}
-      size={40}      
-      onPress={() =>{
-        
-        
+        name="trash"
+        family="entypo"
+        color={Colors.danger}
+        size={40}
+        onPress={() => {
+          let new_data = data;
+          new_data.splice(delete_index, delete_index + 1);
+          setNewCart(new_data);
+        }}
+      />
+    </View>
+  );
+
+  // QUANTITY INPUT TEXTBOX
+  const numericInput = (item, index) => (
+    <NumericInput
+      value={item.quantity}
+      onChange={(value) => {
+        var total_amount = parseFloat(item.price) * value;
+
+        let compute_total = data.map((prev) => {
+          sum += prev.total_amount;
+          return sum;
+        });
 
         
-         let new_data = data;
-         new_data.splice(delete_index,delete_index+1);
-         setNewCart(new_data);
-        if(data.length == 0){
-          navigation.goBack();
-        }
+      
+          setData((prevState) => {
+            if (prevState[index].name == item.name) {
+              prevState[index].total_amount = total_amount;
+              prevState[index].quantity = value;
+            }
+          });
+        
+
+        setTotal(compute_total);
+
+        
+        
 
       }}
+      minValue={1}
+      maxValue={99999}
+      totalWidth={150}
+      totalHeight={40}
+      iconSize={25}
+      initValue={item.quantity}
+      step={1}
+      valueType="integer"
+      rounded
+      iconStyle={{ color: "white" }}
+      rightButtonBackgroundColor={Colors.add}
+      leftButtonBackgroundColor={Colors.add}
     />
-    </View>
+  );
+
+  // RENDER ITEM INSIDE FLATLIST
+  const renderItem = (item, index) => (
+    <Swipeable renderRightActions={() => rightContent(index)}>
+      <Card elevation={20} style={styles.card}>
+        <Card.Title
+          title={item.name + " (" + item.unit_measure + ")"}
+          left={() => (
+            <Image
+              source={{ uri: "data:Image/jpeg;base64," + item.image }}
+              style={styles.commodity_image}
+            />
+          )}
+          subtitle={"₱" + parseFloat(item.total_amount)}
+          subtitleStyle={{
+            fontFamily: "calibri-light",
+            color: Colors.base,
+            fontSize: 15,
+          }}
+          titleStyle={{ fontFamily: "calibri-light", fontWeight: "bold" }}
+          right={() => numericInput(item, index)}
+        />
+      </Card>
+    </Swipeable>
   );
 
   return (
@@ -59,62 +129,21 @@ export default function ViewCartScreen({
       <FlatList
         nestedScrollEnabled
         data={data}
-        extraData={new_cart}
+        extraData={data}
         style={styles.flat_list}
-        // ListEmptyComponent={() => (
-        //   <Card elevation={10}>
-        //     <Card.Title title="None" />
-        //   </Card>
-        // )}
-        
-        renderItem={({ item, index }) => (
-          <Swipeable renderLeftActions={() => leftContent(index)}>
-            <Card elevation={20} >            
-            <Card.Title 
-            title={item.name}
-
-            left={()=>
-              <Image source={{uri:'data:Image/jpeg;base64,'+item.image}} style={styles.commodity_image} />
-            }
-            subtitle={"₱"+item.total_amount}
-            subtitleStyle={{fontFamily:'calibri-light',color:Colors.base,fontSize:15}}
-            titleStyle={{fontFamily:'calibri-light',fontWeight:'bold'}}
-
-            right={()=>
-                <NumericInput
-                // value={selectedCommodity.quantity}
-                // onChange={(value) => {
-        
-                // }}
-                minValue={1}
-                maxValue={99999}
-                totalWidth={150}
-                totalHeight={40}
-                iconSize={25}
-                initValue={item.quantity}
-                step={1}
-                valueType="integer"
-                rounded
-                iconStyle={{ color: "white" }}
-                rightButtonBackgroundColor={Colors.add}
-                leftButtonBackgroundColor={Colors.add}
-              />
-            }
-            />
-          </Card>
-          </Swipeable>
-        )}
+        renderItem={({ item, index }) => renderItem(item, index)}
+        keyExtractor={(item) => item.name}
       />
 
       <Card style={styles.cart_details}>
-        <Card.Title title="Details" titleStyle={styles.details_title}/>
+        <Card.Title title="Details" titleStyle={styles.details_title} />
         <Card.Content>
           <View style={{ flexDirection: "row", marginBottom: 20 }}>
             <View style={{ flex: 1 }}>
               <Text style={styles.detail_info_title}>Current Balance:</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.detail_info_value}>₱1230.00</Text>
+              <Text style={styles.detail_info_value}>₱{params.available_balance}</Text>
             </View>
           </View>
 
@@ -123,27 +152,25 @@ export default function ViewCartScreen({
               <Text style={styles.detail_info_title}>Total:</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.detail_info_value}>₱800.00</Text>
+              <Text style={styles.detail_info_value}>₱{total}</Text>
             </View>
           </View>
-
 
           <View style={{ flexDirection: "row", marginBottom: 20 }}>
             <View style={{ flex: 1 }}>
               <Text style={styles.detail_info_title}>
-              - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+                - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                -
               </Text>
             </View>
-          
           </View>
-
 
           <View style={{ flexDirection: "row", marginBottom: 20 }}>
             <View style={{ flex: 1 }}>
               <Text style={styles.detail_info_title}>Remaining Balance:</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.remaining_balance}>₱430.00</Text>
+              <Text style={styles.remaining_balance}>₱ {(params.available_balance - total).toFixed(2)}</Text>
             </View>
           </View>
         </Card.Content>
@@ -151,7 +178,7 @@ export default function ViewCartScreen({
 
       <Footer style={{ backgroundColor: "white" }}>
         <Button uppercase color={Colors.base} style={styles.cart_button}>
-          Validate Documents
+          Checkout
         </Button>
       </Footer>
     </View>
@@ -198,16 +225,22 @@ const styles = StyleSheet.create({
     fontSize: 20,
     justifyContent: "flex-start",
   },
-  details_title:{
+  details_title: {
     fontFamily: "calibri-light",
-    fontSize:25,
-    fontWeight:'bold'
+    fontSize: 25,
+    fontWeight: "bold",
   },
   remaining_balance: {
     color: Colors.base,
     fontFamily: "calibri-light",
     fontSize: 20,
-    fontWeight:'bold',
+    fontWeight: "bold",
     justifyContent: "flex-start",
+  },
+  card: {
+    marginTop: 10,
+    marginHorizontal: 2,
+    marginBottom: 20,
+    borderRadius: 10,
   },
 });

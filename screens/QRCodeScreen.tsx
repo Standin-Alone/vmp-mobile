@@ -103,7 +103,7 @@ export default function QRCodeScreen() {
             }
           })
           .catch((error) => {
-            console.warn(error);
+            console.warn(error.response);
             setScanned(false);
             setIsShow(false);
           });

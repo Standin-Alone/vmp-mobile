@@ -16,6 +16,7 @@ export type RootStackParamList = {
   FarmerProfileScreen: undefined;
   AddToCartScreen: undefined;
   ViewCartScreen: undefined;
+  FertilizerScreen: undefined;
 };
 
 export type BottomTabParamList = {
