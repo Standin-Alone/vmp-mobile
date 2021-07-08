@@ -12,7 +12,6 @@ import DraggablePanel from "react-native-draggable-panel";
 import { Block, Button, Text, Icon, Input, theme } from "galio-framework";
 import NumberFormat from "react-number-format";
 import NumericInput from "react-native-numeric-input";
-
 import NetInfo from "@react-native-community/netinfo";
 
 export default function FarmerProfileScreen({
