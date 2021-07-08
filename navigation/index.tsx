@@ -19,7 +19,6 @@ import React, {
   useEffect,
   createContext,
   useMemo,
-  AuthContextValue,
 } from "react";
 import {
   BackHandler,
@@ -42,8 +41,9 @@ import ClaimVoucherScreen from "../screens/ClaimVoucherScreen";
 import FarmerProfileScreen from "../screens/voucher/FarmerProfileScreen";
 
 
-// CCSF
+// rrp
 import FertilizerScreen from "../screens/voucher/FertilizerScreen";
+import AttachmentScreen from "../screens/voucher/AttachmentScreen";
 
 // CCSF
 import AddToCartScreen from "../screens/voucher/AddToCartScreen";
@@ -164,6 +164,17 @@ function RootNavigator() {
         name="FertilizerScreen"
         component={FertilizerScreen}
         options={{ title: "Claim Fertilizer",
+                    headerTransparent: true,
+                    headerShown: true, 
+                    headerTitleAlign: 'center',                                        
+                  
+                  }}
+      />
+
+    <Stack.Screen
+        name="AttachmentScreen"
+        component={AttachmentScreen}
+        options={{ title: "Attachments",
                     headerTransparent: true,
                     headerShown: true, 
                     headerTitleAlign: 'center',                                        

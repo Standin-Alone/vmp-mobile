@@ -135,6 +135,8 @@ export default function ViewCartScreen({
         keyExtractor={(item) => item.name}
       />
 
+
+    {/* Cart Summary Details */}
       <Card style={styles.cart_details}>
         <Card.Title title="Details" titleStyle={styles.details_title} />
         <Card.Content>
