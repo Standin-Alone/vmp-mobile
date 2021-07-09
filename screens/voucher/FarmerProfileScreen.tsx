@@ -18,6 +18,7 @@ export default function FarmerProfileScreen({
 
   const params = route.params;
 
+
   const claimVoucher = () => { 
     navigation.navigate('FertilizerScreen',params);    
   }

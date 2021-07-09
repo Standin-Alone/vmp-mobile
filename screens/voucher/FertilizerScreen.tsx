@@ -22,6 +22,7 @@ export default function FertilizerScreen({
   )[0];
 
   const [fertilizerInput, setFertilizerInput] = useState({
+    sub_id: fertilizer.sub_id,
     fertilizer_amount: 0.0,
     ceiling_amount: fertilizer.ceiling_amount,
     quantity: 1,
@@ -35,20 +36,24 @@ export default function FertilizerScreen({
 
   const claimFertilizer = ()=>{
       if(spiel.status == 'success'  && fertilizerInput.total_amount != 0){
-        navigation.navigate('AttachmentScreen',{data:params.data[0],fertilizer_info:fertilizerInput})
+        navigation.navigate('AttachmentScreen',{data:params.data[0],
+          commodity_info:fertilizerInput,
+          supplier_id:params.supplier_id,
+          full_name:params.full_name,
+          user_id:params.user_id
+        })
       
-      }else if(spiel.status == 'error' ){
-        
       }
   }
   // Add Quantity
   const rightComponent = () => (
     <NumericInput
       
-      containerStyle={{borderWidth:3}}
+      containerStyle={{borderWidth:0}}
+      
       value={fertilizerInput.quantity}
       onChange={(value) => {
-        console.warn(fertilizerInput.fertilizer_amount);
+        
         var total_amount =
           parseFloat(fertilizerInput.fertilizer_amount) * value;
      
@@ -57,6 +62,7 @@ export default function FertilizerScreen({
           total_amount <= fertilizerInput.ceiling_amount
         ) {
           setFertilizerInput((prevState) => ({
+            sub_id: prevState.sub_id,
             fertilizer_amount: prevState.fertilizer_amount,
             ceiling_amount: prevState.ceiling_amount,
             total_amount: total_amount,
@@ -65,6 +71,7 @@ export default function FertilizerScreen({
           setSpiel({ message: "", status: "success" });
         } else {
           setFertilizerInput((prevState) => ({
+            sub_id: prevState.sub_id,
             fertilizer_amount: prevState.fertilizer_amount,
             ceiling_amount: prevState.ceiling_amount,
             total_amount: 0,
@@ -90,6 +97,7 @@ export default function FertilizerScreen({
       valueType="integer"
       rounded
       iconStyle={{ color: "white" }}
+      
       rightButtonBackgroundColor={Colors.add}
       leftButtonBackgroundColor={Colors.add}
     />
@@ -132,6 +140,7 @@ export default function FertilizerScreen({
                     total_amount <= fertilizerInput.ceiling_amount
                   ) {
                     setFertilizerInput((prevState) => ({
+                      sub_id: prevState.sub_id,
                       ceiling_amount: prevState.ceiling_amount,
                       fertilizer_amount: validated_converted_value,
                       total_amount: validated_total_amount,
@@ -140,6 +149,7 @@ export default function FertilizerScreen({
                     setSpiel({ message: "", status: "success" });
                   } else {
                     setFertilizerInput((prevState) => ({
+                      sub_id: prevState.sub_id,
                       ceiling_amount: prevState.ceiling_amount,
                       fertilizer_amount: converted_value,
                       total_amount: 0,
@@ -174,6 +184,7 @@ export default function FertilizerScreen({
                       type="numeric"
                       onChangeText={(orig_val) => {
                         setFertilizerInput((prevState) => ({
+                          sub_id: prevState.sub_id,
                           ceiling_amount: prevState.ceiling_amount,
                           fertilizer_amount: orig_val,
                           total_amount: prevState.total_amount,
@@ -248,8 +259,7 @@ export default function FertilizerScreen({
         </Body>
         {/* Claim Fertilizer Button */}
         <Footer style={{ backgroundColor: Colors.backgroundMuted }}>
-          <Button
-            uppercase
+          <Button            
             color={Colors.base}
             style={styles.claim_fertilizer_button}
             onPress={claimFertilizer}

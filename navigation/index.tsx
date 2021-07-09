@@ -14,18 +14,12 @@ import {
   CardStyleInterpolators,
   HeaderBackButton,
 } from "@react-navigation/stack";
-import React, {
-  useState,
-  useEffect,
-  createContext,
-  useMemo,
-} from "react";
+import React from "react";
 import {
   BackHandler,
   ColorSchemeName,
   StyleSheet,
-  AsyncStorage,
-  Alert,
+
 } from "react-native";
 
 // screens
@@ -87,7 +81,7 @@ function RootNavigator() {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         
       }}
-      initialRouteName="Root"
+      initialRouteName="AuthenticationScreen"
       mode="modal"
     >
       <Stack.Screen name="Root" component={BottomTabNavigator} />

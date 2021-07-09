@@ -68,13 +68,17 @@ export default function OTPScreen({
     return () => {};
   }, [isResend, timer]);
 
+  // verify otp
   const verifyOTP = async () => {
     const get_otp = await AsyncStorage.getItem("otp_code");
 
     setLoading(true);
     setError(false);
     if (code == get_otp) {
+      console.warn(params)
+      AsyncStorage.setItem("user_id", params.user_id.toLocaleString());
       AsyncStorage.setItem("supplier_id", params.supplier_id.toLocaleString());
+      AsyncStorage.setItem("full_name", params.full_name);
       navigation.replace("Root");
       setLoading(false);
     } else {
@@ -84,6 +88,7 @@ export default function OTPScreen({
     }
   };
 
+  // resend OTP
   const resendOTP = async () => {
     const email = await AsyncStorage.getItem("email");
     if (isResend == true) {

@@ -93,8 +93,10 @@ export default function LoginScreen({
           axios
             .post(ip_config.ip_address + "vmp-web/api/sign_in", form)
             .then((response) => {
-              console.warn(response);
-              let get_supplier_id = response.data[0]["SUPPLIER_ID"];
+              
+              let get_user_id = response.data[0]["user_id"];
+              let get_supplier_id = response.data[0]["supplier_id"];
+              let get_full_name = response.data[0]["full_name"];
 
               if (response.data[0]["Message"] == "true") {
                 AsyncStorage.setItem(
@@ -105,7 +107,11 @@ export default function LoginScreen({
                   "email",
                   response.data[0]["EMAIL"].toLocaleString()
                 );
-
+                let dataToSend = {
+                  user_id: get_user_id,
+                  supplier_id: get_supplier_id,
+                  full_name:get_full_name
+                };
                 if (isFingerPrint == false) {
                   if (check_compatible) {
                     AsyncStorage.setItem("is_fingerprint", "false");
@@ -116,9 +122,7 @@ export default function LoginScreen({
                         {
                           text: "Disable",
                           onPress: () => {
-                            navigation.replace("OTPScreen", {
-                              supplier_id: get_supplier_id,
-                            });
+                            navigation.replace("OTPScreen", dataToSend);
                             AsyncStorage.setItem("is_fingerprint", "false");
                           },
                         },
@@ -132,14 +136,10 @@ export default function LoginScreen({
                       ]
                     );
                   } else {
-                    navigation.replace("OTPScreen", {
-                      supplier_id: get_supplier_id,
-                    });
+                    navigation.replace("OTPScreen", dataToSend);
                   }
                 } else {
-                  navigation.replace("OTPScreen", {
-                    supplier_id: get_supplier_id,
-                  });
+                  navigation.replace("OTPScreen", dataToSend);
                 }
                 setWarning(false);
                 setLoading(false);

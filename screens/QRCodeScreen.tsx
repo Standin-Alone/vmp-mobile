@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
-  Button,
   Image,
-  Dimensions,
-  Alert,
-  BackHandler,
-  AsyncStorage,
+  Dimensions,    
 } from "react-native";
 import {
   useNavigation,
@@ -14,7 +10,7 @@ import {
   useIsFocused,
 } from "@react-navigation/native";
 
-import EditScreenInfo from "../components/EditScreenInfo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View } from "../components/Themed";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import Images from "../constants/Images";
@@ -67,8 +63,11 @@ export default function QRCodeScreen() {
   if (hasPermission === false) {
     return <Text> No Access camera</Text>;
   }
-  const handleQRCodeScanned = ({ type, data }) => {
-    form = { reference_num: data };
+  const handleQRCodeScanned = async ({ type, data }) => {
+    const get_user_id = await AsyncStorage.getItem("user_id");
+    const get_supplier_id = await AsyncStorage.getItem("supplier_id");
+    const get_full_name = await AsyncStorage.getItem("full_name");
+    form = { reference_num: data,supplier_id:get_supplier_id };
     setScanned(true);
     setIsShow(true);
     
@@ -80,7 +79,7 @@ export default function QRCodeScreen() {
             ip_config.ip_address + "vmp-web/api/get_voucher_info",
             form
           )
-          .then((response) => {
+          .then( (response) => {
             
             if (response.data[0]["Message"] == "true") {
               // navigation.navigate('ClaimVoucher',response.data[0]['data']);
@@ -90,7 +89,11 @@ export default function QRCodeScreen() {
 
               if (response.data[0]["data"][0].Available_Balance != 0.00) {                
                 setIsShow(false);
-                navigation.navigate("FarmerProfileScreen",{data:response.data[0]["data"],program_items:response.data[0]["program_items"]});
+                navigation.navigate("FarmerProfileScreen",{data:response.data[0]["data"],
+                program_items:response.data[0]["program_items"],
+                supplier_id:get_supplier_id,
+                full_name:get_full_name,
+                user_id:get_user_id});
               } else {
                 alert("Not Enough Balance.");
                 setScanned(false);
@@ -116,7 +119,14 @@ export default function QRCodeScreen() {
   };
   return (
     <View style={styles.container}>
-      <ProgressDialog message="Scanning QR code..." visible={isShow} />
+      <ProgressDialog 
+        title="Progress Dialog"
+        activityIndicatorColor="blue"
+        activityIndicatorSize="large"
+        animationType="slide"
+        message="Scanning QR code..."      
+      visible={isShow}  
+      />
 
 
 

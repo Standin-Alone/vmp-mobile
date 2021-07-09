@@ -26,7 +26,7 @@ var test_api = () => {
   axios
     .get(ipconfig.ip_address + "vmp-mobile/public/api/show")
     .then((response) => {
-      console.warn(response.data["message"]);
+      // console.warn(response.data["message"]);
     })
     .catch((error) => {
       Alert.alert('Error!','Something went wrong.')
