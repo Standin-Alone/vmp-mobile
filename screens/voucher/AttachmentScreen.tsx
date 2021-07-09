@@ -24,6 +24,7 @@ import ImageViewer from "react-native-image-zoom-viewer";
 import { ProgressDialog } from "react-native-simple-dialogs";
 import axios from "axios";
 import * as ip_config from "../../ip_config";
+import Spinner from "react-native-loading-spinner-overlay";
 
 export default function FertilizerScreen({
   navigation,
@@ -32,14 +33,16 @@ export default function FertilizerScreen({
   // Initialize variables
   const params = route.params;
 
-  const [spiel, setSpiel] = useState([]);
+  
 
   const [isShowProgress,setShowProgress] = useState(false);
+
+  const [isShowProgSubmit,setShowProgrSubmit] = useState(false);
     // Set Permission of Camera
   useEffect(() => {
     
     (async () => {
-      console.warn(params)
+      
       const status_foreground =
         await Location.requestForegroundPermissionsAsync();
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -61,11 +64,7 @@ export default function FertilizerScreen({
               [
                 {
                   text: "No",
-                  onPress:()=>{
-                    console.warn(attachments)
-
-
-                  }
+  
                 },
                 {
                   text: "Yes",
@@ -88,6 +87,21 @@ export default function FertilizerScreen({
     })();
   });
 
+
+
+  const confirmDialog =  (message,question,confirm) =>  Alert.alert(
+    message,
+    question,
+    [
+      {
+        text: "No",                
+      },
+      {
+        text: "Yes",
+        onPress: confirm,
+      },
+    ]
+  );
 
 
 //   attachments variable
@@ -119,25 +133,44 @@ export default function FertilizerScreen({
 
 
 
-  // submit button
-  const submit = async () => {
-    let form = {
+
+  const claim_voucher = ()=>{
+    setShowProgrSubmit(true);
+    let formData = new FormData();
+
+    let voucher_info = {
       reference_no : params.data.reference_no,
       supplier_id : params.supplier_id,
       fund_id : params.data.fund_id,      
       user_id : params.user_id,
-      full_name : params.full_name,
-      commodity:params.commodity_info
-
-
+      full_name : params.full_name,   
+      current_balance : params.data.amount_val,      
     }
 
-    console.warn(form)
-    // axios.post(
-    //   ip_config.ip_address + "vmp-web/api/get_voucher_info",
-    //   form
-    // )
-  };
+    
+    formData.append('voucher_info',JSON.stringify(voucher_info))
+    formData.append('commodity',JSON.stringify(params.commodity_info));    
+    formData.append('attachments',JSON.stringify(attachments));
+    
+
+    
+    axios.post(ip_config.ip_address + "vmp-web/api/submit-voucher-rrp",formData).then(response=>{
+        setShowProgrSubmit(false);
+        alert('Successfully claimed!')
+        navigation.reset({
+          routes: [{ name: 'Root' }]
+        });
+      }).catch(function(error) {
+          alert('Error occured!.')
+        });
+  }
+  // submit button
+  const submit =  () => {
+
+    
+    confirmDialog("Message","Do you want to confirm your transaction?",claim_voucher)
+
+  }
 
    // Take Photo Button
    const openCamera = async (document_type) => {
@@ -152,8 +185,7 @@ export default function FertilizerScreen({
     }).then(async (response) => {
       
       if (response.cancelled != true) {
-        
-      
+              
         attachments.map((item,index)=>{
           if(document_type == item.name){
           let attachmentState = [...attachments];  
@@ -175,7 +207,7 @@ export default function FertilizerScreen({
             source={Images.add_photo}
             style={{ height: 50, resizeMode: "contain" }}
           />
-          <Text>Click to add picture.s</Text>
+          <Text>Click to add picture.</Text>
         </Button>
       </View>
     ) : (
@@ -200,6 +232,7 @@ export default function FertilizerScreen({
   return (
     <View style={styles.container}>
       <ProgressDialog message="Opening the camera..." visible={isShowProgress} />
+      <Spinner visible={isShowProgSubmit} color={Colors.base} />
       <KeyboardAvoidingView style={{ flex: 1 }} keyboardVerticalOffset={0}>
         
         <Body>

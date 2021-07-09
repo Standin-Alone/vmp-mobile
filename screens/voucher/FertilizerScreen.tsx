@@ -35,14 +35,17 @@ export default function FertilizerScreen({
   });
 
   const claimFertilizer = ()=>{
+    
       if(spiel.status == 'success'  && fertilizerInput.total_amount != 0){
+        
         navigation.navigate('AttachmentScreen',{data:params.data[0],
           commodity_info:fertilizerInput,
           supplier_id:params.supplier_id,
           full_name:params.full_name,
           user_id:params.user_id
-        })
-      
+        })      
+      }else if(fertilizerInput.fertilizer_amount == 0){
+          alert('Please enter your amount.')
       }
   }
   // Add Quantity
@@ -115,7 +118,7 @@ export default function FertilizerScreen({
               style={{ height: 200 }}
             />
             <Card.Title
-              title="Fertilizer (Kgs)"
+              title={"Fertilizer (" +fertilizer.unit_measure+")"}
               titleStyle={styles.fertilizer_card_title}
               subtitleStyle={{ fontSize: 15 }}
               right={rightComponent}

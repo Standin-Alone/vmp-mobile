@@ -119,9 +119,8 @@ export default function QRCodeScreen() {
   };
   return (
     <View style={styles.container}>
-      <ProgressDialog 
-        title="Progress Dialog"
-        activityIndicatorColor="blue"
+      <ProgressDialog         
+        activityIndicatorColor={Colors.base}
         activityIndicatorSize="large"
         animationType="slide"
         message="Scanning QR code..."      
