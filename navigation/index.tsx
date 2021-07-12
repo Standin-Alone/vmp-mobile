@@ -81,7 +81,7 @@ function RootNavigator() {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         
       }}
-      initialRouteName="Login"
+      initialRouteName="AttachmentScreen"
       mode="modal"
     >
       <Stack.Screen name="Root" component={BottomTabNavigator} />

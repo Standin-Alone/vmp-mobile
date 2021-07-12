@@ -5,4 +5,5 @@ const qr_frame = require('../assets/images/qr-frame.png');
 const farmer = require('../assets/images/farmer.png');
 
 const add_photo = require('../assets/images/add-photo.png');
-export default {DA_Logo,avatar_logo,qr_frame,farmer,add_photo};
+const arrowRight = require('../assets/images/arrow-right-circle.png');
+export default {DA_Logo,avatar_logo,qr_frame,farmer,add_photo,arrowRight};

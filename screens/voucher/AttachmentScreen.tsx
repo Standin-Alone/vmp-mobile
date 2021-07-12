@@ -16,7 +16,7 @@ import { RootStackParamList } from "../../types";
 import Colors from "../../constants/Colors";
 import MyWindow from "../../constants/Layout";
 import { Card } from "react-native-paper";
-import { Button, Text } from "galio-framework";
+import { Button, Text,Icon } from "galio-framework";
 import Images from "../../constants/Images";
 import * as Location from "expo-location";
 import * as ImagePicker from "expo-image-picker";
@@ -25,6 +25,7 @@ import { ProgressDialog } from "react-native-simple-dialogs";
 import axios from "axios";
 import * as ip_config from "../../ip_config";
 import Spinner from "react-native-loading-spinner-overlay";
+import SwipeButton from 'rn-swipe-button';
 
 export default function FertilizerScreen({
   navigation,
@@ -38,6 +39,8 @@ export default function FertilizerScreen({
   const [isShowProgress,setShowProgress] = useState(false);
 
   const [isShowProgSubmit,setShowProgrSubmit] = useState(false);
+
+  const thumbIconArrow = ()=> <Icon   name="arrow-right" family="entypo" color={Colors.base} size={50} />
     // Set Permission of Camera
   useEffect(() => {
     
@@ -196,6 +199,7 @@ export default function FertilizerScreen({
       alert('Please upload all your attachments for proof of transaction.')
     }
   }
+
   // submit button
   const submit =  () => {
 
@@ -397,16 +401,34 @@ export default function FertilizerScreen({
 
             
           </Modal>
+    
         </Body>
         {/* Submit Button */}
         <Footer style={{ backgroundColor: Colors.backgroundMuted }}>
-          <Button
+          {/* <Button
             color={Colors.base}
             style={styles.submit_button}
             onPress={submit}
           >
             Submit
-          </Button>
+          </Button> */}
+            <View style={{ flex:1,marginBottom:20}}>
+              <SwipeButton  
+              containerStyle={styles.submit_button} 
+              railBorderColor="white"
+              railBackgroundColor={"#dcedc8"}
+              titleColor={Colors.base}
+              railFillBackgroundColor={"#dcedc8"}
+              railStyles={{borderColor:Colors.muted,borderWidth:1}}
+              thumbIconBorderColor="white"
+              thumbIconStyles={{height:10}}
+              thumbIconBackgroundColor={Colors.white}
+              thumbIconComponent = {thumbIconArrow}
+              onSwipeSuccess={submit}
+              shouldResetAfterSuccess={true}
+              resetAfterSuccessAnimDelay={0} 
+              >Swipe to Submit</SwipeButton>
+          </View>
         </Footer>
       </KeyboardAvoidingView>
     </View>
@@ -420,10 +442,11 @@ const styles = StyleSheet.create({
   },
   submit_button: {
     width: (MyWindow.Width / 100) * 95,
-
+    backgroundColor:'#ddd',
     left: 0,
     top: 0,
     bottom: 0,
+    
   },
   flat_list: {
     marginTop: (MyWindow.Height / 100) * 10,
