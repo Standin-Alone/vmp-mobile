@@ -94,7 +94,8 @@ export default function FertilizerScreen({
     question,
     [
       {
-        text: "No",                
+        text: "No",     
+        onPress:()=>{  setShowProgrSubmit(false)}           
       },
       {
         text: "Yes",
@@ -109,22 +110,23 @@ export default function FertilizerScreen({
     {
       name: "Farmer with Commodity",
       file: null,
-      latitude: null,
-      longitude:null
+      // latitude: null,
+      // longitude:null
     },
     {
       name: "Valid ID",
-      file: null,
-      latitude: null,
-      longitude:null
+      file: [{front:null,back:null}],
+      // latitude: null,
+      // longitude:null
     },
     {
       name: "Other Attachment",
       file: null,
-      latitude: null,
-      longitude:null
+      // latitude: null,
+      // longitude:null
     },
   ]);
+
 
 
   // show image variable
@@ -133,9 +135,13 @@ export default function FertilizerScreen({
 
 
 
-
+// Claim Voucher Button 
   const claim_voucher = ()=>{
+    
     setShowProgrSubmit(true);
+
+
+    let check_null = 0 ;
     let formData = new FormData();
 
     let voucher_info = {
@@ -147,76 +153,192 @@ export default function FertilizerScreen({
       current_balance : params.data.amount_val,      
     }
 
-    
+                                            
     formData.append('voucher_info',JSON.stringify(voucher_info))
     formData.append('commodity',JSON.stringify(params.commodity_info));    
     formData.append('attachments',JSON.stringify(attachments));
-    
+
+    // check attachments
+    attachments.map(item=>{
+      
+      if(item.name == "Valid ID"){
+        if(item.file[0].front == null){
+          check_null++;
+        }
+        if(item.file[0].back == null){
+          check_null++;
+        }
+      }else{
+        if(item.file == null){
+          check_null++;
+        }
+      }          
+    })
 
     
-    axios.post(ip_config.ip_address + "vmp-web/api/submit-voucher-rrp",formData).then(response=>{
-        setShowProgrSubmit(false);
-        alert('Successfully claimed!')
-        navigation.reset({
-          routes: [{ name: 'Root' }]
+
+    if(check_null ==  0)
+    {
+      
+      axios.post(ip_config.ip_address + "vmp-web/api/submit-voucher-rrp",formData).then(response=>{
+          console.warn(response.data)
+          setShowProgrSubmit(false);
+         
+          alert('Successfully claimed by farmer!')
+          navigation.reset({
+            routes: [{ name: 'Root' }]
+          });
+        }).catch(function(error) {
+            alert('Error occured!.'+error.response)
+            setShowProgrSubmit(false);
         });
-      }).catch(function(error) {
-          alert('Error occured!.')
-        });
+    }else{
+      alert('Please upload all your attachments for proof of transaction.')
+    }
   }
   // submit button
   const submit =  () => {
 
     
     confirmDialog("Message","Do you want to confirm your transaction?",claim_voucher)
-
   }
 
+
+  const imagePickerOptions = {
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    base64: true,
+    quality: 0.5,
+    exif: true,
+    aspect: [8000, 8000],
+  };
    // Take Photo Button
    const openCamera = async (document_type) => {
+    setShowProgrSubmit(true);
     let location = await Location.getCurrentPositionAsync({});
-  
-    ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      base64: true,
-      quality: 0.5,
-      exif: true,
-      aspect: [8000, 8000],
-    }).then(async (response) => {
-      
-      if (response.cancelled != true) {
-              
-        attachments.map((item,index)=>{
-          if(document_type == item.name){
-          let attachmentState = [...attachments];  
-           attachmentState[index].file = response.base64; 
-          setAttachments(attachmentState)
-        }
-        })
-      }      
-      })
+    
+    let getImagePicker =  ImagePicker.launchCameraAsync(imagePickerOptions).then(async (response) => {
+        if (response.cancelled != true) {
+          
+          attachments.map((item,index)=>{
+            if(document_type == item.name){
+            let attachmentState = [...attachments];  
+             attachmentState[index].file = response.base64; 
+            setAttachments(attachmentState)
+            }else if (document_type == item.name + '(front)'){
+              //set file of front page of id
+              let attachmentState = [...attachments];  
+               attachmentState[index].file[0].front = response.base64; 
+              setAttachments(attachmentState)
+            }else if (document_type == item.name + '(back)'){
+              // set file of back page of id
+              let attachmentState = [...attachments];  
+              attachmentState[index].file[0].back = response.base64; 
+              setAttachments(attachmentState)
+            }
+          })
+        }      
+        });
+
+    if(getImagePicker){
+      setShowProgrSubmit(false);   
+    }
+ 
     };
 
   // render card in flatlist
   const renderItem = (item, index) => {
     return item.file == null ? (
-      <View>
+
+       <View>
         <Text style={styles.title}>{item.name}</Text>
         <Button color={Colors.base} style={styles.card_none} onPress={()=>openCamera(item.name)}>
           <Image
             source={Images.add_photo}
             style={{ height: 50, resizeMode: "contain" }}
           />
-          <Text>Click to add picture.</Text>
+          <Text>Click to add picture</Text>
         </Button>
       </View>
-    ) : (
+        
+
+    ) :
+    
+    // valid id condition if both front and back is null
+    item.name == 'Valid ID' && item.file[0].front == null  && item.file[0].back== null ? (
+      <View>
+        <Text style={styles.title}>{item.name}</Text>
+        <Button color={Colors.base} style={styles.card_none} onPress={()=>openCamera(item.name+'(front)')}>
+          <Image
+            source={Images.add_photo}
+            style={{ height: 50, resizeMode: "contain" }}
+          />
+          <Text>Click to add front page of id</Text>
+        </Button>
+
+        <Button color={Colors.base} style={styles.card_none} onPress={()=>openCamera(item.name+'(back)')}>
+          <Image
+            source={Images.add_photo}
+            style={{ height: 50, resizeMode: "contain" }}
+          />
+          <Text>Click to add back page of id</Text>
+        </Button>
+      </View>)
+    :
+    // valid id condition
+    (
+
+      item.name == 'Valid ID' ? (
+        <View>
+        <Text style={styles.title}>{item.name}</Text>
+        {/* valid id front component */}
+        {item.file[0].front == null ?
+          (
+            <Button color={Colors.base} style={styles.card_none} onPress={()=>openCamera(item.name+'(front)')}>
+            <Image
+              source={Images.add_photo}
+              style={{ height: 50, resizeMode: "contain" }}
+            />
+            <Text>Click to add front page of id.</Text>
+          </Button>
+          )
+          :(
+            <Card elevation={10} style={styles.card}     onPress={() => showImage(item.file[0].front)}>
+              <Card.Cover resizeMode="contain" source={{ uri: "data:image/jpeg;base64," + item.file[0].front }} />
+              <Card.Actions>
+                  <Text style={styles.retake} onPress={()=>openCamera(item.name+'(front)')}>Click here to retake photo...</Text>
+              </Card.Actions>
+            </Card>
+          )       
+      }
+        {/* valid id back component */}
+        {item.file[0].back == null ?(
+        <Button color={Colors.base} style={styles.card_none} onPress={()=>openCamera(item.name+'(back)')}>
+          <Image
+          source={Images.add_photo}
+          style={{ height: 50, resizeMode: "contain" }}
+          />
+          <Text>Click to add back page of id.</Text>
+        </Button>)
+        :( 
+        <Card elevation={10} style={styles.card}     onPress={() => showImage(item.file[0].back)}>
+          <Card.Cover resizeMode="contain" source={{ uri: "data:image/jpeg;base64," + item.file[0].back }} />
+          <Card.Actions>
+                  <Text style={styles.retake} onPress={()=>openCamera(item.name+'(back)')}>Click here to retake photo...</Text>
+              </Card.Actions>
+        </Card>)
+        }
+        </View>
+      ):(
       <View>
         <Text style={styles.title}>{item.name}</Text>
         <Card elevation={10} style={styles.card}     onPress={() => showImage(item.file)}>
           <Card.Cover resizeMode="contain" source={{ uri: "data:image/jpeg;base64," + item.file }} />
+          <Card.Actions>
+                  <Text style={styles.retake} onPress={()=>openCamera(item.name)}>Click here to retake photo...</Text>
+          </Card.Actions>
         </Card>
       </View>
+      )
     );
   };
 
@@ -232,13 +354,14 @@ export default function FertilizerScreen({
   return (
     <View style={styles.container}>
       <ProgressDialog message="Opening the camera..." visible={isShowProgress} />
-      <Spinner visible={isShowProgSubmit} color={Colors.base} />
+      <Spinner visible={isShowProgSubmit}  color={Colors.base}  size="large" indicatorStyle={{height:1}}/>
       <KeyboardAvoidingView style={{ flex: 1 }} keyboardVerticalOffset={0}>
         
         <Body>
           {/* Farmer with Commodity */}
           <FlatList
             nestedScrollEnabled
+            
             data={attachments}
             extraData={attachments}
             style={styles.flat_list}
@@ -313,7 +436,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 2,
     marginBottom: 20,
     borderRadius: 15,
-    height: 200,
+    
     width: (MyWindow.Width / 100) * 92,
   },
   card_none: {
@@ -326,9 +449,16 @@ const styles = StyleSheet.create({
     width: (MyWindow.Width / 100) * 92,
   },
   title: {
-    color: "#9E9FA0",
+    color: Colors.light.text,
     justifyContent: "flex-start",
     fontFamily: "calibri-light",
     fontSize: 26,
+  },
+  retake: {
+    color: Colors.base,    
+    fontFamily: "calibri-light",
+    fontSize: 16,
+    fontWeight:"100",
+    left:(MyWindow.Width /100) * 40
   },
 });

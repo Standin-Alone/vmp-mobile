@@ -63,6 +63,7 @@ export default function FertilizerScreen({
         if (
           isNaN(total_amount) ||
           total_amount <= fertilizerInput.ceiling_amount
+          && total_amount <=  params.data[0].Available_Balance
         ) {
           setFertilizerInput((prevState) => ({
             sub_id: prevState.sub_id,
@@ -324,7 +325,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   detail_info_value: {
-    color: Colors.add,
+    color: Colors.dark.background,
     fontFamily: "calibri-light",
     fontSize: 25,
     justifyContent: "flex-start",
