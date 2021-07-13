@@ -105,20 +105,20 @@ export default function FertilizerScreen({
     {
       name: "Farmer with Commodity",
       file: null,
-      // latitude: null,
-      // longitude:null
+      latitude: null,
+      longitude:null
     },
     {
       name: "Valid ID",
       file: [{ front: null, back: null }],
-      // latitude: null,
-      // longitude:null
+      latitude: null,
+      longitude:null
     },
     {
       name: "Other Attachment",
       file: null,
-      // latitude: null,
-      // longitude:null
+      latitude: null,
+      longitude:null
     },
   ]);
 
@@ -165,20 +165,21 @@ export default function FertilizerScreen({
     if (check_null == 0) {
       axios
         .post(ip_config.ip_address + "vmp-web/api/submit-voucher-rrp", formData)
-        .then((response) => {
-          console.warn(response.data);
+        .then((response) => {       
+          console.warn(response) 
           setShowProgrSubmit(false);
 
           alert("Successfully claimed by farmer!");
-          navigation.reset({
-            routes: [{ name: "Root" }],
-          });
+          // navigation.reset({
+          //   routes: [{ name: "Root" }],
+          // });
         })
-        .catch(function (error) {
+        .catch(function (error) {          
           alert("Error occured!." + error.response);
           setShowProgrSubmit(false);
         });
     } else {
+      setShowProgrSubmit(false);
       alert("Please upload all your attachments for proof of transaction.");
     }
   };
@@ -203,7 +204,8 @@ export default function FertilizerScreen({
   const openCamera = async (document_type) => {
     setShowProgrSubmit(true);
     let location = await Location.getCurrentPositionAsync({});
-
+    let lat = location.coords.latitude;
+    let long = location.coords.longitude;
     let getImagePicker = ImagePicker.launchCameraAsync(imagePickerOptions).then(
       async (response) => {
         if (response.cancelled != true) {
@@ -211,11 +213,15 @@ export default function FertilizerScreen({
             if (document_type == item.name) {
               let attachmentState = [...attachments];
               attachmentState[index].file = response.base64;
+              attachmentState[index].latitude = lat;
+              attachmentState[index].longitude = long;
               setAttachments(attachmentState);
             } else if (document_type == item.name + "(front)") {
               //set file of front page of id
               let attachmentState = [...attachments];
               attachmentState[index].file[0].front = response.base64;
+              attachmentState[index].latitude = lat;
+              attachmentState[index].longitude = long;
               setAttachments(attachmentState);
             } else if (document_type == item.name + "(back)") {
               // set file of back page of id
@@ -484,7 +490,7 @@ const styles = StyleSheet.create({
     width: (MyWindow.Width / 100) * 92,
   },
   card_none: {
-    backgroundColor: Colors.header,
+    backgroundColor: '#ddd',
     marginTop: 10,
     marginHorizontal: 2,
     marginBottom: 20,

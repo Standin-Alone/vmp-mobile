@@ -80,7 +80,7 @@ export default function QRCodeScreen() {
             form
           )
           .then( (response) => {
-            
+              console.warn(response.data);
             if (response.data[0]["Message"] == "true") {
               // navigation.navigate('ClaimVoucher',response.data[0]['data']);
               // setScanned(false);

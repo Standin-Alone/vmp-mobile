@@ -76,29 +76,28 @@ export default function HomeScreen() {
   };
 
   useEffect(() => {
-    // const fetchData = async () => {
-    //   const supplier_id = await AsyncStorage.getItem("supplier_id");
-    //   console.warn(supplier_id);
-    //   setRefreshing(true);
+    const fetchData = async () => {
+      const supplier_id = await AsyncStorage.getItem("supplier_id");
+      console.warn(supplier_id);
+      setRefreshing(true);
 
-    //   NetInfo.fetch().then(async (response: any) => {
-    //     if (response.isConnected) {
-    //       const result = await axios.post(
-    //         ip_config.ip_address + "vmp-web/public/api/get-scanned-vouchers",
-    //         { supplier_id: supplier_id }
-    //       );
-    //       if (result.status == 200) {
-    //         setScannedVouchers(result.data);
-    //         setRefreshing(false);
-    //       }
-    //     } else {
-    //       Alert.alert("Message", "No Internet Connection.");
-    //       setRefreshing(false);
-    //     }
-    //   });
-    // };
+      NetInfo.fetch().then(async (response: any) => {
+        if (response.isConnected) {
+          const result = await axios.get(
+            ip_config.ip_address + "vmp-web/api/get-scanned-vouchers/"+supplier_id,         
+          );
+          if (result.status == 200) {
+            setScannedVouchers(result.data);
+            setRefreshing(false);
+          }
+        } else {
+          Alert.alert("Message", "No Internet Connection.");
+          setRefreshing(false);
+        }
+      });
+    };
 
-    // fetchData();
+    fetchData();
   }, []);
 
   const searchVoucher = (value) => {};
@@ -161,7 +160,7 @@ export default function HomeScreen() {
                 onPress={() => alert("sample")}
               >
                 <Card.Title
-                  title={item.REFERENCE_NO}
+                  title={item.reference_no}
                   subtitle={new Date(item.CLAIMED_DATE).toDateString()}
                 />
                 <Card.Content>

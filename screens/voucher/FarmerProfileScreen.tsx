@@ -28,7 +28,7 @@ export default function FarmerProfileScreen({
       
       <View style={styles.farmer_header} > 
           <Image source={Images.farmer} style={styles.logo} />
-          <Text style={styles.name}>John Edcel Zenarosa</Text>
+          <Text style={styles.name}>{params.data[0].first_name} {params.data[0].last_name}</Text>
           <Card
             elevation={10}
             style={styles.balance_card}  
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     top:70,
     fontSize:30,
     fontFamily:'calibri-light',
-    right:(MyWindow.Width / 100) * 0,
+    right:(MyWindow.Width / 100) * 30,
     alignSelf:'flex-end',
     fontWeight:'bold'
   },
