@@ -45,7 +45,7 @@ export default function OTPScreen({
   });
 
   var interval: any;
-
+  
   const otp_timer = () => {
     interval = window.setTimeout(() => {
       setTimer(timer - 1);
@@ -71,7 +71,7 @@ export default function OTPScreen({
   // verify otp
   const verifyOTP = async () => {
     const get_otp = await AsyncStorage.getItem("otp_code");
-
+    console.warn(get_otp)
     setLoading(true);
     setError(false);
     if (code == get_otp) {

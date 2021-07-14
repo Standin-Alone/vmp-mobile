@@ -22,7 +22,8 @@ export default function FarmerProfileScreen({
   const history = params.history;
   console.warn(history)
   const claimVoucher = () => { 
-    navigation.navigate('FertilizerScreen',params);    
+    // navigation.navigate('FertilizerScreen',params);    
+    navigation.navigate('AddToCartScreen',params);    
     // console.warn(history)
   }
 
@@ -140,7 +141,7 @@ export default function FarmerProfileScreen({
           <FlatList
             horizontal
             data={history}
-            ListEmptyComponent={()=>emptyComponent}
+            ListEmptyComponent={()=>emptyComponent()}
             renderItem={({item,index})=>renderHistory(item,index)}
             nestedScrollEnabled
             style={styles.flat_list}
@@ -229,12 +230,6 @@ const styles = StyleSheet.create({
     fontSize:20,    
     justifyContent:'flex-start', 
   }, 
-
-  history_content:{  
-
-   
-
-  },
   history_view:{
     fontFamily:'calibri-light',
     left:20,

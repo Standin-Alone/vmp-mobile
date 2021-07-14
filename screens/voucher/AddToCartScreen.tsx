@@ -1,18 +1,19 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Image, FlatList } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { RootStackParamList } from "../../types";
-import { Footer, Body, Item } from "native-base";
 
+import { RootStackParamList } from "../../types";
+import { Footer} from "native-base";
+import Alert from "../../constants/Alert";
 import Colors from "../../constants/Colors";
 import MyWindow from "../../constants/Layout";
 import { Card } from "react-native-paper";
 import DraggablePanel from "react-native-draggable-panel";
-import { Block, Button, Text, Icon, Input, theme } from "galio-framework";
+import {  Button, Text, Icon, Input, theme } from "galio-framework";
 import NumberFormat from "react-number-format";
 import NumericInput from "react-native-numeric-input";
-import NetInfo from "@react-native-community/netinfo";
+
+
 
 export default function FarmerProfileScreen({
   navigation,
@@ -56,19 +57,25 @@ export default function FarmerProfileScreen({
     });
   };
 
+ 
   //  add to cart
   const addToCart = (price, limit_price) => {
     if (price <= limit_price) {
       setCart((prevState) => [...prevState, selectedCommodity]);
       setShowPanel(false);
+    }else if (isNaN(price) ){
+      Alert.spiel_message_alert("Message","Please enter your amount and quantity of commodity.","I understand.");
     }
+    
   };
+  const csf_commodities = data.filter((item) => !item.item_name.toLowerCase().match('fertilizer') ? item : null );
+
   return (
     <View style={styles.container}>
       {/* COMMODITIES LIST */}
       <FlatList
         nestedScrollEnabled
-        data={data}
+        data={csf_commodities}
         style={styles.flat_list}
         ListEmptyComponent={() => (
           <Card elevation={20} style={styles.card}>
@@ -146,11 +153,12 @@ export default function FarmerProfileScreen({
             value={selectedCommodity.quantity}
             onChange={(value) => {
               var total_amount = parseFloat(selectedCommodity.price) * value;
-
+              console.warn(total_amount)
               if (
                 isNaN(selectedCommodity.price) ||
-                selectedCommodity.price <= selectedCommodity.ceiling_amount
+                total_amount <= selectedCommodity.ceiling_amount
               ) {
+                
                 setSelectedCommodity((prevState) => ({
                   image: prevState.image,
                   name: prevState.name,
@@ -162,6 +170,15 @@ export default function FarmerProfileScreen({
                 }));
                 setSpiel({ message: "", status: "success" });
               } else {
+                setSelectedCommodity((prevState) => ({
+                  image: prevState.image,
+                  name: prevState.name,
+                  unit_measure: prevState.unit_measure,
+                  ceiling_amount: prevState.ceiling_amount,
+                  quantity: value,
+                  price: prevState.price,
+                  total_amount: total_amount,
+                }));
                 setSpiel({
                   message: "You exceed on the limit price ",
                   status: "error",
@@ -280,7 +297,7 @@ export default function FarmerProfileScreen({
           style={styles.add_to_cart_button}
           onPress={() =>
             addToCart(
-              selectedCommodity.price,
+              selectedCommodity.total_amount,
               selectedCommodity.ceiling_amount
             )
           }
