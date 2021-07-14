@@ -34,36 +34,32 @@ export default function FertilizerScreen({
     status: "",
   });
 
-  const claimFertilizer = ()=>{
-    
-      if(spiel.status == 'success'  && fertilizerInput.total_amount != 0){
-        
-        navigation.navigate('AttachmentScreen',{data:params.data[0],
-          commodity_info:fertilizerInput,
-          supplier_id:params.supplier_id,
-          full_name:params.full_name,
-          user_id:params.user_id
-        })      
-      }else if(fertilizerInput.fertilizer_amount == 0){
-          alert('Please enter your amount.')
-      }
-  }
+  const claimFertilizer = () => {
+    if (spiel.status == "success" && fertilizerInput.total_amount != 0) {
+      navigation.navigate("AttachmentScreen", {
+        data: params.data[0],
+        commodity_info: fertilizerInput,
+        supplier_id: params.supplier_id,
+        full_name: params.full_name,
+        user_id: params.user_id,
+      });
+    } else if (fertilizerInput.fertilizer_amount == 0) {
+      alert("Please enter your amount.");
+    }
+  };
   // Add Quantity
   const rightComponent = () => (
     <NumericInput
-      
-      containerStyle={{borderWidth:0}}
-      
+      containerStyle={{ borderWidth: 0 }}
       value={fertilizerInput.quantity}
       onChange={(value) => {
-        
         var total_amount =
           parseFloat(fertilizerInput.fertilizer_amount) * value;
-     
+
         if (
           isNaN(total_amount) ||
-          total_amount <= fertilizerInput.ceiling_amount
-          && total_amount <=  params.data[0].Available_Balance
+          (total_amount <= fertilizerInput.ceiling_amount &&
+            total_amount <= params.data[0].Available_Balance)
         ) {
           setFertilizerInput((prevState) => ({
             sub_id: prevState.sub_id,
@@ -89,11 +85,9 @@ export default function FertilizerScreen({
           });
         }
       }}
-      
       minValue={1}
       maxValue={99999}
       totalWidth={130}
-      
       totalHeight={50}
       iconSize={25}
       initValue={fertilizerInput.quantity}
@@ -101,7 +95,6 @@ export default function FertilizerScreen({
       valueType="integer"
       rounded
       iconStyle={{ color: "white" }}
-      
       rightButtonBackgroundColor={Colors.add}
       leftButtonBackgroundColor={Colors.add}
     />
@@ -119,7 +112,7 @@ export default function FertilizerScreen({
               style={{ height: 200 }}
             />
             <Card.Title
-              title={"Fertilizer (" +fertilizer.unit_measure+")"}
+              title={"Fertilizer (" + fertilizer.unit_measure + ")"}
               titleStyle={styles.fertilizer_card_title}
               subtitleStyle={{ fontSize: 15 }}
               right={rightComponent}
@@ -136,9 +129,12 @@ export default function FertilizerScreen({
 
                   var converted_value = parseFloat(value);
                   var total_amount = converted_value * fertilizerInput.quantity;
-                  var validated_converted_value = converted_value == '' ? 0 : value;
-                  var validated_total_amount = isNaN(total_amount) ? 0 : total_amount;
-                  
+                  var validated_converted_value =
+                    converted_value == "" ? 0 : value;
+                  var validated_total_amount = isNaN(total_amount)
+                    ? 0
+                    : total_amount;
+
                   if (
                     isNaN(total_amount) ||
                     total_amount <= fertilizerInput.ceiling_amount
@@ -263,7 +259,7 @@ export default function FertilizerScreen({
         </Body>
         {/* Claim Fertilizer Button */}
         <Footer style={{ backgroundColor: Colors.backgroundMuted }}>
-          <Button            
+          <Button
             color={Colors.base}
             style={styles.claim_fertilizer_button}
             onPress={claimFertilizer}

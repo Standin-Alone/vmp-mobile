@@ -3,17 +3,15 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Image, FlatList } from "react-native";
 
 import { RootStackParamList } from "../../types";
-import { Footer} from "native-base";
+import { Footer } from "native-base";
 import Alert from "../../constants/Alert";
 import Colors from "../../constants/Colors";
 import MyWindow from "../../constants/Layout";
 import { Card } from "react-native-paper";
 import DraggablePanel from "react-native-draggable-panel";
-import {  Button, Text, Icon, Input, theme } from "galio-framework";
+import { Button, Text, Icon, Input, theme } from "galio-framework";
 import NumberFormat from "react-number-format";
 import NumericInput from "react-native-numeric-input";
-
-
 
 export default function FarmerProfileScreen({
   navigation,
@@ -33,8 +31,6 @@ export default function FarmerProfileScreen({
     total_amount: 0.0,
   });
 
-  let sum = 0;
-
   const [spiel, setSpiel] = useState({
     message: "",
     status: "success",
@@ -45,7 +41,7 @@ export default function FarmerProfileScreen({
   }, []);
 
   //  open add to cart panel
-  const openAddPanel = (item_name, amount, image,unit_measure) => {
+  const openAddPanel = (item_name, amount, image, unit_measure) => {
     setShowPanel(true);
     setSelectedCommodity({
       image: image,
@@ -57,19 +53,96 @@ export default function FarmerProfileScreen({
     });
   };
 
- 
   //  add to cart
   const addToCart = (price, limit_price) => {
     if (price <= limit_price) {
       setCart((prevState) => [...prevState, selectedCommodity]);
       setShowPanel(false);
-    }else if (isNaN(price) ){
-      Alert.spiel_message_alert("Message","Please enter your amount and quantity of commodity.","I understand.");
+    } else if (isNaN(price)) {
+      Alert.spiel_message_alert(
+        "Message",
+        "Please enter your amount and quantity of commodity.",
+        "I understand."
+      );
     }
-    
   };
-  const csf_commodities = data.filter((item) => !item.item_name.toLowerCase().match('fertilizer') ? item : null );
+  const csf_commodities = data.filter((item) =>
+    !item.item_name.toLowerCase().match("fertilizer") ? item : null
+  );
 
+  const renderCommodity = (item, index) => (
+    <Card elevation={10} style={styles.card}>
+      <Card.Cover
+        resizeMode="contain"
+        source={{ uri: "data:image/jpeg;base64," + item.base64 }}
+      />
+      <Card.Title
+        title={item.item_name + " (" + item.unit_measure + ")"}
+        subtitle={"₱" + item.ceiling_amount}
+        right={() => (
+          <Button
+            size="small"
+            icon="add"
+            iconFamily="material"
+            iconSize={20}
+            color={Colors.add}
+            style={{ right: 0 }}
+            onPress={() =>
+              openAddPanel(
+                item.item_name,
+                item.ceiling_amount,
+                item.base64,
+                item.unit_measure
+              )
+            }
+          >
+            Add
+          </Button>
+        )}
+      />
+      <Card.Content></Card.Content>
+    </Card>
+  );
+
+  const emptyCommodity = () => (
+    <Card elevation={20} style={styles.card}>
+      <Card.Title title="None" />
+    </Card>
+  );
+
+  const handleQuantity = (value) => {
+    var total_amount = parseFloat(selectedCommodity.price) * value;
+    console.warn(total_amount);
+    if (
+      isNaN(selectedCommodity.price) ||
+      total_amount <= selectedCommodity.ceiling_amount
+    ) {
+      setSelectedCommodity((prevState) => ({
+        image: prevState.image,
+        name: prevState.name,
+        unit_measure: prevState.unit_measure,
+        ceiling_amount: prevState.ceiling_amount,
+        quantity: value,
+        price: prevState.price,
+        total_amount: total_amount,
+      }));
+      setSpiel({ message: "", status: "success" });
+    } else {
+      setSelectedCommodity((prevState) => ({
+        image: prevState.image,
+        name: prevState.name,
+        unit_measure: prevState.unit_measure,
+        ceiling_amount: prevState.ceiling_amount,
+        quantity: value,
+        price: prevState.price,
+        total_amount: total_amount,
+      }));
+      setSpiel({
+        message: "You exceed on the limit price ",
+        status: "error",
+      });
+    }
+  };
   return (
     <View style={styles.container}>
       {/* COMMODITIES LIST */}
@@ -77,45 +150,9 @@ export default function FarmerProfileScreen({
         nestedScrollEnabled
         data={csf_commodities}
         style={styles.flat_list}
-        ListEmptyComponent={() => (
-          <Card elevation={20} style={styles.card}>
-            <Card.Title title="None" />
-          </Card>
-        )}
-        renderItem={({ item, index }) => (
-          <Card elevation={10} style={styles.card}>
-            <Card.Cover
-              resizeMode="contain"
-              source={{ uri: "data:image/jpeg;base64," + item.base64 }}
-            />
-            <Card.Title
-              title={item.item_name + ' (' + item.unit_measure +')'}
-              subtitle={"₱" + item.ceiling_amount}
-              right={() => (
-                <Button
-                  size="small"
-                  icon="add"
-                  iconFamily="material"
-                  iconSize={20}
-                  color={Colors.add}
-                  style={{ right: 0 }}
-                  onPress={() =>
-                    openAddPanel(
-                      item.item_name,
-                      item.ceiling_amount,
-                      item.base64,
-                      item.unit_measure,
-                    )
-                  }
-                >
-                  Add
-                </Button>
-              )}
-            />
-            <Card.Content></Card.Content>
-          </Card>
-        )}
-        keyExtractor={(item)=>item.name}
+        ListEmptyComponent={() => emptyCommodity()}
+        renderItem={({ item, index }) => renderCommodity(item, index)}
+        keyExtractor={(item) => item.name}
       />
 
       {/* Draggable Panel Add Commodity */}
@@ -151,40 +188,7 @@ export default function FarmerProfileScreen({
           {/* Add Quantity */}
           <NumericInput
             value={selectedCommodity.quantity}
-            onChange={(value) => {
-              var total_amount = parseFloat(selectedCommodity.price) * value;
-              console.warn(total_amount)
-              if (
-                isNaN(selectedCommodity.price) ||
-                total_amount <= selectedCommodity.ceiling_amount
-              ) {
-                
-                setSelectedCommodity((prevState) => ({
-                  image: prevState.image,
-                  name: prevState.name,
-                  unit_measure: prevState.unit_measure,
-                  ceiling_amount: prevState.ceiling_amount,
-                  quantity: value,
-                  price: prevState.price,
-                  total_amount: total_amount,
-                }));
-                setSpiel({ message: "", status: "success" });
-              } else {
-                setSelectedCommodity((prevState) => ({
-                  image: prevState.image,
-                  name: prevState.name,
-                  unit_measure: prevState.unit_measure,
-                  ceiling_amount: prevState.ceiling_amount,
-                  quantity: value,
-                  price: prevState.price,
-                  total_amount: total_amount,
-                }));
-                setSpiel({
-                  message: "You exceed on the limit price ",
-                  status: "error",
-                });
-              }
-            }}
+            onChange={(value) => handleQuantity(value)}
             minValue={1}
             maxValue={99999}
             totalWidth={240}
@@ -213,7 +217,7 @@ export default function FarmerProfileScreen({
 
               if (
                 isNaN(converted_value) ||
-                converted_value <= selectedCommodity.ceiling_amount
+                total_amount <= selectedCommodity.ceiling_amount
               ) {
                 setSelectedCommodity((prevState) => ({
                   image: prevState.image,
@@ -226,13 +230,21 @@ export default function FarmerProfileScreen({
                 }));
                 setSpiel({ message: "", status: "success" });
               } else {
+                setSelectedCommodity((prevState) => ({
+                  image: prevState.image,
+                  name: prevState.name,
+                  unit_measure: prevState.unit_measure,
+                  ceiling_amount: prevState.ceiling_amount,
+                  quantity: prevState.quantity,
+                  price: converted_value,
+                  total_amount: total_amount,
+                }));
                 setSpiel({
                   message: "You exceed on the limit price ",
                   status: "error",
                 });
               }
             }}
-            
             renderText={(values, props) => {
               return (
                 <Input
@@ -280,7 +292,7 @@ export default function FarmerProfileScreen({
                   {" "}
                   ₱{" "}
                   {isNaN(selectedCommodity.total_amount)
-                    ? 0.00
+                    ? 0.0
                     : selectedCommodity.total_amount.toFixed(2)}
                 </Text>
               </View>
@@ -311,7 +323,12 @@ export default function FarmerProfileScreen({
           uppercase
           color={Colors.base}
           style={styles.cart_button}
-          onPress={() => navigation.navigate("ViewCartScreen", {cart:cart,available_balance:params.data[0].Available_Balance})}
+          onPress={() =>
+            navigation.navigate("ViewCartScreen", {
+              cart: cart,
+              available_balance: params.data[0].Available_Balance,
+            })
+          }
         >
           <View style={{ flexDirection: "row" }}>
             <Text style={styles.cart_title_button}>
@@ -319,7 +336,6 @@ export default function FarmerProfileScreen({
               <Text style={styles.cart_sub_title_button}>
                 - {cart.length} item
               </Text>
-              {/* <Text style={styles.cart_total_amount}>{cart.map(item => { sum += item.total_amount;  return  sum})}</Text>      */}
             </Text>
           </View>
         </Button>
