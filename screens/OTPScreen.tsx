@@ -97,7 +97,7 @@ export default function OTPScreen({
       NetInfo.fetch().then((response: any) => {
         if (response.isConnected) {
           axios
-            .post(ip_config.ip_address + "vmp-web/api/resend-otp", {
+            .post(ip_config.ip_address + "e_voucher/api/resend-otp", {
               email: email,
             })
             .then((response) => {

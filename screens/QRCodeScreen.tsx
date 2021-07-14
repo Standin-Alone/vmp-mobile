@@ -76,7 +76,7 @@ export default function QRCodeScreen() {
       if (response.isConnected) {
         axios
           .post(
-            ip_config.ip_address + "vmp-web/api/get_voucher_info",
+            ip_config.ip_address + "e_voucher/api/get_voucher_info",
             form
           )
           .then( (response) => {
@@ -91,6 +91,7 @@ export default function QRCodeScreen() {
                 setIsShow(false);
                 navigation.navigate("FarmerProfileScreen",{data:response.data[0]["data"],
                 program_items:response.data[0]["program_items"],
+                history:response.data[0]["history"],
                 supplier_id:get_supplier_id,
                 full_name:get_full_name,
                 user_id:get_user_id});

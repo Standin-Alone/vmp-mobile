@@ -7,8 +7,9 @@ import Images from "../../constants/Images";
 import Colors from "../../constants/Colors";
 import MyWindow from "../../constants/Layout";
 import { Card } from "react-native-paper";
-import { ScrollView } from "react-native-gesture-handler";
+
 import { Button, Text,Icon } from "galio-framework";
+import Moment from 'react-moment';
 
 
 export default function FarmerProfileScreen({
@@ -18,10 +19,44 @@ export default function FarmerProfileScreen({
 
   const params = route.params;
 
-
+  const history = params.history;
+  console.warn(history)
   const claimVoucher = () => { 
     navigation.navigate('FertilizerScreen',params);    
+    // console.warn(history)
   }
+
+  const renderHistory = (item,index)=>(
+    <Card
+    elevation={10}
+    style={styles.card}                 
+    >
+        <Card.Title title={item.transac_by_fullname}  subtitle={<Moment element={Text} fromNow>{item.transac_date}</Moment>} 
+          left={()=>
+            <Icon
+            name="history"
+            family="FontAwesome"
+            color={Colors.base}
+            size={30}
+          />  
+          }/>
+        <Card.Content>
+              <Text style={{left:55}}>Total Amount of  &#8369;{item.total_amount}</Text>
+        </Card.Content>
+    </Card>
+
+  )
+
+  const emptyComponent = ()=>(             
+     <Card
+          elevation={10}
+          style={styles.card}                
+          >
+            <Card.Title title="No history of Claiming" />
+            
+      </Card> 
+    )
+
 
   return (
     <View style={styles.container}>
@@ -101,35 +136,16 @@ export default function FarmerProfileScreen({
         <Text style={styles.history_text}>Recent Claiming</Text>        
         
         <View style={styles.history_content}>
-        <ScrollView style={{backgroundColor:'red',height:100}}> 
-          <Card
-              elevation={10}
-              style={styles.card}  
-              mode="outlined"             
-              >
-                  <Card.Title title="Total Amount "  subtitle="June 26, 2021" 
-                    left={()=>
-                      <Icon
-                      name="history"
-                      family="FontAwesome"
-                      color={Colors.base}
-                      size={30}
-                    />  
-                    }/>
-                  <Card.Content>
-                        <Text >
-                          
-                        </Text>
-                  </Card.Content>
-          </Card>
-          {/* <Card
-              elevation={10}
-              style={styles.card}                
-              >
-                  <Card.Title title="No history of Claiming" />
-                  <Card.Content></Card.Content>
-          </Card> */}
-        </ScrollView> 
+
+          <FlatList
+            horizontal
+            data={history}
+            ListEmptyComponent={()=>emptyComponent}
+            renderItem={({item,index})=>renderHistory(item,index)}
+            nestedScrollEnabled
+            style={styles.flat_list}
+          />
+      
         </View>
       </View> 
 
@@ -185,7 +201,7 @@ const styles = StyleSheet.create({
     fontFamily:'calibri-light',
     left:20,
     display:'flex',    
-    top:(MyWindow.Height / 100) * -43,
+    top:(MyWindow.Height / 100) * -23,
     
   },
   details_text:{
@@ -215,17 +231,16 @@ const styles = StyleSheet.create({
   }, 
 
   history_content:{  
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
+
+   
 
   },
   history_view:{
     fontFamily:'calibri-light',
     left:20,
     display:'flex',    
-    top:(MyWindow.Height / 100) * -20,
+    top:(MyWindow.Height / 100) * 3,
+
   },
   history_text:{
     fontSize:25,
@@ -257,6 +272,17 @@ const styles = StyleSheet.create({
   },
   balance_card:{
     marginTop:90
+  },
+  card: {
+    marginTop: 10,
+    marginHorizontal: 1,
+    marginBottom: 40,
+    borderRadius: 15,
+    
+    width: (MyWindow.Width / 100) * 90,
+  },
+  flat_list:{
+    width:(MyWindow.Width /100) * 92
   }
 
 

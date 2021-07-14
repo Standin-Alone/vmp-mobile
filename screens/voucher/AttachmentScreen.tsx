@@ -159,20 +159,27 @@ export default function FertilizerScreen({
         if (item.file == null) {
           check_null++;
         }
+        if (item.longitude == null) {
+          check_null++;
+        }
+
+        if (item.latitude == null) {
+          check_null++;
+        }
       }
     });
 
     if (check_null == 0) {
       axios
-        .post(ip_config.ip_address + "vmp-web/api/submit-voucher-rrp", formData)
+        .post(ip_config.ip_address + "e_voucher/api/submit-voucher-rrp", formData)
         .then((response) => {       
           console.warn(response) 
           setShowProgrSubmit(false);
 
           alert("Successfully claimed by farmer!");
-          // navigation.reset({
-          //   routes: [{ name: "Root" }],
-          // });
+          navigation.reset({
+            routes: [{ name: "Root" }],
+          });
         })
         .catch(function (error) {          
           alert("Error occured!." + error.response);
@@ -180,18 +187,18 @@ export default function FertilizerScreen({
         });
     } else {
       setShowProgrSubmit(false);
-      alert("Please upload all your attachments for proof of transaction.");
+      alert("Please upload all your attachments for proof of transaction and make sure you turn your location.");
     }
   };
 
   // submit button
-  const submit = () => {
-    confirmDialog(
-      "Message",
-      "Do you want to confirm your transaction?",
-      claim_voucher
-    );
-  };
+    const submit = () => {
+      confirmDialog(
+        "Message",
+        "Do you want to confirm your transaction?",
+        claim_voucher
+      );
+    };
 
   const imagePickerOptions = {
     mediaTypes: ImagePicker.MediaTypeOptions.Images,

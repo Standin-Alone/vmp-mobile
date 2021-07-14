@@ -22,17 +22,7 @@ import * as ip_config from "../ip_config";
 import NetInfo from "@react-native-community/netinfo";
 import Spinner from "react-native-loading-spinner-overlay";
 
-var test_api = () => {
-  axios
-    .get(ipconfig.ip_address + "vmp-mobile/public/api/show")
-    .then((response) => {
-      // console.warn(response.data["message"]);
-    })
-    .catch((error) => {
-      Alert.alert('Error!','Something went wrong.')
-      console.warn(error.response);
-    });
-};
+
 
 export default function HomeScreen() {
   const [form, setForm] = useState({});
@@ -42,7 +32,7 @@ export default function HomeScreen() {
 
   const [search, setSearch] = useState("");
   const hasMounted = useRef(false);
-  const KEYS_TO_FILTERS = ["REFERENCE_NO", "NAME"];
+  const KEYS_TO_FILTERS = ["reference_no", "fullname"];
   const getScannedVouchers = async () => {
     const supplier_id = await AsyncStorage.getItem("supplier_id");
 
@@ -51,24 +41,23 @@ export default function HomeScreen() {
     setRefreshing(true);
     NetInfo.fetch().then((response: any) => {
       if (response.isConnected) {
-        // axios
-        //   .post(
-        //     ip_config.ip_address + "vmp-web/api/get-scanned-vouchers",
-        //     form
-        //   )
-        //   .then((response) => {
-        //     if (response.status == 200) {
-        //       console.warn(response.data);
-        //       setScannedVouchers(response.data);
-        //     }
+        axios
+          .get(
+            ip_config.ip_address + "e_voucher/api/get-scanned-vouchers/"+supplier_id
+          )
+          .then((response) => {
+            if (response.status == 200) {
+              console.warn(response.data);
+              setScannedVouchers(response.data);
+            }
 
-        //     setRefreshing(false);
-        //   })
-        //   .catch((error) => {
-        //     Alert.alert('Error!','Something went wrong.')
-        //     console.warn(error.response);
-        //     setRefreshing(false);
-        //   });
+            setRefreshing(false);
+          })
+          .catch((error) => {
+            Alert.alert('Error!','Something went wrong.')
+            console.warn(error.response);
+            setRefreshing(false);
+          });
       } else {
         Alert.alert("Message", "No Internet Connection.");
       }
@@ -84,7 +73,7 @@ export default function HomeScreen() {
       NetInfo.fetch().then(async (response: any) => {
         if (response.isConnected) {
           const result = await axios.get(
-            ip_config.ip_address + "vmp-web/api/get-scanned-vouchers/"+supplier_id,         
+            ip_config.ip_address + "e_voucher/api/get-scanned-vouchers/"+supplier_id,         
           );
           if (result.status == 200) {
             setScannedVouchers(result.data);
@@ -100,7 +89,7 @@ export default function HomeScreen() {
     fetchData();
   }, []);
 
-  const searchVoucher = (value) => {};
+  const searchVoucher = (value) => {return value};
 
   const filteredVouchers = scannedVouchers.filter(
     createFilter(search, KEYS_TO_FILTERS)
@@ -157,14 +146,14 @@ export default function HomeScreen() {
               <Card
                 elevation={10}
                 style={styles.card}
-                onPress={() => alert("sample")}
+             
               >
                 <Card.Title
                   title={item.reference_no}
                   subtitle={new Date(item.CLAIMED_DATE).toDateString()}
                 />
                 <Card.Content>
-                  <Text style={styles.name}>{item.NAME}</Text>
+                  <Text style={styles.name}>{item.fullname}</Text>
                 </Card.Content>
               </Card>
             )}
