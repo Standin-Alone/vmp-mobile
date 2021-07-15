@@ -20,6 +20,7 @@ import Swipeable from "react-native-gesture-handler/Swipeable";
 import { Block, Button, Text, Icon, Input, theme } from "galio-framework";
 import { initialWindowMetrics } from "react-native-safe-area-context";
 import { supportedAuthenticationTypesAsync } from "expo-local-authentication";
+import FarmerProfileScreen from "./AddToCartScreen";
 export default function ViewCartScreen({
   navigation,
   route,
@@ -28,6 +29,11 @@ export default function ViewCartScreen({
   const [data, setData] = useState([]);
   const [new_cart, setNewCart] = useState([]);
   const [total, setTotal] = useState(0.0);
+  const [spiel, setSpiel] = useState({
+    message: "",
+    status: "success",
+    item_name:""
+  });
   let sum = 0;
   useEffect(() => {    
     setData(params.cart);
@@ -51,39 +57,58 @@ export default function ViewCartScreen({
           let new_data = data;
           new_data.splice(delete_index, delete_index + 1);
           setNewCart(new_data);
+          if(data.length  == 0){
+            navigation.goBack();
+          }          
         }}
       />
     </View>
   );
 
+  // quantity function
+  const handleQuantity = (item,index,value)=> {
+    
+    var total_amount = parseFloat(item.price) * value;
+
+    let compute_total = data.map((prev) => {
+      sum += prev.total_amount;
+      return sum;
+    });
+          
+    // set condition when total amount of item exceed in ceiling amount
+    if(total_amount <= item.ceiling_amount ){  
+      setData((prevState) => {
+        if (prevState[index].name == item.name) {
+          prevState[index].total_amount = total_amount;
+          prevState[index].quantity = value;
+          prevState[index].status = "success";
+        }
+      });
+    
+
+    setTotal(compute_total);  
+  }else{
+
+    setData((prevState) => {
+      if (prevState[index].name == item.name) {
+        prevState[index].total_amount = total_amount;
+        prevState[index].quantity = value;
+        prevState[index].status = "error";
+        prevState[index].message = "Your total amount of "+item.name+" exceed in limit amount of ₱"+item.ceiling_amount; 
+      }
+    });
+
+    
+  }
+    
+
+  }
   // QUANTITY INPUT TEXTBOX
   const numericInput = (item, index) => (
     <NumericInput
+      editable={FarmerProfileScreen}
       value={item.quantity}
-      onChange={(value) => {
-        var total_amount = parseFloat(item.price) * value;
-
-        let compute_total = data.map((prev) => {
-          sum += prev.total_amount;
-          return sum;
-        });
-
-        
-      
-          setData((prevState) => {
-            if (prevState[index].name == item.name) {
-              prevState[index].total_amount = total_amount;
-              prevState[index].quantity = value;
-            }
-          });
-        
-
-        setTotal(compute_total);
-
-        
-        
-
-      }}
+      onChange={(value) =>handleQuantity(item,index,value)}
       minValue={1}
       maxValue={99999}
       totalWidth={150}
@@ -120,6 +145,11 @@ export default function ViewCartScreen({
           titleStyle={{ fontFamily: "calibri-light", fontWeight: "bold" }}
           right={() => numericInput(item, index)}
         />
+        <Card.Content style={{marginTop:20}}>  
+          {item.status == "error" ? (
+            <Text style={styles.spiel}> {item.message} </Text>
+            ) : null}
+        </Card.Content>
       </Card>
     </Swipeable>
   );
@@ -244,5 +274,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 2,
     marginBottom: 20,
     borderRadius: 10,
-  },
+  },spiel: {    
+    bottom: 10,
+    fontFamily: "calibri-light",
+    color: Colors.white,
+    backgroundColor:'#ff5b57cc',
+    borderRadius:5,     
+    padding:10 
+  }
 });

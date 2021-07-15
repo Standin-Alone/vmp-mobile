@@ -179,7 +179,9 @@ export default function LoginScreen({
         <Block>
           <Image source={Images.DA_Logo} style={styles.logo} />
         </Block>
-
+        {/* <Block>
+            <Text>Welcome To Voucher Management Platform</Text>
+        </Block> */}
         <Block>
           <Input
             placeholder="Username..."

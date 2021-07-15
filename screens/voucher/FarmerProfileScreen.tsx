@@ -23,9 +23,13 @@ export default function FarmerProfileScreen({
   const history = params.history;
   console.warn(history)
   const claimVoucher = () => { 
-    navigation.navigate('FertilizerScreen',params);    
-    // navigation.navigate('AddToCartScreen',params);    
-    // console.warn(history)
+    let get_program = params.data[0].shortname;    
+    if(get_program == 'CFSMFF'){      
+      navigation.navigate('AddToCartScreen',params);    
+    }else if(get_program == 'RRP2' ){
+      navigation.navigate('FertilizerScreen',params);    
+    }
+    
   }
 
   // render history component
@@ -64,7 +68,9 @@ export default function FarmerProfileScreen({
       
       <View style={styles.farmer_header} > 
           <Image source={Images.farmer} style={styles.logo} />
+          <View style={styles.name_view}>
           <Text style={styles.name}>{params.data[0].first_name} {params.data[0].last_name}</Text>
+          </View>
           <Card
             elevation={10}
             style={styles.balance_card}  
@@ -176,12 +182,14 @@ const styles = StyleSheet.create({
   },
  
   name:{
-    top:70,
-    fontSize:30,
-    fontFamily:'calibri-light',
-    right:(MyWindow.Width / 100) * 30,
+    fontSize:23,
+    fontFamily:'calibri-light',    
     alignSelf:'flex-end',
     fontWeight:'bold'
+  },
+  name_view:{
+    top:70,
+    right:20
   },
   
   details_content:{  

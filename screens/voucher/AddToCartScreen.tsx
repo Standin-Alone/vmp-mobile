@@ -195,37 +195,37 @@ export default function FarmerProfileScreen({
   } 
 
   const renderAmountText = (values) => {
-    return (
-      <Input
-        placeholder="0"
-        color={Colors.muted}
-        style={[
-          styles.amount_input,
-          spiel.status == "error"
-            ? { borderColor: Colors.danger }
-            : { borderColor: Colors.base },
-        ]}
-        label="Enter Amount:"
-        help={
-          "Your limit amount is  ₱" + selectedCommodity.ceiling_amount
-        }
-        bottomHelp={true}
-        rounded
-        type="numeric"
-        onChangeText={(orig_val) => {
-          setSelectedCommodity((prevState) => ({
-            image: prevState.image,
-            name: prevState.name,
-            unit_measure: prevState.unit_measure,
-            ceiling_amount: prevState.ceiling_amount,
-            quantity: prevState.quantity,
-            price: orig_val,
-          }));
-        }}
-        value={values}
-      />
-    );
-  }
+              return (
+                <Input
+                  placeholder="0"
+                  color={Colors.muted}
+                  style={[
+                    styles.amount_input,
+                    spiel.status == "error"
+                      ? { borderColor: Colors.danger }
+                      : { borderColor: Colors.base },
+                  ]}
+                  label="Enter Amount:"
+                  help={
+                    "Your limit amount is  ₱" + selectedCommodity.ceiling_amount
+                  }
+                  bottomHelp={true}
+                  rounded
+                  type="numeric"
+                  onChangeText={(orig_val) => {
+                    setSelectedCommodity((prevState) => ({
+                      image: prevState.image,
+                      name: prevState.name,
+                      unit_measure: prevState.unit_measure,
+                      ceiling_amount: prevState.ceiling_amount,
+                      quantity: prevState.quantity,
+                      price: orig_val,
+                    }));
+                  }}
+                  value={values}
+                />
+              );
+            }
 
 
   // render design start here
@@ -459,8 +459,7 @@ const styles = StyleSheet.create({
     fontFamily: "calibri-light",
     color: Colors.white,
     backgroundColor:'#ff5b57cc',
-    borderRadius:5, 
-    
+    borderRadius:5,     
     padding:10 
   },
 });
