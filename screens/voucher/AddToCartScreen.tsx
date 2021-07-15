@@ -143,6 +143,92 @@ export default function FarmerProfileScreen({
       });
     }
   };
+
+  // view cart button
+  const viewCartButton = () =>{
+      if(cart.length !=0){
+        navigation.navigate("ViewCartScreen", {
+            cart: cart,
+            available_balance: params.data[0].Available_Balance,
+        })
+      }else{
+        Alert.spiel_message_alert('Message','Please add commodity.','I understand')
+      }
+  }
+
+  // amount textbox value change
+  const amountValueChange = (values) =>  {
+    const { formattedValue, value } = values;
+
+    var converted_value = parseFloat(value);
+    var total_amount = converted_value * selectedCommodity.quantity;
+
+    if (
+      isNaN(converted_value) ||
+      total_amount <= selectedCommodity.ceiling_amount
+    ) {
+      setSelectedCommodity((prevState) => ({
+        image: prevState.image,
+        name: prevState.name,
+        unit_measure: prevState.unit_measure,
+        ceiling_amount: prevState.ceiling_amount,
+        quantity: prevState.quantity,
+        price: converted_value,
+        total_amount: total_amount,
+      }));
+      setSpiel({ message: "", status: "success" });
+    } else {
+      setSelectedCommodity((prevState) => ({
+        image: prevState.image,
+        name: prevState.name,
+        unit_measure: prevState.unit_measure,
+        ceiling_amount: prevState.ceiling_amount,
+        quantity: prevState.quantity,
+        price: converted_value,
+        total_amount: total_amount,
+      }));
+      setSpiel({
+        message: "You exceed on the limit price ",
+        status: "error",
+      });
+    }
+  } 
+
+  const renderAmountText = (values) => {
+    return (
+      <Input
+        placeholder="0"
+        color={Colors.muted}
+        style={[
+          styles.amount_input,
+          spiel.status == "error"
+            ? { borderColor: Colors.danger }
+            : { borderColor: Colors.base },
+        ]}
+        label="Enter Amount:"
+        help={
+          "Your limit amount is  ₱" + selectedCommodity.ceiling_amount
+        }
+        bottomHelp={true}
+        rounded
+        type="numeric"
+        onChangeText={(orig_val) => {
+          setSelectedCommodity((prevState) => ({
+            image: prevState.image,
+            name: prevState.name,
+            unit_measure: prevState.unit_measure,
+            ceiling_amount: prevState.ceiling_amount,
+            quantity: prevState.quantity,
+            price: orig_val,
+          }));
+        }}
+        value={values}
+      />
+    );
+  }
+
+
+  // render design start here
   return (
     <View style={styles.container}>
       {/* COMMODITIES LIST */}
@@ -182,6 +268,7 @@ export default function FarmerProfileScreen({
         <Image
           source={{ uri: "data:image/jpeg;base64," + selectedCommodity.image }}
           style={styles.commodity_image}
+          resizeMode="contain"
         />
 
         <View style={{ alignItems: "center", top: 20 }}>
@@ -209,74 +296,8 @@ export default function FarmerProfileScreen({
             displayType={"text"}
             decimalScale={2}
             thousandSeparator={true}
-            onValueChange={(values) => {
-              const { formattedValue, value } = values;
-
-              var converted_value = parseFloat(value);
-              var total_amount = converted_value * selectedCommodity.quantity;
-
-              if (
-                isNaN(converted_value) ||
-                total_amount <= selectedCommodity.ceiling_amount
-              ) {
-                setSelectedCommodity((prevState) => ({
-                  image: prevState.image,
-                  name: prevState.name,
-                  unit_measure: prevState.unit_measure,
-                  ceiling_amount: prevState.ceiling_amount,
-                  quantity: prevState.quantity,
-                  price: converted_value,
-                  total_amount: total_amount,
-                }));
-                setSpiel({ message: "", status: "success" });
-              } else {
-                setSelectedCommodity((prevState) => ({
-                  image: prevState.image,
-                  name: prevState.name,
-                  unit_measure: prevState.unit_measure,
-                  ceiling_amount: prevState.ceiling_amount,
-                  quantity: prevState.quantity,
-                  price: converted_value,
-                  total_amount: total_amount,
-                }));
-                setSpiel({
-                  message: "You exceed on the limit price ",
-                  status: "error",
-                });
-              }
-            }}
-            renderText={(values, props) => {
-              return (
-                <Input
-                  placeholder="0"
-                  color={Colors.muted}
-                  style={[
-                    styles.amount_input,
-                    spiel.status == "error"
-                      ? { borderColor: Colors.danger }
-                      : { borderColor: Colors.base },
-                  ]}
-                  label="Enter Amount:"
-                  help={
-                    "Your limit amount is  ₱" + selectedCommodity.ceiling_amount
-                  }
-                  bottomHelp={true}
-                  rounded
-                  type="numeric"
-                  onChangeText={(orig_val) => {
-                    setSelectedCommodity((prevState) => ({
-                      image: prevState.image,
-                      name: prevState.name,
-                      unit_measure: prevState.unit_measure,
-                      ceiling_amount: prevState.ceiling_amount,
-                      quantity: prevState.quantity,
-                      price: orig_val,
-                    }));
-                  }}
-                  value={values}
-                />
-              );
-            }}
+            onValueChange={(values) =>amountValueChange(values)}
+            renderText={(values, props) => renderAmountText(values)}
           />
           {spiel.status == "error" ? (
             <Text style={styles.spiel}> {spiel.message} </Text>
@@ -323,12 +344,7 @@ export default function FarmerProfileScreen({
           uppercase
           color={Colors.base}
           style={styles.cart_button}
-          onPress={() =>
-            navigation.navigate("ViewCartScreen", {
-              cart: cart,
-              available_balance: params.data[0].Available_Balance,
-            })
-          }
+          onPress={() => viewCartButton()}
         >
           <View style={{ flexDirection: "row" }}>
             <Text style={styles.cart_title_button}>
@@ -385,7 +401,7 @@ const styles = StyleSheet.create({
   },
   commodity_image: {
     top: 5,
-    height: (MyWindow.Height / 100) * 40,
+    height: (MyWindow.Height / 100) * 35,
     width: (MyWindow.Width / 100) * 100,
     overflow: "hidden",
     borderBottomColor: "black",
@@ -438,9 +454,13 @@ const styles = StyleSheet.create({
     fontFamily: "calibri-light",
     position: "relative",
   },
-  spiel: {
-    color: Colors.danger,
+  spiel: {    
     bottom: 10,
     fontFamily: "calibri-light",
+    color: Colors.white,
+    backgroundColor:'#ff5b57cc',
+    borderRadius:5, 
+    
+    padding:10 
   },
 });

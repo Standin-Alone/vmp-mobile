@@ -16,22 +16,21 @@ export default function FarmerProfileScreen({
   navigation,
   route,
 }: StackScreenProps<RootStackParamList, "FarmerProfileScreen">) {
-
+  
+  // get passed values from qr code screen
   const params = route.params;
 
   const history = params.history;
   console.warn(history)
   const claimVoucher = () => { 
-    // navigation.navigate('FertilizerScreen',params);    
-    navigation.navigate('AddToCartScreen',params);    
+    navigation.navigate('FertilizerScreen',params);    
+    // navigation.navigate('AddToCartScreen',params);    
     // console.warn(history)
   }
 
+  // render history component
   const renderHistory = (item,index)=>(
-    <Card
-    elevation={10}
-    style={styles.card}                 
-    >
+    <Card elevation={10} style={styles.card}>
         <Card.Title title={item.transac_by_fullname}  subtitle={<Moment element={Text} fromNow>{item.transac_date}</Moment>} 
           left={()=>
             <Icon
@@ -49,15 +48,16 @@ export default function FarmerProfileScreen({
   )
 
   const emptyComponent = ()=>(             
-     <Card
-          elevation={10}
-          style={styles.card}                
-          >
-            <Card.Title title="No history of Claiming" />
-            
+     <Card elevation={10} style={styles.card}>
+            <Card.Title title="No history of Claiming" />            
       </Card> 
     )
 
+  // card left component
+  const leftComponent  = ()=>
+                     <Text  style={styles.left_component}>
+                      &#8369;
+                    </Text>
 
   return (
     <View style={styles.container}>
@@ -71,11 +71,7 @@ export default function FarmerProfileScreen({
             mode="outlined"             
             >
                 <Card.Title title={params.data[0].Available_Balance}  subtitle="Current Balance" 
-                  left={()=>
-                    <Text style={{color:Colors.base,fontFamily:'calibri-light',fontSize:50,fontWeight:'bold'}}>
-                          &#8369;
-                    </Text>
-                  }/>                
+                  left={leftComponent}/>                
         </Card>
       </View>
       <View style={styles.details_view}>
@@ -145,21 +141,18 @@ export default function FarmerProfileScreen({
             renderItem={({item,index})=>renderHistory(item,index)}
             nestedScrollEnabled
             style={styles.flat_list}
-          />
-      
+          />      
         </View>
       </View> 
 
-
-      <Button
-    
+      <Button    
           uppercase
           color={Colors.base}
           style={styles.next_button}
           onPress = {claimVoucher}
-            >
-             Claim Voucher
-    </Button>
+          >
+          Claim Voucher
+      </Button>
     
     </View>
   );
@@ -278,8 +271,11 @@ const styles = StyleSheet.create({
   },
   flat_list:{
     width:(MyWindow.Width /100) * 92
+  },
+  left_component :{color:Colors.base,
+    fontFamily:'calibri-light',
+    fontSize:50,fontWeight:'bold'
   }
-
 
 
   

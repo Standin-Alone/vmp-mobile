@@ -16,6 +16,7 @@ export default function FertilizerScreen({
   route,
 }: StackScreenProps<RootStackParamList, "FertilizerScreen">) {
   // Initialize variables
+  // get passed values from farmer profile screen
   const params = route.params;
   let fertilizer = params.program_items.filter(
     (item) => item.item_name == "UREA Fertilizer"
@@ -34,6 +35,7 @@ export default function FertilizerScreen({
     status: "",
   });
 
+  // proceed to next process attachment screen
   const claimFertilizer = () => {
     if (spiel.status == "success" && fertilizerInput.total_amount != 0) {
       navigation.navigate("AttachmentScreen", {
@@ -43,48 +45,53 @@ export default function FertilizerScreen({
         full_name: params.full_name,
         user_id: params.user_id,
       });
-    } else if (fertilizerInput.fertilizer_amount == 0) {
+    }else if (fertilizerInput.fertilizer_amount == 0) {
       alert("Please enter your amount.");
     }
   };
+
+
+  const quantityComponent = (value) => {
+    var total_amount =
+      parseFloat(fertilizerInput.fertilizer_amount) * value;
+
+    if (
+      isNaN(total_amount) ||
+      (total_amount <= fertilizerInput.ceiling_amount &&
+        total_amount <= params.data[0].Available_Balance)
+    ) {
+      setFertilizerInput((prevState) => ({
+        sub_id: prevState.sub_id,
+        fertilizer_amount: prevState.fertilizer_amount,
+        ceiling_amount: prevState.ceiling_amount,
+        total_amount: total_amount,
+        quantity: value,
+      }));
+      setSpiel({ message: "", status: "success" });
+    } else {
+      setFertilizerInput((prevState) => ({
+        sub_id: prevState.sub_id,
+        fertilizer_amount: prevState.fertilizer_amount,
+        ceiling_amount: prevState.ceiling_amount,
+        total_amount: 0,
+        quantity: value,
+      }));
+      setSpiel({
+        message:
+          "You exceed on the amount limit of ₱" +
+          fertilizerInput.ceiling_amount,
+        status: "error",
+      });
+    }
+  }
+
+
   // Add Quantity
   const rightComponent = () => (
     <NumericInput
       containerStyle={{ borderWidth: 0 }}
       value={fertilizerInput.quantity}
-      onChange={(value) => {
-        var total_amount =
-          parseFloat(fertilizerInput.fertilizer_amount) * value;
-
-        if (
-          isNaN(total_amount) ||
-          (total_amount <= fertilizerInput.ceiling_amount &&
-            total_amount <= params.data[0].Available_Balance)
-        ) {
-          setFertilizerInput((prevState) => ({
-            sub_id: prevState.sub_id,
-            fertilizer_amount: prevState.fertilizer_amount,
-            ceiling_amount: prevState.ceiling_amount,
-            total_amount: total_amount,
-            quantity: value,
-          }));
-          setSpiel({ message: "", status: "success" });
-        } else {
-          setFertilizerInput((prevState) => ({
-            sub_id: prevState.sub_id,
-            fertilizer_amount: prevState.fertilizer_amount,
-            ceiling_amount: prevState.ceiling_amount,
-            total_amount: 0,
-            quantity: value,
-          }));
-          setSpiel({
-            message:
-              "You exceed on the amount limit of ₱" +
-              fertilizerInput.ceiling_amount,
-            status: "error",
-          });
-        }
-      }}
+      onChange={(value) => quantityComponent(value)}
       minValue={1}
       maxValue={99999}
       totalWidth={130}
@@ -99,6 +106,82 @@ export default function FertilizerScreen({
       leftButtonBackgroundColor={Colors.add}
     />
   );
+
+  // amount value change 
+  const amountValueChange = (values) => {
+    const { formattedValue, value } = values;
+
+    var converted_value = parseFloat(value);
+    var total_amount = converted_value * fertilizerInput.quantity;
+    var validated_converted_value = converted_value == "" ? 0 : value;
+    
+    var validated_total_amount = isNaN(total_amount)
+      ? 0
+      : total_amount;
+
+    if (
+      isNaN(total_amount) ||
+      total_amount <= fertilizerInput.ceiling_amount
+    ) {
+      setFertilizerInput((prevState) => ({
+        sub_id: prevState.sub_id,
+        ceiling_amount: prevState.ceiling_amount,
+        fertilizer_amount: validated_converted_value,
+        total_amount: validated_total_amount,
+        quantity: prevState.quantity,
+      }));
+      setSpiel({ message: "", status: "success" });
+    } else {
+      setFertilizerInput((prevState) => ({
+        sub_id: prevState.sub_id,
+        ceiling_amount: prevState.ceiling_amount,
+        fertilizer_amount: converted_value,
+        total_amount: 0,
+        quantity: prevState.quantity,
+      }));
+      setSpiel({
+        message:
+          "You exceed on the amount limit of ₱" +
+          fertilizerInput.ceiling_amount,
+        status: "error",
+      });
+    }
+  }
+
+  // amount value render text
+  const renderAmountText = (values) => {
+    return (
+      // Amount Textbox
+      <Input
+        placeholder="0"
+        color={Colors.muted}
+        
+        style={[
+          styles.amount_input,
+          spiel.status == "error"
+            ? { borderColor: Colors.danger }
+            : { borderColor: Colors.base },
+        ]}
+        label="Enter Amount:"
+        help={
+          "Your amount limit is  ₱" + fertilizer.ceiling_amount
+        }
+        bottomHelp={true}
+        rounded
+        type="numeric"
+        onChangeText={(orig_val) => {
+          setFertilizerInput((prevState) => ({
+            sub_id: prevState.sub_id,
+            ceiling_amount: prevState.ceiling_amount,
+            fertilizer_amount: orig_val,
+            total_amount: prevState.total_amount,
+            quantity: prevState.quantity,
+          }));
+        }}
+        value={values}
+      />
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -117,86 +200,16 @@ export default function FertilizerScreen({
               subtitleStyle={{ fontSize: 15 }}
               right={rightComponent}
             />
-            <Card.Content>
+            <Card.Content style={{top:-20}}>
               {/* Amount Textbox */}
               <NumberFormat
                 value={fertilizerInput.fertilizer_amount}
                 displayType={"text"}
                 decimalScale={2}
                 thousandSeparator={true}
-                onValueChange={(values) => {
-                  const { formattedValue, value } = values;
-
-                  var converted_value = parseFloat(value);
-                  var total_amount = converted_value * fertilizerInput.quantity;
-                  var validated_converted_value =
-                    converted_value == "" ? 0 : value;
-                  var validated_total_amount = isNaN(total_amount)
-                    ? 0
-                    : total_amount;
-
-                  if (
-                    isNaN(total_amount) ||
-                    total_amount <= fertilizerInput.ceiling_amount
-                  ) {
-                    setFertilizerInput((prevState) => ({
-                      sub_id: prevState.sub_id,
-                      ceiling_amount: prevState.ceiling_amount,
-                      fertilizer_amount: validated_converted_value,
-                      total_amount: validated_total_amount,
-                      quantity: prevState.quantity,
-                    }));
-                    setSpiel({ message: "", status: "success" });
-                  } else {
-                    setFertilizerInput((prevState) => ({
-                      sub_id: prevState.sub_id,
-                      ceiling_amount: prevState.ceiling_amount,
-                      fertilizer_amount: converted_value,
-                      total_amount: 0,
-                      quantity: prevState.quantity,
-                    }));
-                    setSpiel({
-                      message:
-                        "You exceed on the amount limit of ₱" +
-                        fertilizerInput.ceiling_amount,
-                      status: "error",
-                    });
-                  }
-                }}
-                renderText={(values) => {
-                  return (
-                    // Amount Textbox
-                    <Input
-                      placeholder="0"
-                      color={Colors.muted}
-                      style={[
-                        styles.amount_input,
-                        spiel.status == "error"
-                          ? { borderColor: Colors.danger }
-                          : { borderColor: Colors.base },
-                      ]}
-                      label="Enter Amount:"
-                      help={
-                        "Your amount limit is  ₱" + fertilizer.ceiling_amount
-                      }
-                      bottomHelp={true}
-                      rounded
-                      type="numeric"
-                      onChangeText={(orig_val) => {
-                        setFertilizerInput((prevState) => ({
-                          sub_id: prevState.sub_id,
-                          ceiling_amount: prevState.ceiling_amount,
-                          fertilizer_amount: orig_val,
-                          total_amount: prevState.total_amount,
-                          quantity: prevState.quantity,
-                        }));
-                      }}
-                      value={values}
-                    />
-                  );
-                }}
+                onValueChange={(values) => amountValueChange(values)}
+                renderText={(values) => renderAmountText(values)}
               />
-
               {spiel.status == "error" ? (
                 <Text style={styles.spiel}> {spiel.message} </Text>
               ) : null}
@@ -307,10 +320,14 @@ const styles = StyleSheet.create({
     width: (MyWindow.Width / 100) * 85,
   },
   spiel: {
-    color: Colors.danger,
+  
     bottom: 10,
     fontFamily: "calibri-light",
     alignSelf: "center",
+    color: Colors.white,
+    backgroundColor:'#ff5b57cc',
+    borderRadius:5,     
+    padding:10 
   },
 
   details_content: {

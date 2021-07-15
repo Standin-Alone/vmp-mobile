@@ -16,20 +16,20 @@ import { Input, Block, Button, Text, Icon } from "galio-framework";
 import axios from "axios";
 import * as ip_config from "../ip_config";
 import * as LocalAuthentication from "expo-local-authentication";
-import { DrawerContentScrollView } from "@react-navigation/drawer";
 import NetInfo from "@react-native-community/netinfo";
-import MaskInput, { createNumberMask } from "react-native-mask-input";
+
 
 export default function LoginScreen({
   navigation,
 }: StackScreenProps<RootStackParamList, "Login">) {
   const [form, setForm] = useState({ username: "", password: "" });
   const [is_loading, setLoading] = useState(false);
-  const [price, setPrice] = useState("");
+  
   const [is_error, setError] = useState(false);
   const [is_warning, setWarning] = useState(false);
   const [is_biometrics_loading, setBiometricsLoading] = useState(false);
   const [isFingerPrint, setFingerPrint] = useState(false);
+  
 
   useEffect(() => {
     const checkFingerPrint = async () => {
@@ -90,10 +90,10 @@ export default function LoginScreen({
           setWarning(false);
           setError(false);
           const check_compatible = await LocalAuthentication.hasHardwareAsync();
+
           axios
             .post(ip_config.ip_address + "e_voucher/api/sign_in", form)
-            .then((response) => {
-              
+            .then((response) => {            
               let get_user_id = response.data[0]["user_id"];
               let get_supplier_id = response.data[0]["supplier_id"];
               let get_full_name = response.data[0]["full_name"];
@@ -112,6 +112,8 @@ export default function LoginScreen({
                   supplier_id: get_supplier_id,
                   full_name:get_full_name
                 };
+                
+                // check if enable the fingerprint
                 if (isFingerPrint == false) {
                   if (check_compatible) {
                     AsyncStorage.setItem("is_fingerprint", "false");
@@ -170,6 +172,7 @@ export default function LoginScreen({
     navigation.navigate("ForgotPassword");
   };
 
+
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView style={{ flex: 1 }}>
@@ -188,7 +191,7 @@ export default function LoginScreen({
             icon="account-circle"
             iconColor={Colors.muted}
             iconSize={20}
-            rounded
+
             onChangeText={(value) => setForm({ ...form, username: value })}
           />
         </Block>
@@ -200,7 +203,8 @@ export default function LoginScreen({
             style={styles.input}
             viewPass
             password
-            rounded
+            iconColor={Colors.muted}
+            iconSize={20}
             onChangeText={(value) => setForm({ ...form, password: value })}
           />
         </Block>
@@ -213,13 +217,15 @@ export default function LoginScreen({
                  </Text> */}
 
           {is_error == true ? (
-            <Text h7 style={{ color: Colors.danger }}>
-              Incorrect Username or password.
-            </Text>
+            
+              <Text h7 style={styles.error}>
+                Incorrect Username or password.
+              </Text>
+            
           ) : null}
 
           {is_warning == true ? (
-            <Text h7 style={{ color: Colors.danger, marginLeft: 5 }}>
+            <Text h7 style={styles.error}>
               Please enter your username and password.
             </Text>
           ) : null}
@@ -229,8 +235,7 @@ export default function LoginScreen({
           <Button
             icon="login"
             iconFamily="FontAwesome"
-            iconSize={20}
-            round
+            iconSize={20}            
             color="#66BB6A"
             style={styles.button}
             onPress={signIn}
@@ -241,21 +246,8 @@ export default function LoginScreen({
 
           <Block row>
             <View style={styles.sidebarDivider}></View>
-
             <View style={styles.sidebarDivider}></View>
           </Block>
-          {/*                 
-                  <Button
-                  icon="fingerprint" 
-                  iconFamily="FontAwesome" 
-                  iconSize={20}                                    
-                  round
-                  color={Colors.info} 
-                  style={styles.fp_button}
-                  onPress={scanbiometrics} loading={is_biometrics_loading}                  
-                  >
-                  Use Fingerprint
-                 </Button> */}
 
           {isFingerPrint == true ? (
             <Icon
@@ -311,12 +303,13 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 50,
-    width: MyWindow.Width - 55,
+    width: MyWindow.Width - 40,
     position: "relative",
+    right:7
   },
   fp_button: {
     height: 50,
-    width: MyWindow.Width - 65,
+    width: MyWindow.Width - 60,
     position: "relative",
   },
   sidebarDivider: {
@@ -326,4 +319,11 @@ const styles = StyleSheet.create({
     backgroundColor: "lightgray",
     marginVertical: 20,
   },
+  error:{ 
+    color: Colors.white,
+    backgroundColor:'#ff5b57cc',
+    borderRadius:5, 
+    width: MyWindow.Width - 40,
+    padding:10 
+  }
 });

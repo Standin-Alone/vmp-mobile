@@ -74,8 +74,7 @@ export default function OTPScreen({
     console.warn(get_otp)
     setLoading(true);
     setError(false);
-    if (code == get_otp) {
-      console.warn(params)
+    if (code == get_otp) {      
       AsyncStorage.setItem("user_id", params.user_id.toLocaleString());
       AsyncStorage.setItem("supplier_id", params.supplier_id.toLocaleString());
       AsyncStorage.setItem("full_name", params.full_name);

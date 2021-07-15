@@ -135,6 +135,7 @@ export default function FertilizerScreen({
 
     let voucher_info = {
       reference_no: params.data.reference_no,
+      rsbsa_no: params.data.rsbsa_no,
       supplier_id: params.supplier_id,
       fund_id: params.data.fund_id,
       user_id: params.user_id,
@@ -180,9 +181,10 @@ export default function FertilizerScreen({
           navigation.reset({
             routes: [{ name: "Root" }],
           });
+
         })
         .catch(function (error) {          
-          alert("Error occured!." + error.response);
+          alert("Error occured!." + error);
           setShowProgrSubmit(false);
         });
     } else {
