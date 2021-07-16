@@ -23,7 +23,8 @@ export default function FarmerProfileScreen({
   const history = params.history;
   console.warn(history)
   const claimVoucher = () => { 
-    let get_program = params.data[0].shortname;    
+    let get_program = params.data[0].shortname;   
+    
     if(get_program == 'CFSMFF'){      
       navigation.navigate('AddToCartScreen',params);    
     }else if(get_program == 'RRP2' ){

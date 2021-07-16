@@ -33,7 +33,8 @@ export default function FertilizerScreen({
 }: StackScreenProps<RootStackParamList, "FertilizerScreen">) {
   // Initialize variables
   const params = route.params;
-
+  
+  
   const [isShowProgress, setShowProgress] = useState(false);
 
   const [isShowProgSubmit, setShowProgrSubmit] = useState(false);
@@ -126,9 +127,8 @@ export default function FertilizerScreen({
   const [isShowImage, setShowImage] = useState(false);
   const [imageURI, setImageURI] = useState("");
 
-  // Claim Voucher Button
-  const claim_voucher = () => {
-    setShowProgrSubmit(true);
+  // SUBMIT RRP VOUCHER
+  const submitRRP = ()=>{
 
     let check_null = 0;
     let formData = new FormData();
@@ -174,7 +174,7 @@ export default function FertilizerScreen({
       axios
         .post(ip_config.ip_address + "e_voucher/api/submit-voucher-rrp", formData)
         .then((response) => {       
-          console.warn(response) 
+          
           setShowProgrSubmit(false);
 
           alert("Successfully claimed by farmer!");
@@ -191,7 +191,48 @@ export default function FertilizerScreen({
       setShowProgrSubmit(false);
       alert("Please upload all your attachments for proof of transaction and make sure you turn your location.");
     }
+  } 
+
+
+  // submit CFSMFF
+  const submitCFSMFF = ()=>{
+    
+    let check_null = 0;
+    let formData = new FormData();
+    let voucher_info = {
+      reference_no: params.voucher_info.reference_no,
+      rsbsa_no: params.voucher_info.rsbsa_no,
+      supplier_id: params.supplier_id,
+      fund_id: params.voucher_info.fund_id,
+      user_id: params.user_id,
+      full_name: params.full_name,
+      current_balance: params.voucher_info.amount_val,
+    };
+
+    formData.append("voucher_info", JSON.stringify(voucher_info));
+    formData.append("commodity", JSON.stringify(params.cart));
+    formData.append("attachments", JSON.stringify(attachments));
+
+    
+
+  }
+
+  // Claim Voucher Button
+  const claim_voucher = () => {
+    // setShowProgrSubmit(true);
+    let check_program = params.voucher_info.shortname;
+    
+    // check program first 
+    if(check_program == 'RRP2'){
+      submitRRP()
+    }else if(check_program == 'CFSMFF'){
+      submitCFSMFF()
+    }
+
   };
+
+
+
 
   // submit button
     const submit = () => {

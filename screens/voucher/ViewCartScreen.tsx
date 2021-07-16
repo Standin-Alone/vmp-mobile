@@ -29,6 +29,7 @@ export default function ViewCartScreen({
   const [data, setData] = useState([]);
   const [new_cart, setNewCart] = useState([]);
   const [total, setTotal] = useState(0.0);
+  
   const [spiel, setSpiel] = useState({
     message: "",
     status: "success",
@@ -154,6 +155,25 @@ export default function ViewCartScreen({
     </Swipeable>
   );
 
+
+  const checkOut = ()=>{
+    
+    let dataToSend = {
+      voucher_info: params.voucher_info[0],
+      cart:data,
+      total_amount:total,
+      supplier_id: params.supplier_id,
+      full_name: params.full_name,
+      user_id: params.user_id
+    }
+
+    navigation.navigate('AttachmentScreen',dataToSend);
+
+
+    
+  }
+
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -209,7 +229,7 @@ export default function ViewCartScreen({
       </Card>
 
       <Footer style={{ backgroundColor: "white" }}>
-        <Button uppercase color={Colors.base} style={styles.cart_button}>
+        <Button uppercase color={Colors.base} style={styles.cart_button} onPress={checkOut}>
           Checkout
         </Button>
       </Footer>

@@ -112,7 +112,7 @@ export default function FarmerProfileScreen({
 
   const handleQuantity = (value) => {
     var total_amount = parseFloat(selectedCommodity.price) * value;
-    console.warn(total_amount);
+    
     if (
       isNaN(selectedCommodity.price) ||
       total_amount <= selectedCommodity.ceiling_amount
@@ -147,9 +147,14 @@ export default function FarmerProfileScreen({
   // view cart button
   const viewCartButton = () =>{
       if(cart.length !=0){
+        
         navigation.navigate("ViewCartScreen", {
             cart: cart,
             available_balance: params.data[0].Available_Balance,
+            voucher_info:params.data,
+            supplier_id: params.supplier_id,
+            full_name: params.full_name,
+            user_id: params.user_id
         })
       }else{
         Alert.spiel_message_alert('Message','Please add commodity.','I understand')

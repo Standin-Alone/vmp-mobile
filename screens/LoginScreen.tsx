@@ -191,7 +191,7 @@ export default function LoginScreen({
         </Block> */}
         <Block>
           <Input
-            placeholder="Username..."
+            placeholder="Username"
             placeholderTextColor={Colors.muted}
             color={Colors.base}
             style={styles.input}
@@ -206,7 +206,7 @@ export default function LoginScreen({
         </Block>
         <Block>
           <Input
-            placeholder="Password..."
+            placeholder="Password"
             placeholderTextColor={Colors.muted}
             color={Colors.base}
             style={styles.input}
