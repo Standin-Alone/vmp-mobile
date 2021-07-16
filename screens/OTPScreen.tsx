@@ -137,7 +137,7 @@ export default function OTPScreen({
         <Block>
           <Text style={styles.otp}>One Time Pin</Text>
           <Text style={styles.otp_desc}>
-            Your one time pin will be sent to your email.
+            Your one time pin will be sent to your email {params.email}
           </Text>
         </Block>
         <Block>
@@ -181,7 +181,7 @@ export default function OTPScreen({
           >
             Verify Pin
           </Button>
-          <Text style={styles.otp_desc} h5>
+          <Text style={styles.resend_otp} h5>
             Didn't receive your One Time Pin?
             <Text style={styles.resend_button} onPress={resendOTP}>
               Click here to resend OTP. ({timer})
@@ -239,7 +239,8 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   otp: { textAlign: "center", fontSize: 25 },
-  otp_desc: { textAlign: "center", fontSize: 18 },
+  otp_desc: { textAlign: "center", fontSize: 18, fontFamily:'calibri-light'},
+  resend_otp: { textAlign: "center", fontSize: 20, fontFamily:'calibri-light'},
   root: { flex: 1, padding: 50 },
   codeFieldRoot: { marginTop: 50, marginBottom: 50 },
   cell: {

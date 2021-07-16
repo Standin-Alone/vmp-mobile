@@ -84,33 +84,39 @@ export default function LoginScreen({
     setError(false);
 
     //Check internet connection
-    NetInfo.fetch().then(async (response: any) => {
+    NetInfo.fetch().then( async(response: any) => {
       if (response.isConnected) {
         if (form.username != "" && form.password != "") {
           setWarning(false);
           setError(false);
-          const check_compatible = await LocalAuthentication.hasHardwareAsync();
-
-          axios
+          
+          const check_compatible = await LocalAuthentication.hasHardwareAsync();       
+          await axios
             .post(ip_config.ip_address + "e_voucher/api/sign_in", form)
-            .then((response) => {            
+            .then( (response) => {     
+              
               let get_user_id = response.data[0]["user_id"];
+              let get_email = response.data[0]["email"];
               let get_supplier_id = response.data[0]["supplier_id"];
               let get_full_name = response.data[0]["full_name"];
 
               if (response.data[0]["Message"] == "true") {
+
+                // set sessions
                 AsyncStorage.setItem(
                   "otp_code",
                   response.data[0]["OTP"].toLocaleString()
                 );
                 AsyncStorage.setItem(
                   "email",
-                  response.data[0]["EMAIL"].toLocaleString()
+                  response.data[0]["email"].toLocaleString()
                 );
+
                 let dataToSend = {
                   user_id: get_user_id,
                   supplier_id: get_supplier_id,
-                  full_name:get_full_name
+                  full_name:get_full_name,
+                  email:get_email
                 };
                 
                 // check if enable the fingerprint
@@ -154,7 +160,8 @@ export default function LoginScreen({
             })
             .catch((error) => {
               setLoading(false);
-              console.warn(error.response);
+              console.warn(error);
+              Alert.alert("Message", "Sorry! VMP Mobile is not available. Please try again Later.");
             });
         } else {
           setError(false);
