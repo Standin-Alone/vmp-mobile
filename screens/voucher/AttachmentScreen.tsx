@@ -106,20 +106,14 @@ export default function FertilizerScreen({
     {
       name: "Farmer with Commodity",
       file: null,
-      latitude: null,
-      longitude:null
     },
     {
       name: "Valid ID",
       file: [{ front: null, back: null }],
-      latitude: null,
-      longitude:null
     },
     {
-      name: "Other Attachment",
+      name: "Other Attachment (Receipt)",
       file: null,
-      latitude: null,
-      longitude:null
     },
   ]);
 
@@ -127,27 +121,7 @@ export default function FertilizerScreen({
   const [isShowImage, setShowImage] = useState(false);
   const [imageURI, setImageURI] = useState("");
 
-  // SUBMIT RRP VOUCHER
-  const submitRRP = ()=>{
-
-    let check_null = 0;
-    let formData = new FormData();
-
-    let voucher_info = {
-      reference_no: params.data.reference_no,
-      rsbsa_no: params.data.rsbsa_no,
-      supplier_id: params.supplier_id,
-      fund_id: params.data.fund_id,
-      user_id: params.user_id,
-      full_name: params.full_name,
-      current_balance: params.data.amount_val,
-    };
-
-    formData.append("voucher_info", JSON.stringify(voucher_info));
-    formData.append("commodity", JSON.stringify(params.commodity_info));
-    formData.append("attachments", JSON.stringify(attachments));
-
-    // check attachments
+  const validateAttachments = (check_null)=>{
     attachments.map((item) => {
       if (item.name == "Valid ID") {
         if (item.file[0].front == null) {
@@ -159,18 +133,45 @@ export default function FertilizerScreen({
       } else {
         if (item.file == null) {
           check_null++;
-        }
-        if (item.longitude == null) {
-          check_null++;
-        }
-
-        if (item.latitude == null) {
-          check_null++;
-        }
+        }       
       }
     });
+    return check_null;
+  }
+  // SUBMIT RRP VOUCHER
+  const submitRRP = async ()=>{
+    let location = await Location.getCurrentPositionAsync({});
+    let lat = location.coords.latitude;
+    let long = location.coords.longitude;
 
-    if (check_null == 0) {
+    let check_null = 0;
+    let formData = new FormData();
+
+    let voucher_info = {
+      reference_no: params.voucher_info.reference_no,
+      rsbsa_no: params.voucher_info.rsbsa_no,
+      supplier_id: params.supplier_id,
+      fund_id: params.voucher_info.fund_id,
+      user_id: params.user_id,
+      full_name: params.full_name,
+      current_balance: params.voucher_info.amount_val,
+      latitude:lat,
+      longitude:long
+    };
+
+    formData.append("voucher_info", JSON.stringify(voucher_info));
+    formData.append("commodity", JSON.stringify(params.commodity_info));
+    formData.append("attachments", JSON.stringify(attachments));
+
+    // check attachments
+    
+
+    const validateProof = validateAttachments(check_null);
+
+
+
+
+    if (validateProof == 0) {
       axios
         .post(ip_config.ip_address + "e_voucher/api/submit-voucher-rrp", formData)
         .then((response) => {       
@@ -195,8 +196,10 @@ export default function FertilizerScreen({
 
 
   // submit CFSMFF
-  const submitCFSMFF = ()=>{
-    
+  const submitCFSMFF = async ()=>{
+    let location = await Location.getCurrentPositionAsync({});
+    let lat = location.coords.latitude;
+    let long = location.coords.longitude;
     let check_null = 0;
     let formData = new FormData();
     let voucher_info = {
@@ -206,14 +209,44 @@ export default function FertilizerScreen({
       fund_id: params.voucher_info.fund_id,
       user_id: params.user_id,
       full_name: params.full_name,
-      current_balance: params.voucher_info.amount_val,
+      current_balance: params.voucher_info.amount_val,      
+      latitude:lat,
+      longitude:long
+
     };
+
 
     formData.append("voucher_info", JSON.stringify(voucher_info));
     formData.append("commodity", JSON.stringify(params.cart));
     formData.append("attachments", JSON.stringify(attachments));
 
-    
+
+    const validateProof =  validateAttachments(check_null);
+
+    console.warn(params.cart)
+    if (validateProof == 0) {
+      axios
+        .post(ip_config.ip_address + "e_voucher/api/submit-voucher-cfsmff", formData)
+        .then((response) => {       
+          
+          setShowProgrSubmit(false);
+
+          alert("Successfully claimed by farmer!");
+          navigation.reset({
+            routes: [{ name: "Root" }],
+          });
+          
+
+        })
+        .catch(function (error) {          
+          alert("Error occured!." + error.response);
+          console.warn(error.response.data);
+          setShowProgrSubmit(false);
+        });
+    } else {
+      setShowProgrSubmit(false);
+      alert("Please upload all your attachments for proof of transaction and make sure you turn your location.");
+    }
 
   }
 
@@ -253,9 +286,7 @@ export default function FertilizerScreen({
   // Take Photo Button
   const openCamera = async (document_type) => {
     setShowProgrSubmit(true);
-    let location = await Location.getCurrentPositionAsync({});
-    let lat = location.coords.latitude;
-    let long = location.coords.longitude;
+
     let getImagePicker = ImagePicker.launchCameraAsync(imagePickerOptions).then(
       async (response) => {
         if (response.cancelled != true) {
@@ -263,15 +294,11 @@ export default function FertilizerScreen({
             if (document_type == item.name) {
               let attachmentState = [...attachments];
               attachmentState[index].file = response.base64;
-              attachmentState[index].latitude = lat;
-              attachmentState[index].longitude = long;
               setAttachments(attachmentState);
             } else if (document_type == item.name + "(front)") {
               //set file of front page of id
               let attachmentState = [...attachments];
               attachmentState[index].file[0].front = response.base64;
-              attachmentState[index].latitude = lat;
-              attachmentState[index].longitude = long;
               setAttachments(attachmentState);
             } else if (document_type == item.name + "(back)") {
               // set file of back page of id

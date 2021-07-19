@@ -2,9 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import {
   StyleSheet,
   FlatList,
-  Alert,
-  BackHandler,
-  RefreshControl,
+  Alert,  
+  Image
 } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,7 +20,7 @@ import MyWindow from "../constants/Layout";
 import * as ip_config from "../ip_config";
 import NetInfo from "@react-native-community/netinfo";
 import Spinner from "react-native-loading-spinner-overlay";
-
+import Moment from 'react-moment';
 
 
 export default function HomeScreen() {
@@ -94,6 +93,40 @@ export default function HomeScreen() {
   const filteredVouchers = scannedVouchers.filter(
     createFilter(search, KEYS_TO_FILTERS)
   );
+
+  const renderItem =  (item,index) =>  
+    
+    
+  (
+    <Card
+      elevation={10}
+      style={styles.card}
+    >
+      <Card.Cover source={{uri:'data:image/jpeg;base64,'+item.base64}}  
+        resizeMode={`cover`} style={{flexDirection: 'column',height:'100%'}}
+      />
+      <Card.Title
+        title={item.reference_no}
+        subtitle={<Moment element={Text}  style={{color:Colors.muted}} fromNow>{item.transac_date}</Moment>}
+      />
+      
+      <Card.Content>
+        <Text style={styles.name}>{item.fullname}</Text>
+      </Card.Content>
+    </Card>
+  )
+
+
+  const emptyComponent = () =>(
+    <Card
+      elevation={10}
+      style={styles.card}
+      
+    >
+      <Card.Title title="No existing vouchers scanned." />
+      <Card.Content></Card.Content>
+    </Card>
+  )
   return (
     <View style={styles.container}>
       <Spinner visible={refreshing} color={Colors.base} />
@@ -117,48 +150,20 @@ export default function HomeScreen() {
         />
       </Block>
 
-      <Block>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={getScannedVouchers}
-              tintColor="#FFF0000"
-              title="Loading.."
-              color="#AF0606"
-              progressBackgroundColor="#FFFF"
-            />
-          }
-        >
+      <Block >
+    
           <FlatList
+            nestedScrollEnabled
+            onRefresh={getScannedVouchers}
+            refreshing={refreshing}
+            
+            
+            // style={{height: (MyWindow.Height / 100) * 65}}          
             data={scannedVouchers ? filteredVouchers : null}
-            ListEmptyComponent={() => (
-              <Card
-                elevation={10}
-                style={styles.card}
-                onPress={() => alert("sample")}
-              >
-                <Card.Title title="No existing vouchers scanned." />
-                <Card.Content></Card.Content>
-              </Card>
-            )}
-            renderItem={({ item, index }) => (
-              <Card
-                elevation={10}
-                style={styles.card}
-             
-              >
-                <Card.Title
-                  title={item.reference_no}
-                  subtitle={new Date(item.CLAIMED_DATE).toDateString()}
-                />
-                <Card.Content>
-                  <Text style={styles.name}>{item.fullname}</Text>
-                </Card.Content>
-              </Card>
-            )}
+            ListEmptyComponent={() => emptyComponent()}
+            renderItem={({ item, index }) =>renderItem(item,index)}               
           />
-        </ScrollView>
+   
       </Block>
     </View>
   );
@@ -187,8 +192,7 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    borderRadius: 20,
-    backgroundColor: Colors.background,
+    borderRadius: 15,    
     width: MyWindow.Width - 20,
     alignSelf: "center",
     marginBottom: 20,

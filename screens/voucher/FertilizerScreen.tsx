@@ -38,8 +38,9 @@ export default function FertilizerScreen({
   // proceed to next process attachment screen
   const claimFertilizer = () => {
     if (spiel.status == "success" && fertilizerInput.total_amount != 0) {
+      
       navigation.navigate("AttachmentScreen", {
-        data: params.data[0],
+        voucher_info: params.data[0],
         commodity_info: fertilizerInput,
         supplier_id: params.supplier_id,
         full_name: params.full_name,

@@ -56,8 +56,8 @@ export default function BottomTabNavigator() {
     <BottomTab.Navigator
       initialRouteName="TabOne"
       tabBarOptions={{
-        activeTintColor: Colors.base,
-        activeBackgroundColor: Colors.background,
+        activeTintColor: Colors.white,
+        activeBackgroundColor: Colors.base,
       }}
       appearance={{
         floating: true,

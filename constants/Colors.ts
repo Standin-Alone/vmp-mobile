@@ -28,5 +28,6 @@ export default {
   warning: '#FF9B05',
   background:'#fff5ab',
   backgroundMuted: '#F5F5F5',
-  add:'#01B763'
+  add:'#01B763',
+  lightGreen : '#4fe5a0'
 };

@@ -23,6 +23,7 @@ export default function FarmerProfileScreen({
   const [showCart, setShowCart] = useState(false);
 
   const [selectedCommodity, setSelectedCommodity] = useState({
+    sub_id:"",
     image: "",
     name: "",
     ceiling_amount: 0,
@@ -37,13 +38,15 @@ export default function FarmerProfileScreen({
   });
   const [cart, setCart] = useState([]);
   useEffect(() => {
+    
     setData(params.program_items);
   }, []);
 
   //  open add to cart panel
-  const openAddPanel = (item_name, amount, image, unit_measure) => {
+  const openAddPanel = (sub_id,item_name, amount, image, unit_measure) => {
     setShowPanel(true);
     setSelectedCommodity({
+      sub_id:sub_id,
       image: image,
       name: item_name,
       unit_measure: unit_measure,
@@ -89,6 +92,7 @@ export default function FarmerProfileScreen({
             style={{ right: 0 }}
             onPress={() =>
               openAddPanel(
+                item.sub_id,
                 item.item_name,
                 item.ceiling_amount,
                 item.base64,
@@ -118,6 +122,7 @@ export default function FarmerProfileScreen({
       total_amount <= selectedCommodity.ceiling_amount
     ) {
       setSelectedCommodity((prevState) => ({
+        sub_id: prevState.sub_id,
         image: prevState.image,
         name: prevState.name,
         unit_measure: prevState.unit_measure,
@@ -129,6 +134,7 @@ export default function FarmerProfileScreen({
       setSpiel({ message: "", status: "success" });
     } else {
       setSelectedCommodity((prevState) => ({
+        sub_id: prevState.sub_id,
         image: prevState.image,
         name: prevState.name,
         unit_measure: prevState.unit_measure,
@@ -173,6 +179,7 @@ export default function FarmerProfileScreen({
       total_amount <= selectedCommodity.ceiling_amount
     ) {
       setSelectedCommodity((prevState) => ({
+        sub_id: prevState.sub_id,
         image: prevState.image,
         name: prevState.name,
         unit_measure: prevState.unit_measure,
@@ -184,6 +191,7 @@ export default function FarmerProfileScreen({
       setSpiel({ message: "", status: "success" });
     } else {
       setSelectedCommodity((prevState) => ({
+        sub_id: prevState.sub_id,
         image: prevState.image,
         name: prevState.name,
         unit_measure: prevState.unit_measure,
@@ -219,6 +227,7 @@ export default function FarmerProfileScreen({
                   type="numeric"
                   onChangeText={(orig_val) => {
                     setSelectedCommodity((prevState) => ({
+                      sub_id: prevState.sub_id,
                       image: prevState.image,
                       name: prevState.name,
                       unit_measure: prevState.unit_measure,
