@@ -103,7 +103,8 @@ export default function HomeScreen() {
       style={styles.card}
     >
       <Card.Cover source={{uri:'data:image/jpeg;base64,'+item.base64}}  
-        resizeMode={`cover`} style={{flexDirection: 'column',height:'100%'}}
+        
+        resizeMode="contain"
       />
       <Card.Title
         title={item.reference_no}
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    borderRadius: 15,    
+    borderRadius: 5,    
     width: MyWindow.Width - 20,
     alignSelf: "center",
     marginBottom: 20,

@@ -10,7 +10,6 @@ import {
   Alert,
   Modal,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Footer, Body, Item } from "native-base";
 import { RootStackParamList } from "../../types";
 import Colors from "../../constants/Colors";
@@ -26,6 +25,7 @@ import axios from "axios";
 import * as ip_config from "../../ip_config";
 import Spinner from "react-native-loading-spinner-overlay";
 import SwipeButton from "rn-swipe-button";
+import * as AlertComponent from '../../constants/Alert';
 
 export default function FertilizerScreen({
   navigation,
@@ -61,7 +61,7 @@ export default function FertilizerScreen({
           const backAction = () => {
             Alert.alert(
               "Message",
-              "Do you really want to discard your transaction?",
+              "Do you really want to discards your transaction?",
               [
                 {
                   text: "No",
@@ -69,7 +69,7 @@ export default function FertilizerScreen({
                 {
                   text: "Yes",
                   onPress: () => {
-                    navigation.reset({ routes: [{ name: "QRCodeScreen" }] });
+                    navigation.reset({ routes: [{ name: "Root" }] });
                   },
                 },
               ]
@@ -84,6 +84,7 @@ export default function FertilizerScreen({
           return () => backHandler.remove();
         }
       });
+      
     })();
   });
 
@@ -170,27 +171,30 @@ export default function FertilizerScreen({
 
 
 
+    if(location){
+      if (validateProof == 0) {
+        axios
+          .post(ip_config.ip_address + "e_voucher/api/submit-voucher-rrp", formData)
+          .then((response) => {       
+            
+            setShowProgrSubmit(false);
 
-    if (validateProof == 0) {
-      axios
-        .post(ip_config.ip_address + "e_voucher/api/submit-voucher-rrp", formData)
-        .then((response) => {       
-          
-          setShowProgrSubmit(false);
+            alert("Successfully claimed by farmer!");
+            navigation.reset({
+              routes: [{ name: "Root" }],
+            });
 
-          alert("Successfully claimed by farmer!");
-          navigation.reset({
-            routes: [{ name: "Root" }],
+          })
+          .catch(function (error) {          
+            alert("Error occured!." + error);
+            setShowProgrSubmit(false);
           });
-
-        })
-        .catch(function (error) {          
-          alert("Error occured!." + error);
-          setShowProgrSubmit(false);
-        });
-    } else {
-      setShowProgrSubmit(false);
-      alert("Please upload all your attachments for proof of transaction and make sure you turn your location.");
+      } else {
+        setShowProgrSubmit(false);
+        alert("Please upload all your attachments for proof of transaction and make sure you turn your location.");
+      }
+    }else{
+      AlertComponent.spiel_message_alert("Message","Please turn on your location first.", "Ok")
     }
   } 
 
@@ -223,36 +227,40 @@ export default function FertilizerScreen({
 
     const validateProof =  validateAttachments(check_null);
 
-    console.warn(params.cart)
-    if (validateProof == 0) {
-      axios
-        .post(ip_config.ip_address + "e_voucher/api/submit-voucher-cfsmff", formData)
-        .then((response) => {       
-          
-          setShowProgrSubmit(false);
+    if(location){
+      if (validateProof == 0) {
+        axios
+          .post(ip_config.ip_address + "e_voucher/api/submit-voucher-cfsmff", formData)
+          .then((response) => {       
+            
+            setShowProgrSubmit(false);
 
-          alert("Successfully claimed by farmer!");
-          navigation.reset({
-            routes: [{ name: "Root" }],
+            alert("Successfully claimed by farmer!");
+            navigation.reset({
+              routes: [{ name: "Root" }],
+            });
+            
+
+          })
+          .catch(function (error) {          
+            alert("Error occured!." + error.response);
+            console.warn(error.response.data);
+            setShowProgrSubmit(false);
           });
-          
-
-        })
-        .catch(function (error) {          
-          alert("Error occured!." + error.response);
-          console.warn(error.response.data);
-          setShowProgrSubmit(false);
-        });
-    } else {
-      setShowProgrSubmit(false);
-      alert("Please upload all your attachments for proof of transaction and make sure you turn your location.");
+      } else {
+        setShowProgrSubmit(false);
+        alert("Please upload all your attachments for proof of transaction and make sure you turn your location.");
+      }
+    }else{
+      AlertComponent.spiel_message_alert("Message","Please turn on your location first.", "Ok")
     }
+
 
   }
 
   // Claim Voucher Button
   const claim_voucher = () => {
-    // setShowProgrSubmit(true);
+    setShowProgrSubmit(true);
     let check_program = params.voucher_info.shortname;
     
     // check program first 

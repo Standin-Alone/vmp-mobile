@@ -42,6 +42,7 @@ export default function FarmerProfileScreen({
     setData(params.program_items);
   }, []);
 
+  let sum = 0.00;
   //  open add to cart panel
   const openAddPanel = (sub_id,item_name, amount, image, unit_measure) => {
     setShowPanel(true);
@@ -364,7 +365,10 @@ export default function FarmerProfileScreen({
             <Text style={styles.cart_title_button}>
               View your cart{" "}
               <Text style={styles.cart_sub_title_button}>
-                - {cart.length} item
+                ◉ {cart.length} item ◉ ₱{cart.map((prev) => {
+                                                sum += prev.total_amount;
+                                                return sum;
+                                          }) == 0 ? "0.00": sum.toFixed(2)} 
               </Text>
             </Text>
           </View>

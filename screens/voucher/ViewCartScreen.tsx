@@ -18,9 +18,8 @@ import { Card } from "react-native-paper";
 import NumericInput from "react-native-numeric-input";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { Block, Button, Text, Icon, Input, theme } from "galio-framework";
-import { initialWindowMetrics } from "react-native-safe-area-context";
-import { supportedAuthenticationTypesAsync } from "expo-local-authentication";
 import FarmerProfileScreen from "./AddToCartScreen";
+import Alert from '../../constants/Alert';
 export default function ViewCartScreen({
   navigation,
   route,
@@ -63,6 +62,7 @@ export default function ViewCartScreen({
           }          
         }}
       />
+  
     </View>
   );
 
@@ -167,8 +167,21 @@ export default function ViewCartScreen({
       user_id: params.user_id
     }
 
-    navigation.navigate('AttachmentScreen',dataToSend);
 
+
+    let count_error= 0 ;
+
+    data.map(prevState => prevState.status  == 'error' ? count_error++ : 0);
+    console.warn(total);
+    if (count_error == 0 ){
+      if(Number(total) <= Number(params.available_balance)){
+        navigation.navigate('AttachmentScreen',dataToSend);
+      } else{
+        Alert.spiel_message_alert("Message",`Your total amount of ₱${total} exceed in you current balance of ₱${params.available_balance}`,"I understand")
+      }
+    }else{
+      Alert.spiel_message_alert("Message","Commodities price exceed to your limit price.","I understand")
+    }   
 
     
   }
@@ -271,8 +284,7 @@ const styles = StyleSheet.create({
     fontFamily: "calibri-light",
     fontSize: 20,
   },
-  detail_info_value: {
-    color: Colors.base,
+  detail_info_value: {   
     fontFamily: "calibri-light",
     fontSize: 20,
     justifyContent: "flex-start",

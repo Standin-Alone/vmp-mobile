@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, KeyboardAvoidingView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Footer, Body, Item } from "native-base";
@@ -10,6 +10,8 @@ import { Card } from "react-native-paper";
 import { Button, Text, Icon, Input } from "galio-framework";
 import NumericInput from "react-native-numeric-input";
 import NumberFormat from "react-number-format";
+import Alert from '../../constants/Alert';
+
 
 export default function FertilizerScreen({
   navigation,
@@ -30,6 +32,8 @@ export default function FertilizerScreen({
     total_amount: 0.0,
   });
 
+
+
   const [spiel, setSpiel] = useState({
     message: "",
     status: "",
@@ -38,14 +42,19 @@ export default function FertilizerScreen({
   // proceed to next process attachment screen
   const claimFertilizer = () => {
     if (spiel.status == "success" && fertilizerInput.total_amount != 0) {
+      if(Number(fertilizerInput.total_amount) <= Number(params.data[0].Available_Balance)){
+     
+        navigation.navigate("AttachmentScreen", {
+          voucher_info: params.data[0],
+          commodity_info: fertilizerInput,
+          supplier_id: params.supplier_id,
+          full_name: params.full_name,
+          user_id: params.user_id,
+        });
       
-      navigation.navigate("AttachmentScreen", {
-        voucher_info: params.data[0],
-        commodity_info: fertilizerInput,
-        supplier_id: params.supplier_id,
-        full_name: params.full_name,
-        user_id: params.user_id,
-      });
+      } else{
+        Alert.spiel_message_alert("Message",`Your total amount of ₱${fertilizerInput.total_amount.toFixed(2)} exceed in you current balance of ₱${params.data[0].Available_Balance}`,"I understand")
+      }
     }else if (fertilizerInput.fertilizer_amount == 0) {
       alert("Please enter your amount.");
     }
