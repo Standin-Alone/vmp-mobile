@@ -98,12 +98,9 @@ export default function ViewCartScreen({
         prevState[index].message = "Your total amount of "+item.name+" exceed in limit amount of ₱"+item.ceiling_amount; 
       }
     });
-
-    
+  }    
   }
-    
 
-  }
   // QUANTITY INPUT TEXTBOX
   const numericInput = (item, index) => (
     <NumericInput

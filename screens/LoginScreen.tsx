@@ -22,13 +22,13 @@ import NetInfo from "@react-native-community/netinfo";
 export default function LoginScreen({
   navigation,
 }: StackScreenProps<RootStackParamList, "Login">) {
-  const [form, setForm] = useState({ username: "", password: "" });
-  const [is_loading, setLoading] = useState(false);
+  const [form, setForm]                               = useState({ username: "", password: "" });
+  const [is_loading, setLoading]                      = useState(false);
   
-  const [is_error, setError] = useState(false);
-  const [is_warning, setWarning] = useState(false);
+  const [is_error, setError]                          = useState(false);
+  const [is_warning, setWarning]                      = useState(false);
   const [is_biometrics_loading, setBiometricsLoading] = useState(false);
-  const [isFingerPrint, setFingerPrint] = useState(false);
+  const [isFingerPrint, setFingerPrint]               = useState(false);
   
 
   useEffect(() => {
@@ -46,8 +46,8 @@ export default function LoginScreen({
 
   const biometricsAuth = async (param_supplier_id, is_fp_btn) => {
     const compatible = await LocalAuthentication.hasHardwareAsync();
-    const enrolled = await LocalAuthentication.isEnrolledAsync();
-    const result = await LocalAuthentication.authenticateAsync({
+    const enrolled   = await LocalAuthentication.isEnrolledAsync();
+    const result     = await LocalAuthentication.authenticateAsync({
       disableDeviceFallback: true,
       cancelLabel: "Cancel",
     });
@@ -95,10 +95,10 @@ export default function LoginScreen({
             .post(ip_config.ip_address + "e_voucher/api/sign_in", form)
             .then( (response) => {     
               
-              let get_user_id = response.data[0]["user_id"];
-              let get_email = response.data[0]["email"];
+              let get_user_id     = response.data[0]["user_id"];
+              let get_email       = response.data[0]["email"];
               let get_supplier_id = response.data[0]["supplier_id"];
-              let get_full_name = response.data[0]["full_name"];
+              let get_full_name   = response.data[0]["full_name"];
 
               if (response.data[0]["Message"] == "true") {
 
@@ -113,10 +113,10 @@ export default function LoginScreen({
                 );
 
                 let dataToSend = {
-                  user_id: get_user_id,
+                  user_id    : get_user_id,
                   supplier_id: get_supplier_id,
-                  full_name:get_full_name,
-                  email:get_email
+                  full_name  : get_full_name,
+                  email      : get_email
                 };
                 
                 // check if enable the fingerprint
@@ -191,7 +191,7 @@ export default function LoginScreen({
         </Block> */}
         <Block>
           <Input
-            placeholder="Username"
+            placeholder="Enter your username"
             placeholderTextColor={Colors.muted}
             color={Colors.base}
             style={styles.input}
@@ -206,7 +206,7 @@ export default function LoginScreen({
         </Block>
         <Block>
           <Input
-            placeholder="Password"
+            placeholder="Enter your password"
             placeholderTextColor={Colors.muted}
             color={Colors.base}
             style={styles.input}
