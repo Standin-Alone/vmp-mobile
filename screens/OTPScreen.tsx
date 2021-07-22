@@ -68,34 +68,53 @@ export default function OTPScreen({
   // verify otp
   const verifyOTP = async () => {
     const get_otp = await AsyncStorage.getItem("otp_code");
+    const get_user_id = await AsyncStorage.getItem("user_id");
     console.warn(get_otp)
     setLoading(true);
     setError(false);
-    if (code == get_otp) {      
-      AsyncStorage.setItem("user_id", params.user_id.toLocaleString());
-      AsyncStorage.setItem("supplier_id", params.supplier_id.toLocaleString());
-      AsyncStorage.setItem("full_name", params.full_name);
-      navigation.replace("Root");
-      setLoading(false);
-    } else {
-      setLoading(false);
-      setCode("");
-      setError(true);
+
+    let dataToSend = {      
+      code:code,
+      user_id: get_user_id
     }
+
+    // validate otp
+    axios.post(
+      ip_config.ip_address + "e_voucher/api/validate-otp",dataToSend
+    ).then((response)=>{
+      console.warn(response.data)
+      if (response.data == true) {      
+        AsyncStorage.setItem("user_id", params.user_id.toLocaleString());
+        AsyncStorage.setItem("supplier_id", params.supplier_id.toLocaleString());
+        AsyncStorage.setItem("full_name", params.full_name);
+        navigation.replace("Root");
+        setLoading(false);
+      } else {
+        setLoading(false);
+        setCode("");
+        setError(true);
+      }
+
+    }).catch((error) => console.warn(error.response))
+
+  
   };
 
   // resend OTP
   const resendOTP = async () => {
     const email   = await AsyncStorage.getItem("email");
+    const user_id   = await AsyncStorage.getItem("user_id");
+    let dataToSend = {
+      email:email,
+      user_id:user_id
+    }
     if (isResend == true) {
       setIsShow(true);
 
       NetInfo.fetch().then((response: any) => {
         if (response.isConnected) {
           axios
-            .post(ip_config.ip_address + "e_voucher/api/resend-otp", {
-              email: email,
-            })
+            .post(ip_config.ip_address + "e_voucher/api/resend-otp", dataToSend)
             .then((response) => {
               setTimer(60);
               setIsShow(false);

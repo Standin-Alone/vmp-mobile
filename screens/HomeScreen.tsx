@@ -116,23 +116,24 @@ export default function HomeScreen() {
   const renderItem =  (item) =>  
   (
     <Card
-      elevation={10}
-      style={styles.card}
-      onPress={()=>showImage(item.base64)}
+      elevation = {10}
+      style     = {styles.card}
+      onPress   = {()=>showImage(item.base64)}
     >
       <Card.Cover source={{uri:'data:image/jpeg;base64,'+item.base64}}  
         
         resizeMode="contain"
       />
       <Card.Title
-        title={item.reference_no}
-        subtitle={<Moment element={Text}  style={{color:Colors.muted}} fromNow>{item.transac_date}</Moment>}
-        left={leftComponent}
-        right={rightComponent}
+        title    = {item.reference_no}
+        subtitle = {<Moment element={Text}  
+        style    = {{color:Colors.muted}} fromNow>{item.transac_date}</Moment>}        
+        left     = {leftComponent}
+        // right={rightComponent}
       />
       
       <Card.Content>
-        <Text style={styles.name}>{item.fullname}</Text>
+        <Text style = {styles.name}>{item.fullname}</Text>
       </Card.Content>
     </Card>
   )
@@ -140,9 +141,8 @@ export default function HomeScreen() {
 
   const emptyComponent = () =>(
     <Card
-      elevation={10}
-      style={styles.card}
-      
+      elevation = {10}
+      style     = {styles.card}      
     >
       <Card.Title title="No existing vouchers scanned." />
       <Card.Content></Card.Content>
@@ -174,7 +174,7 @@ export default function HomeScreen() {
             ListEmptyComponent={() => emptyComponent()}
             renderItem={({ item, index }) =>renderItem(item,index)}               
             contentContainerStyle={{flexGrow:0,paddingBottom:90,paddingTop:100}}
-            
+            keyExtractor={(item)=>item}
           />
       
       </View>

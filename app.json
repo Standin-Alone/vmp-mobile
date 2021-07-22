@@ -23,8 +23,7 @@
         "foregroundImage": "./assets/images/da_icon.png",      
       },
       
-      "package": "com.standinalone.rnativesample",
-      "enableDangerousExperimentalLeanBuilds":true
+      "package": "com.standinalone.rnativesample"      
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

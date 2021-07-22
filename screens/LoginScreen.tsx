@@ -111,6 +111,10 @@ export default function LoginScreen({
                   "email",
                   response.data[0]["email"].toLocaleString()
                 );
+                AsyncStorage.setItem(
+                  "user_id",
+                  get_user_id
+                );
 
                 let dataToSend = {
                   user_id    : get_user_id,
