@@ -4,7 +4,7 @@ import { StyleSheet, View, Image, FlatList } from "react-native";
 
 import { RootStackParamList } from "../../types";
 import { Footer } from "native-base";
-import Alert from "../../constants/Alert";
+import AlertComponent from "../../constants/AlertComponent";
 import Colors from "../../constants/Colors";
 import MyWindow from "../../constants/Layout";
 import { Card } from "react-native-paper";
@@ -18,9 +18,9 @@ export default function FarmerProfileScreen({
   route,
 }: StackScreenProps<RootStackParamList, "FarmerProfileScreen">) {
   const params = route.params;
-  const [data, setData] = useState([]);
+  const [data, setData]             = useState([]);
   const [isShowPanel, setShowPanel] = useState(false);
-  const [showCart, setShowCart] = useState(false);
+  const [showCart, setShowCart]     = useState(false);
 
   const [selectedCommodity, setSelectedCommodity] = useState({
     sub_id:"",
@@ -63,7 +63,7 @@ export default function FarmerProfileScreen({
       setCart((prevState) => [...prevState, selectedCommodity]);
       setShowPanel(false);
     } else if (isNaN(price)) {
-      Alert.spiel_message_alert(
+      AlertComponent.spiel_message_alert(
         "Message",
         "Please enter your amount and quantity of commodity.",
         "I understand."
@@ -164,7 +164,7 @@ export default function FarmerProfileScreen({
             user_id: params.user_id
         })
       }else{
-        Alert.spiel_message_alert('Message','Please add commodity.','I understand')
+        AlertComponent.spiel_message_alert('Message','Please add commodity.','I understand')
       }
   }
 
@@ -365,7 +365,7 @@ export default function FarmerProfileScreen({
             <Text style={styles.cart_title_button}>
               View your cart{" "}
               <Text style={styles.cart_sub_title_button}>
-                ◉ {cart.length} item ◉ ₱{cart.map((prev) => {
+               ● {cart.length} item ● ₱{cart.map((prev) => {
                                                 sum += prev.total_amount;
                                                 return sum;
                                           }) == 0 ? "0.00": sum.toFixed(2)} 

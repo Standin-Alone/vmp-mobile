@@ -25,7 +25,7 @@ import axios from "axios";
 import * as ip_config from "../../ip_config";
 import Spinner from "react-native-loading-spinner-overlay";
 import SwipeButton from "rn-swipe-button";
-import * as AlertComponent from '../../constants/Alert';
+import AlertComponent from '../../constants/AlertComponent';
 
 export default function FertilizerScreen({
   navigation,
@@ -35,8 +35,7 @@ export default function FertilizerScreen({
   const params = route.params;
   
   
-  const [isShowProgress, setShowProgress] = useState(false);
-
+  const [isShowProgress, setShowProgress]      = useState(false);
   const [isShowProgSubmit, setShowProgrSubmit] = useState(false);
 
   const thumbIconArrow = () => (
@@ -53,28 +52,16 @@ export default function FertilizerScreen({
       }
 
       if (status_foreground.status !== "granted") {
-        alert("Permission to access location was denied");
+        AlertComponent.spiel_message_alert("Message","Please set the permission of the app to use location.", "Ok")
+        setShowProgrSubmit(false);
+        
       }
 
       navigation.addListener("transitionEnd", () => {
         if (navigation.isFocused()) {
-          const backAction = () => {
-            Alert.alert(
-              "Message",
-              "Do you really want to discards your transaction?",
-              [
-                {
-                  text: "No",
-                },
-                {
-                  text: "Yes",
-                  onPress: () => {
-                    navigation.reset({ routes: [{ name: "Root" }] });
-                  },
-                },
-              ]
-            );
-            return true;
+          const backAction = () => {        
+            AlertComponent.discard_transaction_alert(navigation)
+            return true
           };
           const backHandler = BackHandler.addEventListener(
             "hardwareBackPress",
@@ -84,7 +71,6 @@ export default function FertilizerScreen({
           return () => backHandler.remove();
         }
       });
-      
     })();
   });
 
@@ -194,8 +180,10 @@ export default function FertilizerScreen({
         alert("Please upload all your attachments for proof of transaction and make sure you turn your location.");
       }
     }else{
+      setShowProgrSubmit(false);
       AlertComponent.spiel_message_alert("Message","Please turn on your location first.", "Ok")
     }
+
   } 
 
 
@@ -252,6 +240,7 @@ export default function FertilizerScreen({
         alert("Please upload all your attachments for proof of transaction and make sure you turn your location.");
       }
     }else{
+      setShowProgrSubmit(false);
       AlertComponent.spiel_message_alert("Message","Please turn on your location first.", "Ok")
     }
 

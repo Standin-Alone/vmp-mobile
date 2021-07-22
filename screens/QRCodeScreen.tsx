@@ -120,13 +120,7 @@ export default function QRCodeScreen() {
   };
   return (
     <View style={styles.container}>
-      <ProgressDialog         
-        activityIndicatorColor={Colors.base}
-        activityIndicatorSize="large"
-        animationType="slide"
-        message="Scanning QR code..."      
-      visible={isShow}  
-      />
+      
 
 
 
@@ -137,12 +131,23 @@ export default function QRCodeScreen() {
         ratio='16:9'
         style={[StyleSheet.absoluteFillObject,styles.container]}
         >
+         
         <Image style={styles.qr} source={Images.qr_frame} />
         </Camera>
 
       ) : (
         <Text> No Access camera</Text>
+        
       )}
+
+<ProgressDialog         
+            activityIndicatorColor={Colors.base}
+            activityIndicatorSize="large"
+            animationType="slide"
+            message="Scanning QR code..."      
+            visible={isShow}  
+          />
+      
     </View>
   );
 }

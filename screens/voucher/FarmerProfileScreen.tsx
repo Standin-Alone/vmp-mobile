@@ -1,13 +1,13 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Image, KeyboardAvoidingView,FlatList } from "react-native";
+import { StyleSheet, View, Image,FlatList,BackHandler,Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootStackParamList } from "../../types";
 import Images from "../../constants/Images";
 import Colors from "../../constants/Colors";
 import MyWindow from "../../constants/Layout";
 import { Card } from "react-native-paper";
-
+import AlertComponent from '../../constants/AlertComponent';
 import { Button, Text,Icon } from "galio-framework";
 import Moment from 'react-moment';
 
@@ -21,7 +21,24 @@ export default function FarmerProfileScreen({
   const params = route.params;
 
   const history = params.history;
-  console.warn(history)
+
+
+  useEffect(()=>{
+    navigation.addListener("transitionEnd", () => {
+      if (navigation.isFocused()) {
+        const backAction = () => {
+          AlertComponent.discard_transaction_alert(navigation);
+          return true      
+        };
+        const backHandler = BackHandler.addEventListener(
+          "hardwareBackPress",
+          backAction
+        );
+
+        return () => backHandler.remove();
+      }
+    });
+  })
   const claimVoucher = () => { 
     let get_program = params.data[0].shortname;   
     

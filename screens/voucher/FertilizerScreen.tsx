@@ -10,7 +10,7 @@ import { Card } from "react-native-paper";
 import { Button, Text, Icon, Input } from "galio-framework";
 import NumericInput from "react-native-numeric-input";
 import NumberFormat from "react-number-format";
-import Alert from '../../constants/Alert';
+import AlertComponent from '../../constants/AlertComponent';
 
 
 export default function FertilizerScreen({
@@ -53,7 +53,7 @@ export default function FertilizerScreen({
         });
       
       } else{
-        Alert.spiel_message_alert("Message",`Your total amount of ₱${fertilizerInput.total_amount.toFixed(2)} exceed in you current balance of ₱${params.data[0].Available_Balance}`,"I understand")
+        AlertComponent.spiel_message_alert("Message",`Your total amount of ₱${fertilizerInput.total_amount.toFixed(2)} exceed in you current balance of ₱${params.data[0].Available_Balance}`,"I understand")
       }
     }else if (fertilizerInput.fertilizer_amount == 0) {
       alert("Please enter your amount.");

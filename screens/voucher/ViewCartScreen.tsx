@@ -19,7 +19,7 @@ import NumericInput from "react-native-numeric-input";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { Block, Button, Text, Icon, Input, theme } from "galio-framework";
 import FarmerProfileScreen from "./AddToCartScreen";
-import Alert from '../../constants/Alert';
+import AlertComponent from '../../constants/AlertComponent';
 export default function ViewCartScreen({
   navigation,
   route,
@@ -174,10 +174,10 @@ export default function ViewCartScreen({
       if(Number(total) <= Number(params.available_balance)){
         navigation.navigate('AttachmentScreen',dataToSend);
       } else{
-        Alert.spiel_message_alert("Message",`Your total amount of ₱${total} exceed in you current balance of ₱${params.available_balance}`,"I understand")
+        AlertComponent.spiel_message_alert("Message",`Your total amount of ₱${total} exceed in you current balance of ₱${params.available_balance}`,"I understand")
       }
     }else{
-      Alert.spiel_message_alert("Message","Commodities price exceed to your limit price.","I understand")
+      AlertComponent.spiel_message_alert("Message","Commodities price exceed to your limit price.","I understand")
     }   
 
     

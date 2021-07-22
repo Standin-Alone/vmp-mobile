@@ -182,10 +182,12 @@ export default function LoginScreen({
 
   return (
     <View style={styles.container}>
+      
       <KeyboardAvoidingView style={{ flex: 1 }}>
         <Block>
           <Image source={Images.DA_Logo} style={styles.logo} />
         </Block>
+        
         {/* <Block>
             <Text>Welcome To Voucher Management Platform</Text>
         </Block> */}

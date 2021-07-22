@@ -4,7 +4,7 @@
     "slug": "vmp-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/da_icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",    
     "updates": {
@@ -19,8 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/da_icon.png",      
       },
       "package": "com.standinalone.rnativesample"
     },

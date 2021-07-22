@@ -29,25 +29,22 @@ export default function OTPScreen({
 }: StackScreenProps<RootStackParamList, "Login">) {
   const params: any = route.params;
   const [is_loading, setLoading] = useState(false);
-  const [is_error, setError] = useState(false);
-  const [code, setCode] = useState("");
-  const [isResend, setIsResend] = useState(false);
-  const [timer, setTimer] = useState(60);
-  const [isShow, setIsShow] = useState(false);
+  const [is_error, setError]     = useState(false);
+  const [code, setCode]          = useState("");
+  const [isResend, setIsResend]  = useState(false);
+  const [timer, setTimer]        = useState(60);
+  const [isShow, setIsShow]      = useState(false);
 
   const CELL_COUNT = 6;
   const [value, setValue] = useState("");
-  const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
+  const ref               = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
 
-  const [props, getCellOnLayoutHandler] = useClearByFocusCell({
-    value,
-    setValue,
-  });
+  const [props, getCellOnLayoutHandler] = useClearByFocusCell({value,setValue});
 
   var interval: any;
   
   const otp_timer = () => {
-    interval = window.setTimeout(() => {
+    interval      = window.setTimeout(() => {
       setTimer(timer - 1);
     });
 
@@ -89,7 +86,7 @@ export default function OTPScreen({
 
   // resend OTP
   const resendOTP = async () => {
-    const email = await AsyncStorage.getItem("email");
+    const email   = await AsyncStorage.getItem("email");
     if (isResend == true) {
       setIsShow(true);
 
