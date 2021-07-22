@@ -127,7 +127,10 @@ export default function FertilizerScreen({
   }
   // SUBMIT RRP VOUCHER
   const submitRRP = async ()=>{
-    let location = await Location.getCurrentPositionAsync({});
+    let location = await Location.getCurrentPositionAsync({}).catch((err)=>{
+      setShowProgrSubmit(false);
+      AlertComponent.spiel_message_alert("Message","Please turn on your location first.", "Ok")
+    });
     let lat = location.coords.latitude;
     let long = location.coords.longitude;
 
@@ -155,7 +158,7 @@ export default function FertilizerScreen({
 
     const validateProof = validateAttachments(check_null);
 
-
+    
 
     if(location){
       if (validateProof == 0) {
@@ -189,7 +192,10 @@ export default function FertilizerScreen({
 
   // submit CFSMFF
   const submitCFSMFF = async ()=>{
-    let location = await Location.getCurrentPositionAsync({});
+    let location = await Location.getCurrentPositionAsync({}).catch((err)=>{
+      setShowProgrSubmit(false);
+      AlertComponent.spiel_message_alert("Message","Please turn on your location first.", "Ok")
+    });
     let lat = location.coords.latitude;
     let long = location.coords.longitude;
     let check_null = 0;

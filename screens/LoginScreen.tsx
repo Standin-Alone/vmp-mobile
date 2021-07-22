@@ -44,7 +44,7 @@ export default function LoginScreen({
     checkFingerPrint();
   }, []);
 
-  const biometricsAuth = async (param_supplier_id, is_fp_btn) => {
+  const biometricsAuth = async (dataToSend, is_fp_btn) => {
     const compatible = await LocalAuthentication.hasHardwareAsync();
     const enrolled   = await LocalAuthentication.isEnrolledAsync();
     const result     = await LocalAuthentication.authenticateAsync({
@@ -62,9 +62,9 @@ export default function LoginScreen({
 
     if (result.success) {
       if (is_fp_btn == false) {
-        AsyncStorage.setItem("supplier_id", param_supplier_id.toLocaleString());
+        AsyncStorage.setItem("supplier_id", dataToSend.supplier_id.toLocaleString());
         setBiometricsLoading(false);
-        navigation.replace("OTPScreen", { supplier_id: param_supplier_id });
+        navigation.replace("OTPScreen",dataToSend);
       } else {
         setBiometricsLoading(false);
         const supplier_id = await AsyncStorage.getItem("supplier_id");
@@ -76,8 +76,8 @@ export default function LoginScreen({
     }
   };
 
-  const scanbiometrics = (param_supplier_id, is_fp_btn) => {
-    biometricsAuth(param_supplier_id, is_fp_btn);
+  const scanbiometrics = (dataToSend, is_fp_btn,) => {
+    biometricsAuth(dataToSend, is_fp_btn);
   };
   const signIn = () => {
     setLoading(true);
@@ -138,7 +138,7 @@ export default function LoginScreen({
                           text: "Enable",
                           onPress: () => {
                             AsyncStorage.setItem("is_fingerprint", "true");
-                            scanbiometrics(get_supplier_id, false);
+                            scanbiometrics(dataToSend, false);
                           },
                         },
                       ]
@@ -267,7 +267,7 @@ export default function LoginScreen({
               color={Colors.base}
               size={60}
               style={styles.fp_icon}
-              onPress={() => scanbiometrics(0, true)}
+              onPress={() => scanbiometrics([], true)}
             />
           ) : null}
         </Block>

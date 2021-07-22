@@ -7,6 +7,7 @@
     "icon": "./assets/images/da_icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",    
+    
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -21,11 +22,14 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/da_icon.png",      
       },
-      "package": "com.standinalone.rnativesample"
+      
+      "package": "com.standinalone.rnativesample",
+      "enableDangerousExperimentalLeanBuilds":true
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
     "description": ""
+    
   }
 }
