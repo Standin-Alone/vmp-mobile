@@ -17,6 +17,7 @@ import axios from "axios";
 import * as ip_config from "../ip_config";
 import * as LocalAuthentication from "expo-local-authentication";
 import NetInfo from "@react-native-community/netinfo";
+import AlertComponent from "../constants/AlertComponent";
 
 
 export default function LoginScreen({
@@ -72,7 +73,7 @@ export default function LoginScreen({
         navigation.replace("Root");
       }
     } else {
-      throw `${result.error} - Authentication unsuccessful.`;
+      AlertComponent.spiel_message_alert("Message","Authentication unsucessful. Please try again.","Ok");
     }
   };
 
@@ -165,7 +166,7 @@ export default function LoginScreen({
             .catch((error) => {
               setLoading(false);
               console.warn(error);
-              Alert.alert("Message", "Sorry! VMP Mobile is not available. Please try again Later.");
+              Alert.alert("Message", "Sorry. VMP Mobile is not available. Please try again Later.");
             });
         } else {
           setError(false);

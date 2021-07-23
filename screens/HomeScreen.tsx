@@ -171,6 +171,7 @@ export default function HomeScreen() {
             renderItem={({ item, index }) =>renderItem(item,index)}               
             contentContainerStyle={{flexGrow:0,paddingBottom:90,paddingTop:100}}
             keyExtractor={(item)=>item}
+            initialNumToRender={20}
           />
       
       </View>

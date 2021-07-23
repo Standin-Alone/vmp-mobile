@@ -147,12 +147,9 @@ export default function FertilizerScreen({
  
 
     // check attachments
-    
-
     const validateProof = validateAttachments(check_null);
 
-    
-
+  
     if(checkLocation){
       let lat = location.coords.latitude;
       let long = location.coords.longitude;
@@ -204,36 +201,45 @@ export default function FertilizerScreen({
 
   // submit CFSMFF
   const submitCFSMFF = async ()=>{
-    let location = await Location.getCurrentPositionAsync({}).catch((err)=>{
+    let checkLocation = false;
+    let location = await Location.getCurrentPositionAsync({}).then((response)=>{      
+      checkLocation = true;
+      return response;
+    }).catch((err)=>{
       setShowProgrSubmit(false);
+      checkLocation = false;
       AlertComponent.spiel_message_alert("Message","Please turn on your location first.", "Ok")
     });
-    let lat = location.coords.latitude;
-    let long = location.coords.longitude;
-    let check_null = 0;
-    let formData = new FormData();
-    let voucher_info = {
-      reference_no: params.voucher_info.reference_no,
-      rsbsa_no: params.voucher_info.rsbsa_no,
-      supplier_id: params.supplier_id,
-      fund_id: params.voucher_info.fund_id,
-      user_id: params.user_id,
-      full_name: params.full_name,
-      current_balance: params.voucher_info.amount_val,      
-      latitude:lat,
-      longitude:long
-
-    };
 
 
-    formData.append("voucher_info", JSON.stringify(voucher_info));
-    formData.append("commodity", JSON.stringify(params.cart));
-    formData.append("attachments", JSON.stringify(attachments));
-
-
+    // check attachments
     const validateProof =  validateAttachments(check_null);
 
-    if(location){
+    if(checkLocation){
+         
+      let lat = location.coords.latitude;
+      let long = location.coords.longitude;
+      let check_null = 0;
+      let formData = new FormData();
+      let voucher_info = {
+        reference_no: params.voucher_info.reference_no,
+        rsbsa_no: params.voucher_info.rsbsa_no,
+        supplier_id: params.supplier_id,
+        fund_id: params.voucher_info.fund_id,
+        user_id: params.user_id,
+        full_name: params.full_name,
+        current_balance: params.voucher_info.amount_val,      
+        latitude:lat,
+        longitude:long
+
+      };
+
+
+      formData.append("voucher_info", JSON.stringify(voucher_info));
+      formData.append("commodity", JSON.stringify(params.cart));
+      formData.append("attachments", JSON.stringify(attachments));
+
+
       if (validateProof == 0) {
         axios
           .post(ip_config.ip_address + "e_voucher/api/submit-voucher-cfsmff", formData)
