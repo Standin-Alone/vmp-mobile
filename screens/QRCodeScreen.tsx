@@ -131,6 +131,9 @@ export default function QRCodeScreen(component) {
 
         <Camera
         onBarCodeScanned={scanned ? undefined : handleQRCodeScanned}
+        barCodeScannerSettings={{
+          barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+        }}
         ratio='16:9'
         style={[StyleSheet.absoluteFillObject,styles.container]}
         >
@@ -142,6 +145,9 @@ export default function QRCodeScreen(component) {
         <Text> No Access camera</Text>
         
       )}
+
+
+
 
 <ProgressDialog         
             activityIndicatorColor={Colors.base}

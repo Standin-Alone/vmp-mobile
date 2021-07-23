@@ -3,7 +3,7 @@ import {
   StyleSheet,
   FlatList,
   Alert,    
-  Modal,
+  Modal
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View } from "../components/Themed";

@@ -9,7 +9,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { useNavigation, useNavigationState } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 import { StackActions } from "@react-navigation/native";
-import { StyleSheet, Alert, BackHandler } from "react-native";
+import { StyleSheet, Alert, BackHandler, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
@@ -18,6 +18,7 @@ import QRCodeScreen from "../screens/QRCodeScreen";
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from "../types";
 import { AnimatedTabBarNavigator } from "react-native-animated-nav-tab-bar";
 import { Icon } from "galio-framework";
+import Images from "../constants/Images";
 import ToggleSwitch from 'toggle-switch-react-native'
 const BottomTab = AnimatedTabBarNavigator<BottomTabParamList>();
 
@@ -153,33 +154,13 @@ function TabTwoNavigator() {
           headerTitle: "Scan Voucher",
           headerRight: (props) => {
             return (              
-              <ToggleSwitch
+              <ToggleSwitch            
                   isOn={isSquidPay}
-                  size="large"
-                  icon ={<Icon name="logout" family="fontawesome" size={20}/>}
+                  size="large"                  
+                  icon ={<Image style={styles.toggle_icon} source={Images.squid_pay} />}
                   onToggle={value => isSquidPay == true ? setSquidPay(false) : setSquidPay(true)}
                   style={{right:20}}
                 />
-              // <Icon
-              //   name="logout"
-              //   family="FontAwesome"
-              //   color={Colors.base}
-              //   size={50}
-              //   style={styles.button}
-              //   onPress={() =>
-              //     Alert.alert("Message", "Are you sure you want to logout?", [
-              //       { text: "No" },
-              //       {
-              //         text: "Yes",
-              //         onPress: () => {
-              //           AsyncStorage.removeItem("otp_code");
-              //           AsyncStorage.removeItem("email");
-              //           navigation.replace("AuthenticationScreen");
-              //         },
-              //       },
-              //     ])
-              //   }
-              // />
             );
           },
           headerTransparent: true,
@@ -196,4 +177,8 @@ const styles = StyleSheet.create({
   button: {
     marginRight: 10,
   },
+  toggle_icon:{
+    height:30,
+    width:30
+  }
 });
