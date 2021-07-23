@@ -24,16 +24,19 @@ import { Camera } from 'expo-camera';
 const { width } = Dimensions.get("window");
 const qrSize = width * 0.7;
 
-export default function QRCodeScreen() {
+export default function QRCodeScreen(component) {
   var form = {};
   const navigation = useNavigation();
   const navigation_state = useNavigationState(
     (state) => state.routes[state.index].name
   );
 
+  const isSquidPay = component.route.params.isSquidPay;
+  
+
   const [hasPermission, setHasPermission] = useState(null);
-  const [scanned, setScanned] = useState(false);
-  const [isShow, setIsShow] = useState(false);
+  const [scanned, setScanned]             = useState(false);
+  const [isShow, setIsShow]               = useState(false);
 
   const isFocused = useIsFocused();
 

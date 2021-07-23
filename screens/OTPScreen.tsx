@@ -82,7 +82,7 @@ export default function OTPScreen({
     axios.post(
       ip_config.ip_address + "e_voucher/api/validate-otp",dataToSend
     ).then((response)=>{
-      console.warn(response.data)
+            
       if (response.data == true) {      
         AsyncStorage.setItem("user_id", params.user_id.toLocaleString());
         AsyncStorage.setItem("supplier_id", params.supplier_id.toLocaleString());

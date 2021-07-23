@@ -4,7 +4,7 @@
  */
 
 import { Ionicons } from "@expo/vector-icons";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
 import { createStackNavigator } from "@react-navigation/stack";
 import { useNavigation, useNavigationState } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
@@ -17,9 +17,8 @@ import HomeScreen from "../screens/HomeScreen";
 import QRCodeScreen from "../screens/QRCodeScreen";
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from "../types";
 import { AnimatedTabBarNavigator } from "react-native-animated-nav-tab-bar";
-import { Button, Block, Icon } from "galio-framework";
-import { ConfirmDialog } from "react-native-simple-dialogs";
-
+import { Icon } from "galio-framework";
+import ToggleSwitch from 'toggle-switch-react-native'
 const BottomTab = AnimatedTabBarNavigator<BottomTabParamList>();
 
 export default function BottomTabNavigator() {
@@ -142,37 +141,47 @@ function TabOneNavigator() {
 const TabTwoStack = createStackNavigator<TabTwoParamList>();
 
 function TabTwoNavigator() {
+  const [isSquidPay, setSquidPay] = useState(false);
   return (
     <TabTwoStack.Navigator>
       <TabTwoStack.Screen
         name="QRCodeScreen"
         component={QRCodeScreen}
+        initialParams={{isSquidPay:isSquidPay}}
+        
         options={({ navigation }) => ({
           headerTitle: "Scan Voucher",
-          // headerRight: (props) => {
-          //   return (
-          //     <Icon
-          //       name="logout"
-          //       family="FontAwesome"
-          //       color={Colors.base}
-          //       size={50}
-          //       style={styles.button}
-          //       onPress={() =>
-          //         Alert.alert("Message", "Are you sure you want to logout?", [
-          //           { text: "No" },
-          //           {
-          //             text: "Yes",
-          //             onPress: () => {
-          //               AsyncStorage.removeItem("otp_code");
-          //               AsyncStorage.removeItem("email");
-          //               navigation.replace("AuthenticationScreen");
-          //             },
-          //           },
-          //         ])
-          //       }
-          //     />
-          //   );
-          // },
+          headerRight: (props) => {
+            return (              
+              <ToggleSwitch
+                  isOn={isSquidPay}
+                  size="large"
+                  icon ={<Icon name="logout" family="fontawesome" size={20}/>}
+                  onToggle={value => isSquidPay == true ? setSquidPay(false) : setSquidPay(true)}
+                  style={{right:20}}
+                />
+              // <Icon
+              //   name="logout"
+              //   family="FontAwesome"
+              //   color={Colors.base}
+              //   size={50}
+              //   style={styles.button}
+              //   onPress={() =>
+              //     Alert.alert("Message", "Are you sure you want to logout?", [
+              //       { text: "No" },
+              //       {
+              //         text: "Yes",
+              //         onPress: () => {
+              //           AsyncStorage.removeItem("otp_code");
+              //           AsyncStorage.removeItem("email");
+              //           navigation.replace("AuthenticationScreen");
+              //         },
+              //       },
+              //     ])
+              //   }
+              // />
+            );
+          },
           headerTransparent: true,
           headerShown: true, 
           headerTitleAlign: 'center',

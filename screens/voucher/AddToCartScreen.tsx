@@ -20,7 +20,7 @@ export default function FarmerProfileScreen({
   const params = route.params;
   const [data, setData]             = useState([]);
   const [isShowPanel, setShowPanel] = useState(false);
-  const [showCart, setShowCart]     = useState(false);
+  
 
   const [selectedCommodity, setSelectedCommodity] = useState({
     sub_id:"",
@@ -71,8 +71,12 @@ export default function FarmerProfileScreen({
     }
   };
   const csf_commodities = data.filter((item) =>
-    !item.item_name.toLowerCase().match("fertilizer") ? item : null
+    !item.item_name.toLowerCase().match("fertilizer") &&
+    !cart.find((value) => value.name === item.item_name)
+    ? item : null
   );
+
+  
 
   const renderCommodity = (item, index) => (
     <Card elevation={10} style={styles.card}>

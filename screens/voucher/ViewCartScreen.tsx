@@ -153,6 +153,7 @@ export default function ViewCartScreen({
   );
 
 
+  // check out button
   const checkOut = ()=>{
     
     let dataToSend = {

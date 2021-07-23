@@ -5,16 +5,12 @@ import {
   Alert,    
   Modal,
 } from "react-native";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View } from "../components/Themed";
-import * as ipconfig from "../ip_config";
 import axios from "axios";
 import { createFilter } from "react-native-search-filter";
 import { Block, Input, Icon} from "galio-framework";
-
 import { Card } from "react-native-paper";
-
 import Colors from "../constants/Colors";
 import MyWindow from "../constants/Layout";
 import * as ip_config from "../ip_config";

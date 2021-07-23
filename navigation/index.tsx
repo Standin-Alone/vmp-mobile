@@ -23,12 +23,12 @@ import {
 } from "react-native";
 
 // screens
-import NotFoundScreen from "../screens/NotFoundScreen";
+
 import LoginScreen from "../screens/LoginScreen";
 
 import AuthenticationScreen from "../screens/AuthenticationScreen";
 import OTPScreen from "../screens/OTPScreen";
-import ClaimVoucherScreen from "../screens/ClaimVoucherScreen";
+
 
 
 
@@ -99,25 +99,15 @@ function RootNavigator() {
         component={OTPScreen}
         options={{ title: "OTP Screen" }}
       />
-      <Stack.Screen
-        name="NotFound"
-        component={NotFoundScreen}
-        options={{ title: "Oops!" }}
-      />
+      
+
       <Stack.Screen
         name="AuthenticationScreen"
         component={AuthenticationScreen}
         options={{ title: "AuthenticationScreen" }}
       />
+  
       
-      <Stack.Screen
-        name="ClaimVoucher"
-        component={ClaimVoucherScreen}
-        options={{
-          title: "Claim Voucher",
-          headerShown: true,
-        }}
-      />
 
 
       <Stack.Screen
