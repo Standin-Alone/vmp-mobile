@@ -37,6 +37,9 @@ export default function FertilizerScreen({
   
   const [isShowProgress, setShowProgress]      = useState(false);
   const [isShowProgSubmit, setShowProgrSubmit] = useState(false);
+  
+
+
 
   const thumbIconArrow = () => (
     <Icon name="arrow-right" family="entypo" color={Colors.base} size={50} />
@@ -127,31 +130,21 @@ export default function FertilizerScreen({
   }
   // SUBMIT RRP VOUCHER
   const submitRRP = async ()=>{
-    let location = await Location.getCurrentPositionAsync({}).catch((err)=>{
+    let checkLocation = false;
+    let location = await Location.getCurrentPositionAsync({}).then((response)=>{      
+      checkLocation = true;
+      return response;
+    }).catch((err)=>{
       setShowProgrSubmit(false);
+      checkLocation = false;
       AlertComponent.spiel_message_alert("Message","Please turn on your location first.", "Ok")
     });
-    let lat = location.coords.latitude;
-    let long = location.coords.longitude;
+    
 
     let check_null = 0;
     let formData = new FormData();
 
-    let voucher_info = {
-      reference_no: params.voucher_info.reference_no,
-      rsbsa_no: params.voucher_info.rsbsa_no,
-      supplier_id: params.supplier_id,
-      fund_id: params.voucher_info.fund_id,
-      user_id: params.user_id,
-      full_name: params.full_name,
-      current_balance: params.voucher_info.amount_val,
-      latitude:lat,
-      longitude:long
-    };
-
-    formData.append("voucher_info", JSON.stringify(voucher_info));
-    formData.append("commodity", JSON.stringify(params.commodity_info));
-    formData.append("attachments", JSON.stringify(attachments));
+ 
 
     // check attachments
     
@@ -160,7 +153,26 @@ export default function FertilizerScreen({
 
     
 
-    if(location){
+    if(checkLocation){
+      let lat = location.coords.latitude;
+      let long = location.coords.longitude;
+
+      let voucher_info = {
+        reference_no: params.voucher_info.reference_no,
+        rsbsa_no: params.voucher_info.rsbsa_no,
+        supplier_id: params.supplier_id,
+        fund_id: params.voucher_info.fund_id,
+        user_id: params.user_id,
+        full_name: params.full_name,
+        current_balance: params.voucher_info.amount_val,
+        latitude:lat,
+        longitude:long
+      };
+  
+      formData.append("voucher_info", JSON.stringify(voucher_info));
+      formData.append("commodity", JSON.stringify(params.commodity_info));
+      formData.append("attachments", JSON.stringify(attachments));
+
       if (validateProof == 0) {
         axios
           .post(ip_config.ip_address + "e_voucher/api/submit-voucher-rrp", formData)
