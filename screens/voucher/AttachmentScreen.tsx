@@ -202,6 +202,7 @@ export default function FertilizerScreen({
   // submit CFSMFF
   const submitCFSMFF = async ()=>{
     let checkLocation = false;
+
     let location = await Location.getCurrentPositionAsync({}).then((response)=>{      
       checkLocation = true;
       return response;
@@ -211,7 +212,7 @@ export default function FertilizerScreen({
       AlertComponent.spiel_message_alert("Message","Please turn on your location first.", "Ok")
     });
 
-
+    let check_null = 0;
     // check attachments
     const validateProof =  validateAttachments(check_null);
 

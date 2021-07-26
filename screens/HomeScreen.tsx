@@ -5,6 +5,7 @@ import {
   Alert,    
   Modal
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View } from "../components/Themed";
 import axios from "axios";
@@ -18,9 +19,11 @@ import NetInfo from "@react-native-community/netinfo";
 import Spinner from "react-native-loading-spinner-overlay";
 import Moment from 'react-moment';
 import ImageViewer from "react-native-image-zoom-viewer";
+import AlertComponent from "../constants/AlertComponent";
 
 export default function HomeScreen() {
-  const [form, setForm] = useState({});
+  const [form, setForm]                       = useState({});
+  const navigation                            = useNavigation();
   const [refreshing, setRefreshing]           = useState(false);
   const [scannedVouchers, setScannedVouchers] = useState([]);
 
@@ -57,7 +60,7 @@ export default function HomeScreen() {
           })
           .catch((error) => {
             Alert.alert('Error!','Something went wrong.')
-            console.warn(error.response);
+            console.warn(error);
             setRefreshing(false);
           });
       } else {
@@ -103,12 +106,35 @@ export default function HomeScreen() {
 
 
 
+  // got to summary 
+  const goToSummary = (reference_no,fullname,current_balance) =>{  
+    
+    NetInfo.fetch().then(async (response: any) => {
+      setRefreshing(true)
+      if (response.isConnected) {
+        
+        axios.get(ip_config.ip_address + "e_voucher/api/get-transaction-history/"+reference_no).then((response)=>{                    
+          // push to summary screen 
+          setRefreshing(false)
+          navigation.push('SummaryScreen',{transactions:response.data,fullname:fullname,current_balance:current_balance});
+        }).catch(err=>{
+          setRefreshing(false)
+          AlertComponent.spiel_message_alert("Message","Something went wrong. Please try again later.","ok")
+        })        
+      } else {
+        Alert.alert("Message", "No Internet Connection.");
+        setRefreshing(false);
+      }
+
+    });
+  }
+
   const filteredVouchers = scannedVouchers.filter(
     createFilter(search, KEYS_TO_FILTERS)
   );
 
   const leftComponent = () =>(  <Icon name="user" family="entypo" color={Colors.base} size={30} />)
-  const rightComponent = () =>(  <Icon name="right" family="antDesign" color={Colors.base} size={30}  style={{right:10}} onPress={()=>{alert('helo')}}/>)
+  const rightComponent = (reference_no,fullname,current_balance) =>(  <Icon name="right" family="antDesign" color={Colors.base} size={30}  style={{right:10}} onPress={()=>goToSummary(reference_no,fullname,current_balance)}/>)
   const renderItem =  (item) =>  
   (
     <Card
@@ -125,7 +151,7 @@ export default function HomeScreen() {
         subtitle = {<Moment element={Text}  
         style    = {{color:Colors.muted}} fromNow>{item.transac_date}</Moment>}        
         left     = {leftComponent}
-        // right={rightComponent}
+        right    = {()=>rightComponent(item.reference_no,item.fullname,item.amount_val)}
       />
       
       <Card.Content>

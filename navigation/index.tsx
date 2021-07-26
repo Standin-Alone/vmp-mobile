@@ -29,7 +29,7 @@ import LoginScreen from "../screens/LoginScreen";
 import AuthenticationScreen from "../screens/AuthenticationScreen";
 import OTPScreen from "../screens/OTPScreen";
 
-
+import SummaryScreen from "../screens/SummaryScreen";
 
 
 import FarmerProfileScreen from "../screens/voucher/FarmerProfileScreen";
@@ -81,7 +81,8 @@ function RootNavigator() {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         
       }}
-      initialRouteName="Login"
+
+      initialRouteName="AuthenticationScreen"
       mode="modal"
     >
       <Stack.Screen name="Root" component={BottomTabNavigator} />
@@ -94,10 +95,20 @@ function RootNavigator() {
             CardStyleInterpolators.forFadeFromBottomAndroid,
         }}
       />
+
       <Stack.Screen
         name="OTPScreen"
         component={OTPScreen}
         options={{ title: "OTP Screen" }}
+      />
+
+      <Stack.Screen
+        name="SummaryScreen"
+        component={SummaryScreen}
+        options={{ title: "Summary",
+                  headerTransparent: true,
+                  headerShown: true, 
+                  headerTitleAlign: 'center'}}
       />
       
 

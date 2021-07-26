@@ -165,7 +165,7 @@ export default function LoginScreen({
             })
             .catch((error) => {
               setLoading(false);
-              console.warn(error);
+              console.warn(error.response);
               Alert.alert("Message", "Sorry. VMP Mobile is not available. Please try again Later.");
             });
         } else {

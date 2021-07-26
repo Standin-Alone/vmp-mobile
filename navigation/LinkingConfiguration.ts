@@ -32,6 +32,7 @@ export default {
       QRCodeScreen: 'qr_code_screen',
       ClaimVoucher: 'claim_voucher_screen',
       AuthenticationScreen: 'authentication_screen',      
+      SummaryScreen: 'summary_screen',
     },
   },
 };

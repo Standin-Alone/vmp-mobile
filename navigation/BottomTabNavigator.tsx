@@ -47,11 +47,11 @@ export default function BottomTabNavigator() {
     return true;
   };
 
-  useEffect(() => {
-    BackHandler.addEventListener("hardwareBackPress", backAction);
-    return () =>
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-  }, []);
+  // useEffect(() => {
+  //   BackHandler.addEventListener("hardwareBackPress", backAction);
+  //   return () =>
+  //     BackHandler.removeEventListener("hardwareBackPress", backAction);
+  // }, []);
   return (
     <BottomTab.Navigator
       initialRouteName="TabOne"

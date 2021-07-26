@@ -186,7 +186,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.backgroundMuted,
-  },logo: {
+  },
+  logo: {
     width: 70,
     height: 70,
     borderRadius: 40,    
@@ -209,7 +210,13 @@ const styles = StyleSheet.create({
     top:70,
     right:20
   },
-  
+  left_component :{color:Colors.base,
+    fontFamily:'calibri-light',
+    fontSize:50,fontWeight:'bold'
+  },
+  balance_card:{
+    marginTop:90
+  },
   details_content:{  
     flex: 1,
     flexDirection: 'row',
@@ -283,10 +290,7 @@ const styles = StyleSheet.create({
   },
   next_button :{
     width:(MyWindow.Width) / 100 * 95,
-  },
-  balance_card:{
-    marginTop:90
-  },
+  },  
   card: {
     marginTop: 10,
     marginHorizontal: 1,
@@ -297,10 +301,6 @@ const styles = StyleSheet.create({
   },
   flat_list:{
     width:(MyWindow.Width /100) * 92
-  },
-  left_component :{color:Colors.base,
-    fontFamily:'calibri-light',
-    fontSize:50,fontWeight:'bold'
   }
 
 

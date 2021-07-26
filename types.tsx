@@ -18,6 +18,7 @@ export type RootStackParamList = {
   ViewCartScreen: undefined;
   FertilizerScreen: undefined;
   AttachmentScreen: undefined;
+  SummaryScreen: undefined;
 };
 
 export type BottomTabParamList = {
