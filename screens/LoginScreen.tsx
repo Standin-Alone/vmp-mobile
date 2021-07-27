@@ -61,6 +61,7 @@ export default function LoginScreen({
       alert("This devices doesn't have  biometric authentication enabled. ");
     }
 
+
     if (result.success) {
       if (is_fp_btn == false) {
         AsyncStorage.setItem("supplier_id", dataToSend.supplier_id.toLocaleString());

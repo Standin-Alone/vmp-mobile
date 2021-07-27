@@ -47,7 +47,7 @@ export default function AuthenticationScreen({
         <Image source={Images.DA_Logo} style={styles.logo} />
       </Block>
       <View style={styles.title_container}>
-        <Text style={styles.title}>Voucher Management Platform</Text>
+        <Text style={styles.title}>Voucher Management System</Text>
       </View>
     </View>
   );

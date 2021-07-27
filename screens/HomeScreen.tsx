@@ -146,10 +146,10 @@ export default function HomeScreen() {
         
         resizeMode="contain"
       />
-      <Card.Title
+      <Card.Title        
         title    = {item.reference_no}
         subtitle = {<Moment element={Text}  
-        style    = {{color:Colors.muted}} fromNow>{item.transac_date}</Moment>}        
+        style    = {{color:Colors.muted}}  fromNow>{item.transac_date}</Moment>}        
         left     = {leftComponent}
         right    = {()=>rightComponent(item.reference_no,item.fullname,item.amount_val)}
       />

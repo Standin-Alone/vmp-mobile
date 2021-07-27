@@ -30,6 +30,7 @@ export default function OTPScreen({
   const params: any = route.params;
   const [is_loading, setLoading] = useState(false);
   const [is_error, setError]     = useState(false);
+  const [error_message, setErrorMessage]     = useState(null);
   const [code, setCode]          = useState("");
   const [isResend, setIsResend]  = useState(false);
   const [timer, setTimer]        = useState(60);
@@ -82,14 +83,20 @@ export default function OTPScreen({
     axios.post(
       ip_config.ip_address + "e_voucher/api/validate-otp",dataToSend
     ).then((response)=>{
-            
+           
       if (response.data == true) {      
         AsyncStorage.setItem("user_id", params.user_id.toLocaleString());
         AsyncStorage.setItem("supplier_id", params.supplier_id.toLocaleString());
         AsyncStorage.setItem("full_name", params.full_name);
         navigation.replace("Root");
         setLoading(false);
-      } else {
+      } else if(response.data == 'expired') {
+        setErrorMessage('Your otp has been expired. Please resend new OTP.');
+        setLoading(false);
+        setCode("");
+        setError(true);
+      }else {
+        setErrorMessage('Incorrect OTP.');
         setLoading(false);
         setCode("");
         setError(true);
@@ -180,10 +187,10 @@ export default function OTPScreen({
           />
         </Block>
         {is_error == true ? (
-          <Block center>
-            <Text h6 style={{ color: Colors.danger }}>
-              Incorrect OTP.
-            </Text>
+          <Block center>            
+              <Text h7 style={styles.error}>
+               {error_message}
+              </Text>
           </Block>
         ) : null}
         <Block>
@@ -272,4 +279,11 @@ const styles = StyleSheet.create({
   focusCell: {
     borderColor: Colors.base,
   },
+  error:{ 
+    color: Colors.white,
+    backgroundColor:'#ff5b57cc',
+    borderRadius:5, 
+    width: MyWindow.Width - 40,
+    padding:10 
+  }
 });

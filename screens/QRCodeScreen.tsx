@@ -89,15 +89,22 @@ export default function QRCodeScreen(component) {
               // setScanned(false);
               // setIsShow(false);
               // Test Available Balance
-
+              
               if (response.data[0]["data"][0].Available_Balance != 0.00) {                
-                setIsShow(false);
-                navigation.navigate("FarmerProfileScreen",{data:response.data[0]["data"],
-                program_items:response.data[0]["program_items"],
-                history:response.data[0]["history"],
-                supplier_id:get_supplier_id,
-                full_name:get_full_name,
-                user_id:get_user_id});
+                if(response.data[0]["data"][0].shortname == 'RRP2'  || response.data[0]["data"][0].shortname == 'CFSMFF'   && response.data[0]["data"][0].voucher_status != 'FULLY CLAIMED' ){
+                  setIsShow(false);
+                  navigation.navigate("FarmerProfileScreen",{data:response.data[0]["data"],
+                  program_items:response.data[0]["program_items"],
+                  history:response.data[0]["history"],
+                  supplier_id:get_supplier_id,
+                  full_name:get_full_name,
+                  user_id:get_user_id});
+                }
+                else{
+                  alert("This voucher is full claimed");
+                  setScanned(false);
+                  setIsShow(false);
+                }
               } else {
                 alert("Not Enough Balance.");
                 setScanned(false);
