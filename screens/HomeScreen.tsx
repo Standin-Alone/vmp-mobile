@@ -60,7 +60,7 @@ export default function HomeScreen() {
           })
           .catch((error) => {
             Alert.alert('Error!','Something went wrong.')
-            console.warn(error);
+            console.warn(error.response);
             setRefreshing(false);
           });
       } else {
@@ -88,11 +88,13 @@ export default function HomeScreen() {
         if (response.isConnected) {
           const result = await axios.get(
             ip_config.ip_address + "e_voucher/api/get-scanned-vouchers/"+supplier_id,         
-          );
+          ).catch((error)=>error.response);
           if (result.status == 200) {
             setScannedVouchers(result.data);
             console.warn(result.data);
             setRefreshing(false);
+          }else{
+            console.warn(result);
           }
         } else {
           Alert.alert("Message", "No Internet Connection.");

@@ -163,7 +163,8 @@ export default function FertilizerScreen({
         full_name: params.full_name,
         current_balance: params.voucher_info.amount_val,
         latitude:lat,
-        longitude:long
+        longitude:long,
+        program: params.voucher_info.shortname
       };
   
       formData.append("voucher_info", JSON.stringify(voucher_info));
@@ -231,7 +232,8 @@ export default function FertilizerScreen({
         full_name: params.full_name,
         current_balance: params.voucher_info.amount_val,      
         latitude:lat,
-        longitude:long
+        longitude:long,
+        program: params.voucher_info.shortname
 
       };
 
@@ -245,13 +247,13 @@ export default function FertilizerScreen({
         axios
           .post(ip_config.ip_address + "e_voucher/api/submit-voucher-cfsmff", formData)
           .then((response) => {       
-            
+            console.warn('response'+response);
             setShowProgrSubmit(false);
 
-            alert("Successfully claimed by farmer!");
-            navigation.reset({
-              routes: [{ name: "Root" }],
-            });
+            // alert("Successfully claimed by farmer!");
+            // navigation.reset({
+            //   routes: [{ name: "Root" }],
+            // });
             
 
           })

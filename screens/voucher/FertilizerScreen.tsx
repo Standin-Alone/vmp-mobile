@@ -232,12 +232,23 @@ export default function FertilizerScreen({
             <Card.Content>
               <View style={{ flexDirection: "row", marginBottom: 20 }}>
                 <View style={{ flex: 1 }}>
+
                   <Text style={styles.detail_info_title}>Current Balance:</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.detail_info_value}>
-                    ₱{params.data[0].Available_Balance}{" "}
-                  </Text>
+
+                <NumberFormat
+                  value={params.data[0].Available_Balance}
+                  displayType={"text"}
+                  decimalScale={2}
+                  thousandSeparator={true}                
+                  renderText={(values) => (
+                    <Text style={styles.detail_info_value}>
+                    ₱{values}
+                    </Text>
+                  )}
+                />
+             
                 </View>
               </View>
 
@@ -246,9 +257,23 @@ export default function FertilizerScreen({
                   <Text style={styles.detail_info_title}>Total:</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.detail_info_value}>
-                    ₱{fertilizerInput.total_amount.toFixed(2)}{" "}
-                  </Text>
+                
+
+
+                  <NumberFormat
+                    value={fertilizerInput.total_amount}
+                    displayType={"text"}
+                    decimalScale={2}
+                    thousandSeparator={true}                
+                    fixedDecimalScale={true}
+                    renderText={(values) => (
+                      <Text style={styles.detail_info_value}>
+                      ₱{values}
+                      </Text>
+                    )}
+                  />
+
+                  
                 </View>
               </View>
 
@@ -267,14 +292,19 @@ export default function FertilizerScreen({
                     Remaining Balance:
                   </Text>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.remaining_balance}>
-                    ₱{" "}
-                    {(
-                      params.data[0].Available_Balance -
-                      fertilizerInput.total_amount
-                    ).toFixed(2)}
-                  </Text>
+                <View style={{ flex: 1 }}>                
+                  <NumberFormat
+                    value={params.data[0].Available_Balance - fertilizerInput.total_amount}
+                    displayType={"text"}
+                    decimalScale={2}
+                    thousandSeparator={true}                
+                    fixedDecimalScale={true}
+                    renderText={(values) => (
+                      <Text style={styles.remaining_balance}>
+                      ₱{values}
+                      </Text>
+                    )}
+                  />
                 </View>
               </View>
             </Card.Content>
@@ -286,8 +316,9 @@ export default function FertilizerScreen({
             color={Colors.base}
             style={styles.claim_fertilizer_button}
             onPress={claimFertilizer}
+            uppercase
           >
-            Claim
+            Next
           </Button>
         </Footer>
       </KeyboardAvoidingView>

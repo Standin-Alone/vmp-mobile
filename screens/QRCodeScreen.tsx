@@ -91,7 +91,7 @@ export default function QRCodeScreen(component) {
               // Test Available Balance
               
               if (response.data[0]["data"][0].Available_Balance != 0.00) {                
-                if(response.data[0]["data"][0].shortname == 'RRP2'  || response.data[0]["data"][0].shortname == 'CFSMFF'   && response.data[0]["data"][0].voucher_status != 'FULLY CLAIMED' ){
+                if(response.data[0]["data"][0].voucher_status != 'FULLY CLAIMED' ){
                   setIsShow(false);
                   navigation.navigate("FarmerProfileScreen",{data:response.data[0]["data"],
                   program_items:response.data[0]["program_items"],

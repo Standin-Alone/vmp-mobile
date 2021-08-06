@@ -175,7 +175,7 @@ export default function FarmerProfileScreen({
           style={styles.next_button}
           onPress = {claimVoucher}
           >
-          Claim Voucher
+          Next
       </Button>
     
     </View>
