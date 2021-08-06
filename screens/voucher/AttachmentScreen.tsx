@@ -250,10 +250,10 @@ export default function FertilizerScreen({
             console.warn('response'+response);
             setShowProgrSubmit(false);
 
-            // alert("Successfully claimed by farmer!");
-            // navigation.reset({
-            //   routes: [{ name: "Root" }],
-            // });
+            alert("Successfully claimed by farmer!");
+            navigation.reset({
+              routes: [{ name: "Root" }],
+            });
             
 
           })
