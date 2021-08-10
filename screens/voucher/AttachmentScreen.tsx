@@ -252,9 +252,9 @@ export default function FertilizerScreen({
         axios
           .post(ip_config.ip_address + "e_voucher/api/submit-voucher-cfsmff", formData)
           .then((response) => {       
-            console.warn('response'+response);
+           
             setShowProgrSubmit(false);
-
+            console.warn(response);
             if(response.data == 'success'){
             alert("Successfully claimed by farmer!");
             navigation.reset({
@@ -263,8 +263,6 @@ export default function FertilizerScreen({
             }else{
               alert("Error uploading due to unstable connection. Please try again.*");
             } 
-            
-
           })
           .catch(function (error) {          
             alert("Error occured!." + error.response);
@@ -287,14 +285,20 @@ export default function FertilizerScreen({
   const claim_voucher = () => {
     setShowProgrSubmit(true);
     let check_program = params.voucher_info.shortname;
-    
-    // check program first 
-    if(check_program == 'RRP2'){
-      submitRRP()
-    }else if(check_program == 'CFSMFF'){
-      submitCFSMFF()
-    }
 
+    NetInfo.fetch().then( async(response: any) => {
+      if (response.isConnected) {
+        // check program first 
+        if(check_program == 'RRP2'){
+          submitRRP()
+        }else if(check_program == 'CFSMFF'){
+          submitCFSMFF()
+        }
+      }else{
+        Alert.alert("Message", "No Internet Connection.");
+      }
+    }); 
+    
   };
 
 
