@@ -144,8 +144,7 @@ export default function HomeScreen() {
       style     = {styles.card}
       onPress   = {()=>showImage(item.base64)}
     >
-      <Card.Cover source={{uri:'data:image/jpeg;base64,'+item.base64}}  
-        
+      <Card.Cover source={{uri:'data:image/jpeg;base64,'+item.base64}}          
         resizeMode="contain"
       />
       <Card.Title        

@@ -40,6 +40,7 @@ export default function FarmerProfileScreen({
   useEffect(() => {
     
     setData(params.program_items);
+    
   }, []);
 
   let sum = 0.00;

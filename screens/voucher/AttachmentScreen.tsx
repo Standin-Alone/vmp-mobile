@@ -72,7 +72,11 @@ export default function FertilizerScreen({
             backAction
           );
 
-          return () => backHandler.remove();
+          return () => {backHandler.remove()
+          
+            BackHandler.removeEventListener("hardwareBackPress", backAction);
+          
+          };
         }
       });
     })();
