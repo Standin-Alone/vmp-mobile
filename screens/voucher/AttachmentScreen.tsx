@@ -26,6 +26,7 @@ import * as ip_config from "../../ip_config";
 import Spinner from "react-native-loading-spinner-overlay";
 import SwipeButton from "rn-swipe-button";
 import AlertComponent from '../../constants/AlertComponent';
+import NetInfo from "@react-native-community/netinfo";
 
 export default function FertilizerScreen({
   navigation,
@@ -177,15 +178,19 @@ export default function FertilizerScreen({
           .then((response) => {       
             
             setShowProgrSubmit(false);
-
-            alert("Successfully claimed by farmer!");
-            navigation.reset({
-              routes: [{ name: "Root" }],
-            });
-
+            if(response.data == 'success'){
+              alert("Successfully claimed by farmer!");
+              navigation.reset({
+                routes: [{ name: "Root" }],
+              });
+            }else{
+              alert("Error! Uploading image not successful. Please try again.");
+            }
+            
           })
           .catch(function (error) {          
-            alert("Error occured!." + error);
+            alert("Error occured!." + error.response);
+            console.warn(error.response);
             setShowProgrSubmit(false);
           });
       } else {
@@ -250,10 +255,14 @@ export default function FertilizerScreen({
             console.warn('response'+response);
             setShowProgrSubmit(false);
 
+            if(response.data == 'success'){
             alert("Successfully claimed by farmer!");
             navigation.reset({
               routes: [{ name: "Root" }],
             });
+            }else{
+              alert("Error uploading due to unstable connection. Please try again.*");
+            } 
             
 
           })
