@@ -20,6 +20,9 @@ import Swipeable from "react-native-gesture-handler/Swipeable";
 import { Block, Button, Text, Icon, Input, theme } from "galio-framework";
 import FarmerProfileScreen from "./AddToCartScreen";
 import AlertComponent from '../../constants/AlertComponent';
+import { useNavigation } from '@react-navigation/native';
+import NumberFormat from "react-number-format";
+
 export default function ViewCartScreen({
   navigation,
   route,
@@ -44,7 +47,7 @@ export default function ViewCartScreen({
         .toFixed(2)
     );
   });
-
+  const newNavigation = useNavigation();
   // RIGHT CONTENT OF CARD
   const rightContent = (delete_index) => (
     <View style={{ top: 20 }}>
@@ -58,6 +61,9 @@ export default function ViewCartScreen({
           new_data.splice(delete_index, delete_index + 1);
           setNewCart(new_data);
           if(data.length  == 0){
+            
+            
+            route.params.return_cart(new_data)
             navigation.goBack();
           }          
         }}
@@ -170,7 +176,7 @@ export default function ViewCartScreen({
     let count_error= 0 ;
 
     data.map(prevState => prevState.status  == 'error' ? count_error++ : 0);
-    console.warn(total);
+    
     if (count_error == 0 ){
       if(Number(total) <= Number(params.available_balance)){
         navigation.navigate('AttachmentScreen',dataToSend);
@@ -206,7 +212,19 @@ export default function ViewCartScreen({
               <Text style={styles.detail_info_title}>Current Balance:</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.detail_info_value}>₱{params.available_balance}</Text>
+
+            <NumberFormat
+                  value={params.available_balance}
+                  displayType={"text"}
+                  decimalScale={2}
+                  thousandSeparator={true}                
+                  renderText={(values) => (
+                    <Text style={styles.detail_info_value}>                              
+                      ₱{values}
+                    </Text>
+                  )}
+                />
+              
             </View>
           </View>
 
@@ -215,7 +233,18 @@ export default function ViewCartScreen({
               <Text style={styles.detail_info_title}>Total:</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.detail_info_value}>₱{total}</Text>
+              <NumberFormat
+                  value={total}
+                  displayType={"text"}
+                  decimalScale={2}
+                  thousandSeparator={true}                
+                  renderText={(values) => (
+                    <Text style={styles.detail_info_value}>                              
+                      ₱{values}
+                    </Text>
+                  )}
+              />
+              
             </View>
           </View>
 
@@ -233,7 +262,19 @@ export default function ViewCartScreen({
               <Text style={styles.detail_info_title}>Remaining Balance:</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.remaining_balance}>₱ {(params.available_balance - total).toFixed(2)}</Text>
+            <NumberFormat
+                  value={params.available_balance - total}
+                  displayType={"text"}
+                  decimalScale={2}
+                  thousandSeparator={true}   
+                  fixedDecimalScale={true}             
+                  renderText={(values) => (
+                    <Text style={styles.remaining_balance}>                              
+                      ₱{values}
+                    </Text>
+                  )}
+              />
+              
             </View>
           </View>
         </Card.Content>
@@ -285,6 +326,7 @@ const styles = StyleSheet.create({
   detail_info_value: {   
     fontFamily: "calibri-light",
     fontSize: 20,
+    fontWeight:'bold',
     justifyContent: "flex-start",
   },
   details_title: {

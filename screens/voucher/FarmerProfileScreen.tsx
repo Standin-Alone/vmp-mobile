@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     fontFamily:'calibri-light',
     left:20,
     display:'flex',    
-    top:(MyWindow.Height / 100) * -23,
+    top:(MyWindow.Height / 100) * -30,
     
   },
   details_text:{
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     fontFamily:'calibri-light',
     left:20,
     display:'flex',    
-    top:(MyWindow.Height / 100) * 3,
+    top:(MyWindow.Height / 100) * -2,
 
   },
   history_text:{

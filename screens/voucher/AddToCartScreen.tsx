@@ -20,7 +20,7 @@ export default function FarmerProfileScreen({
   const params = route.params;
   const [data, setData]             = useState([]);
   const [isShowPanel, setShowPanel] = useState(false);
-  
+  const [new_csf_commodities,setCsfCommodities]       = useState([]);
 
   const [selectedCommodity, setSelectedCommodity] = useState({
     sub_id:"",
@@ -37,11 +37,44 @@ export default function FarmerProfileScreen({
     status: "success",
   });
   const [cart, setCart] = useState([]);
+
+  let csf_commodities = data.filter((item) =>
+  !item.item_name.toLowerCase().match("fertilizer") &&
+  !cart.find((value) => value.name === item.item_name)
+  ? item : null
+  );
+
+  
+  const returnCart = (new_cart)=>{
+    console.warn(new_cart);
+    setCart(new_cart); 
+    
+    setCsfCommodities(data.filter((item) =>
+    !item.item_name.toLowerCase().match("fertilizer") &&
+    !cart.find((value) => value.name === item.item_name)
+    ? item : null
+    ))
+  }
+
+
   useEffect(() => {
-    
-    setData(params.program_items);
-    
-  }, []);
+  
+     setData(params.program_items);
+
+     const refresh =   navigation.addListener('focus', ()=>{
+
+        setData(params.program_items);
+        
+        setCsfCommodities(data.filter((item) =>
+        !item.item_name.toLowerCase().match("fertilizer") &&
+        !cart.find((value) => value.name === item.item_name)
+        ? item : null
+        ))
+      })
+      
+      return refresh
+     
+  }, [data]);
 
   let sum = 0.00;
   //  open add to cart panel
@@ -71,11 +104,7 @@ export default function FarmerProfileScreen({
       );
     }
   };
-  const csf_commodities = data.filter((item) =>
-    !item.item_name.toLowerCase().match("fertilizer") &&
-    !cart.find((value) => value.name === item.item_name)
-    ? item : null
-  );
+ 
 
   
 
@@ -166,7 +195,8 @@ export default function FarmerProfileScreen({
             voucher_info:params.data,
             supplier_id: params.supplier_id,
             full_name: params.full_name,
-            user_id: params.user_id
+            user_id: params.user_id,
+            return_cart : returnCart.bind(this)
         })
       }else{
         AlertComponent.spiel_message_alert('Message','Please add commodity.','I understand')
@@ -255,6 +285,7 @@ export default function FarmerProfileScreen({
       <FlatList
         nestedScrollEnabled
         data={csf_commodities}
+        extraData={new_csf_commodities}
         style={styles.flat_list}
         ListEmptyComponent={() => emptyCommodity()}
         renderItem={({ item, index }) => renderCommodity(item, index)}
