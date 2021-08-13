@@ -60,11 +60,12 @@ export default function FarmerProfileScreen({
   useEffect(() => {
   
      setData(params.program_items);
-
-     const refresh =   navigation.addListener('focus', ()=>{
-
-        setData(params.program_items);
+  
+  
+     // refresh cart when go back
+     const refresh_cart =   navigation.addListener('focus', ()=>{
         
+        setData(params.program_items);        
         setCsfCommodities(data.filter((item) =>
         !item.item_name.toLowerCase().match("fertilizer") &&
         !cart.find((value) => value.name === item.item_name)
@@ -72,7 +73,7 @@ export default function FarmerProfileScreen({
         ))
       })
       
-      return refresh
+      return refresh_cart
      
   }, [data]);
 
