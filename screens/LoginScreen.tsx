@@ -194,10 +194,11 @@ export default function LoginScreen({
           <Image source={Images.DA_Logo} style={styles.logo} />
         </Block>
         
-        {/* <Block>
-            <Text>Welcome To Voucher Management Platform</Text>
-        </Block> */}
-        <Block>
+        <View style={styles.title_view}>
+            <Text style={styles.welcome_title}>Welcome To Voucher Management System</Text>
+        </View>
+    <View style={styles.form}>
+        <View > 
           <Input
             placeholder="Enter your username"
             placeholderTextColor={Colors.muted}
@@ -211,8 +212,8 @@ export default function LoginScreen({
 
             onChangeText={(value) => setForm({ ...form, username: value })}
           />
-        </Block>
-        <Block>
+        </View>
+        <View>
           <Input
             placeholder="Enter your password"
             placeholderTextColor={Colors.muted}
@@ -224,7 +225,7 @@ export default function LoginScreen({
             iconSize={20}
             onChangeText={(value) => setForm({ ...form, password: value })}
           />
-        </Block>
+        </View>
 
         <Block style={{ backgroundColor: "#F2F3F4" }}>
           {/* <Text
@@ -260,12 +261,12 @@ export default function LoginScreen({
           >
             Sign In
           </Button>
-
+          
           <Block row>
             <View style={styles.sidebarDivider}></View>
             <View style={styles.sidebarDivider}></View>
           </Block>
-
+        
           {isFingerPrint == true ? (
             <Icon
               name="fingerprint"
@@ -277,6 +278,7 @@ export default function LoginScreen({
             />
           ) : null}
         </Block>
+      </View>
       </KeyboardAvoidingView>
     </View>
   );
@@ -342,5 +344,17 @@ const styles = StyleSheet.create({
     borderRadius:5, 
     width: MyWindow.Width - 40,
     padding:10 
+  },
+  welcome_title:{
+    fontFamily:'calibri-light',
+    fontSize:24,
+    fontWeight:'600',
+    textAlign:'center'
+  },
+  title_view:{
+    bottom:40
+  },
+  form:{
+    paddingLeft:20
   }
 });
