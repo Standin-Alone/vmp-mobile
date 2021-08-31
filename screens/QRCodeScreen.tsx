@@ -137,7 +137,7 @@ export default function QRCodeScreen(component) {
       {scanned == false ? (        
 
         <Camera
-        onBarCodeScanned={scanned ? undefined : handleQRCodeScanned}
+        onBarCodeScanned={scanned ? undefined : undefined}
         barCodeScannerSettings={{
           barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
         }}
