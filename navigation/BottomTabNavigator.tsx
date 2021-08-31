@@ -152,17 +152,17 @@ function TabTwoNavigator() {
         
         options={({ navigation }) => ({
           headerTitle: "Scan Voucher",
-          headerRight: (props) => {
-            return (              
-              <ToggleSwitch            
-                  isOn={isSquidPay}
-                  size="large"                  
-                  icon ={<Image style={styles.toggle_icon} source={Images.squid_pay} />}
-                  onToggle={value => isSquidPay == true ? setSquidPay(false) : setSquidPay(true)}
-                  style={{right:20}}
-                />
-            );
-          },
+          // headerRight: (props) => {
+          //   return (              
+          //     <ToggleSwitch            
+          //         isOn={isSquidPay}
+          //         size="large"                  
+          //         icon ={<Image style={styles.toggle_icon} source={Images.squid_pay} />}
+          //         onToggle={value => isSquidPay == true ? setSquidPay(false) : setSquidPay(true)}
+          //         style={{right:20}}
+          //       />
+          //   );
+          // },
           headerTransparent: true,
           headerShown: true, 
           headerTitleAlign: 'center',
