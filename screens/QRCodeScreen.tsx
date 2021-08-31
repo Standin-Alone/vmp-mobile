@@ -101,7 +101,7 @@ export default function QRCodeScreen(component) {
                   user_id:get_user_id});
                 }
                 else{
-                  alert("This voucher is full claimed");
+                  alert("This voucher is fully claimed");
                   setScanned(false);
                   setIsShow(false);
                 }

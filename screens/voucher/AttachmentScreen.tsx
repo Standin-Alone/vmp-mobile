@@ -136,10 +136,11 @@ export default function FertilizerScreen({
   // SUBMIT RRP VOUCHER
   const submitRRP = async ()=>{
     let checkLocation = false;
-    let location = await Location.getCurrentPositionAsync({}).then((response)=>{      
+    let location = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.Lowest}).then((response)=>{      
       checkLocation = true;
       return response;
     }).catch((err)=>{
+      console.warn(err)
       setShowProgrSubmit(false);
       checkLocation = false;
       AlertComponent.spiel_message_alert("Message","Please turn on your location first.", "Ok")
@@ -213,10 +214,11 @@ export default function FertilizerScreen({
   const submitCFSMFF = async ()=>{
     let checkLocation = false;
 
-    let location = await Location.getCurrentPositionAsync({}).then((response)=>{      
+    let location = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.Lowest}).then((response)=>{      
       checkLocation = true;
       return response;
     }).catch((err)=>{
+      console.warn(err)
       setShowProgrSubmit(false);
       checkLocation = false;
       AlertComponent.spiel_message_alert("Message","Please turn on your location first.", "Ok")

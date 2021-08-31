@@ -22,6 +22,9 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/da_icon.png",      
       },
+      "permissions": ["ACCESS_BACKGROUND_LOCATION","ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "FOREGROUND_SERVICE"],
       
       "package": "com.standinalone.rnativesample"      
     },
