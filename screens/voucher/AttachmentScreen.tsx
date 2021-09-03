@@ -57,8 +57,7 @@ export default function FertilizerScreen({
 
       if (status_foreground.status !== "granted") {
         AlertComponent.spiel_message_alert("Message","Please set the permission of the app to use location.", "Ok")
-        setShowProgrSubmit(false);
-        
+        setShowProgrSubmit(false);        
       }
 
       navigation.addListener("transitionEnd", () => {
@@ -136,6 +135,7 @@ export default function FertilizerScreen({
   // SUBMIT RRP VOUCHER
   const submitRRP = async ()=>{
     let checkLocation = false;
+    
     let location = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.Lowest}).then((response)=>{      
       checkLocation = true;
       return response;
@@ -331,7 +331,7 @@ export default function FertilizerScreen({
   };
 
   // GEO TAGGING
-  const geotagging = (response)=>{
+  const geotagging = (response,param_loc)=>{
 
     let zeroth = {};
     let gps = {};
@@ -340,14 +340,14 @@ export default function FertilizerScreen({
     // zeroth[ImageIFD.XResolution] = [777, 1];
     // zeroth[ImageIFD.YResolution] = [777, 1];
     // zeroth[ImageIFD.Software] = "Piexifjs";
-    exif[ExifIFD.DateTimeOriginal] = response.exif.GPSDateStamp;
+    exif[ExifIFD.DateTimeOriginal] = param_loc.timestamp;
     // exif[ExifIFD.LensMake] = "LensMake";
     // exif[ExifIFD.Sharpness] = 777;
-    gps[GPSIFD.GPSLatitude] = GPSHelper.degToDmsRational(response.exif.GPSLatitude);
-    gps[GPSIFD.GPSLongitude] = GPSHelper.degToDmsRational(response.exif.GPSLongitude);
-    gps[GPSIFD.GPSAltitude] = response.exif.GPSAltitude;
-    gps[GPSIFD.GPSLatitudeRef] = response.exif.GPSLatitude < 0 ? 'S' : 'N';
-    gps[GPSIFD.GPSLongitudeRef] = response.exif.GPSLongitude < 0 ? 'W' : 'E';
+    gps[GPSIFD.GPSLatitude] = GPSHelper.degToDmsRational(param_loc.coords.latitude);
+    gps[GPSIFD.GPSLongitude] = GPSHelper.degToDmsRational(param_loc.coords.longitude);
+    gps[GPSIFD.GPSAltitude] = param_loc.coords.altitude;
+    gps[GPSIFD.GPSLatitudeRef] = param_loc.coords.latitude < 0 ? 'S' : 'N';
+    gps[GPSIFD.GPSLongitudeRef] = param_loc.coords.longitude < 0 ? 'W' : 'E';
 
     let exifObj = { "0th":zeroth,"Exif":exif, "GPS":gps};
     let exifBtyes = dump(exifObj);
@@ -361,41 +361,64 @@ export default function FertilizerScreen({
   // Take Photo Button
   const openCamera = async (document_type) => {
     
+    let checkLocation = false;
+    let openLocation = await Location.hasServicesEnabledAsync();
 
     setShowProgrSubmit(true);
 
-    let getImagePicker = ImagePicker.launchCameraAsync(imagePickerOptions).then(
-      async (response) => {
-        console.warn(response.exif);
 
+    if(openLocation){
+      let location ;
+      setTimeout(async()=>{ 
+        location = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.Lowest}).then((response)=>{      
+          console.warn(response)
+          checkLocation = true;
+          return response;
+        }).catch((err)=>{
+          console.warn(err)    
+          setShowProgrSubmit(false); 
+          checkLocation = false;          
+        }); 
 
-        let base64_uri_exif = geotagging(response);
-    
-        if (response.cancelled != true) {
-          attachments.map((item, index) => {
-            if (document_type == item.name) {
-              let attachmentState = [...attachments];
-              attachmentState[index].file = base64_uri_exif;
-              setAttachments(attachmentState);
-            } else if (document_type == item.name + "(front)") {
-              //set file of front page of id
-              let attachmentState = [...attachments];
-              attachmentState[index].file[0].front = base64_uri_exif;
-              setAttachments(attachmentState);
-            } else if (document_type == item.name + "(back)") {
-              // set file of back page of id
-              let attachmentState = [...attachments];
-              attachmentState[index].file[0].back = base64_uri_exif;
-              setAttachments(attachmentState);
-            }
-          });
+      }, 3000);
+      
+      
+      let getImagePicker = ImagePicker.launchCameraAsync(imagePickerOptions).then(
+        async (response) => {          
+
+          
+          let base64_uri_exif = geotagging(response,location);
+      
+          if (response.cancelled != true) {
+            attachments.map((item, index) => {
+              if (document_type == item.name) {
+                let attachmentState = [...attachments];
+                attachmentState[index].file = base64_uri_exif;
+                setAttachments(attachmentState);
+              } else if (document_type == item.name + "(front)") {
+                //set file of front page of id
+                let attachmentState = [...attachments];
+                attachmentState[index].file[0].front = base64_uri_exif;
+                setAttachments(attachmentState);
+              } else if (document_type == item.name + "(back)") {
+                // set file of back page of id
+                let attachmentState = [...attachments];
+                attachmentState[index].file[0].back = base64_uri_exif;
+                setAttachments(attachmentState);
+              }
+            });
+          }
         }
+      );
+      if (getImagePicker) {
+        setShowProgrSubmit(false);
       }
-    );
-
-    if (getImagePicker) {
+    }else{
       setShowProgrSubmit(false);
+      AlertComponent.spiel_message_alert("Message","Please turn on your location first.", "Ok")
     }
+
+
   };
 
   // render card in flatlist
