@@ -27,7 +27,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 import SwipeButton from "rn-swipe-button";
 import AlertComponent from '../../constants/AlertComponent';
 import NetInfo from "@react-native-community/netinfo";
-
+import { load, dump, insert, TagValues, helper,ImageIFD,GPSIFD,ExifIFD,GPSHelper} from "piexifjs";
 export default function FertilizerScreen({
   navigation,
   route,
@@ -179,9 +179,11 @@ export default function FertilizerScreen({
 
       if (validateProof == 0) {
         axios
-          .post(ip_config.ip_address + "e_voucher/api/submit-voucher-rrp", formData)
-          .then((response) => {       
-            
+          .post(ip_config.ip_address + "e_voucher/api/submit-voucher-rrp", formData,{
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }})
+          .then((response) => {                     
             setShowProgrSubmit(false);
             if(response.data == 'success'){
               alert("Successfully claimed by farmer!");
@@ -324,29 +326,69 @@ export default function FertilizerScreen({
     base64: true,
     quality: 0.5,
     exif: true,
+    allowsEditing: false,
     aspect: [8000, 8000],
   };
+
+  // GEO TAGGING
+  const geotagging = (response)=>{
+
+    let zeroth = {};
+    let gps = {};
+    let exif = {};
+    zeroth[ImageIFD.Make] = "Make";
+    zeroth[ImageIFD.XResolution] = [777, 1];
+    zeroth[ImageIFD.YResolution] = [777, 1];
+    zeroth[ImageIFD.Software] = "Piexifjs";
+    exif[ExifIFD.DateTimeOriginal] = response.exif.GPSDateStamp;
+    exif[ExifIFD.LensMake] = "LensMake";
+    exif[ExifIFD.Sharpness] = 777;
+    gps[GPSIFD.GPSLatitude] = GPSHelper.degToDmsRational(response.exif.GPSLatitude);
+    gps[GPSIFD.GPSLongitude] = GPSHelper.degToDmsRational(response.exif.GPSLongitude);
+    gps[GPSIFD.GPSAltitude] = response.exif.GPSAltitude;
+    gps[GPSIFD.GPSLatitudeRef] = response.exif.GPSLatitude < 0 ? 'S' : 'N';
+    gps[GPSIFD.GPSLongitudeRef] = response.exif.GPSLongitude < 0 ? 'W' : 'E';
+
+    let exifObj = { "0th":zeroth,"Exif":exif, "GPS":gps};
+    let exifBtyes = dump(exifObj);
+    let newBase64 = insert(exifBtyes,'data:image/jpeg;base64,'+response.base64);    
+
+    return newBase64.replace('data:image/jpeg;base64,','');
+            
+  }
+
+
   // Take Photo Button
   const openCamera = async (document_type) => {
     setShowProgrSubmit(true);
 
     let getImagePicker = ImagePicker.launchCameraAsync(imagePickerOptions).then(
       async (response) => {
+        console.warn(response.exif);
+
+
+
+        let base64_uri_exif = geotagging(response);
+
+
+
+        
+        
         if (response.cancelled != true) {
           attachments.map((item, index) => {
             if (document_type == item.name) {
               let attachmentState = [...attachments];
-              attachmentState[index].file = response.base64;
+              attachmentState[index].file = base64_uri_exif;
               setAttachments(attachmentState);
             } else if (document_type == item.name + "(front)") {
               //set file of front page of id
               let attachmentState = [...attachments];
-              attachmentState[index].file[0].front = response.base64;
+              attachmentState[index].file[0].front = base64_uri_exif;
               setAttachments(attachmentState);
             } else if (document_type == item.name + "(back)") {
               // set file of back page of id
               let attachmentState = [...attachments];
-              attachmentState[index].file[0].back = response.base64;
+              attachmentState[index].file[0].back = base64_uri_exif;
               setAttachments(attachmentState);
             }
           });
