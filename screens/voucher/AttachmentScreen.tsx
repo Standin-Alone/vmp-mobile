@@ -27,7 +27,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 import SwipeButton from "rn-swipe-button";
 import AlertComponent from '../../constants/AlertComponent';
 import NetInfo from "@react-native-community/netinfo";
-import { load, dump, insert, TagValues, helper,ImageIFD,GPSIFD,ExifIFD,GPSHelper} from "piexifjs";
+import {  dump, insert,ImageIFD,GPSIFD,ExifIFD,GPSHelper} from "piexifjs";
 export default function FertilizerScreen({
   navigation,
   route,
@@ -337,12 +337,12 @@ export default function FertilizerScreen({
     let gps = {};
     let exif = {};
     zeroth[ImageIFD.Make] = "Make";
-    zeroth[ImageIFD.XResolution] = [777, 1];
-    zeroth[ImageIFD.YResolution] = [777, 1];
-    zeroth[ImageIFD.Software] = "Piexifjs";
+    // zeroth[ImageIFD.XResolution] = [777, 1];
+    // zeroth[ImageIFD.YResolution] = [777, 1];
+    // zeroth[ImageIFD.Software] = "Piexifjs";
     exif[ExifIFD.DateTimeOriginal] = response.exif.GPSDateStamp;
-    exif[ExifIFD.LensMake] = "LensMake";
-    exif[ExifIFD.Sharpness] = 777;
+    // exif[ExifIFD.LensMake] = "LensMake";
+    // exif[ExifIFD.Sharpness] = 777;
     gps[GPSIFD.GPSLatitude] = GPSHelper.degToDmsRational(response.exif.GPSLatitude);
     gps[GPSIFD.GPSLongitude] = GPSHelper.degToDmsRational(response.exif.GPSLongitude);
     gps[GPSIFD.GPSAltitude] = response.exif.GPSAltitude;
@@ -360,6 +360,8 @@ export default function FertilizerScreen({
 
   // Take Photo Button
   const openCamera = async (document_type) => {
+    
+
     setShowProgrSubmit(true);
 
     let getImagePicker = ImagePicker.launchCameraAsync(imagePickerOptions).then(
@@ -367,13 +369,8 @@ export default function FertilizerScreen({
         console.warn(response.exif);
 
 
-
         let base64_uri_exif = geotagging(response);
-
-
-
-        
-        
+    
         if (response.cancelled != true) {
           attachments.map((item, index) => {
             if (document_type == item.name) {
