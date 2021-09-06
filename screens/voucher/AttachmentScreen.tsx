@@ -185,12 +185,14 @@ export default function FertilizerScreen({
             }})
           .then((response) => {                     
             setShowProgrSubmit(false);
+            
             if(response.data == 'success'){
               alert("Successfully claimed by farmer!");
               navigation.reset({
                 routes: [{ name: "Root" }],
               });
             }else{
+              console.warn(response.data)
               alert("Error! Uploading image not successful. Please try again.");
             }
             
@@ -340,8 +342,8 @@ export default function FertilizerScreen({
     // zeroth[ImageIFD.XResolution] = [777, 1];
     // zeroth[ImageIFD.YResolution] = [777, 1];
     // zeroth[ImageIFD.Software] = "Piexifjs";
-    exif[ExifIFD.DateTimeOriginal] = param_loc.timestamp;
-    // exif[ExifIFD.LensMake] = "LensMake";
+    // exif[ExifIFD.DateTimeOriginal] = param_loc.timestamp;
+    exif[ExifIFD.LensMake] = "LensMake";
     // exif[ExifIFD.Sharpness] = 777;
     gps[GPSIFD.GPSLatitude] = GPSHelper.degToDmsRational(param_loc.coords.latitude);
     gps[GPSIFD.GPSLongitude] = GPSHelper.degToDmsRational(param_loc.coords.longitude);
@@ -380,13 +382,14 @@ export default function FertilizerScreen({
           checkLocation = false;          
         }); 
 
-      }, 3000);
+      }, 2000);
       
       
       let getImagePicker = ImagePicker.launchCameraAsync(imagePickerOptions).then(
         async (response) => {          
 
-          
+          console.warn(location);
+          // get geo tag
           let base64_uri_exif = geotagging(response,location);
       
           if (response.cancelled != true) {

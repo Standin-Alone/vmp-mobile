@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 40,
-    left: MyWindow.Width / 2 - 100,
+    left: MyWindow.Width / 2 - 80,
     top: (MyWindow.Height / 100) * -10,
     resizeMode: "center",
     alignItems: "center",
