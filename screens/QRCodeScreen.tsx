@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   qr: {
-    marginTop: "50%",
+    marginTop: "60%",
     marginBottom: "20%",
     width: qrSize,
     height: qrSize,
