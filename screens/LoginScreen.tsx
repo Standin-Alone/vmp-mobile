@@ -92,10 +92,10 @@ export default function LoginScreen({
         if (form.username != "" && form.password != "") {
           setWarning(false);
           setError(false);
-          
+          alert(ip_config.ip_address + "evoucher/api/sign_in");
           const check_compatible = await LocalAuthentication.hasHardwareAsync();       
           await axios
-            .post(ip_config.ip_address + "e_voucher/api/sign_in", form)
+            .post(ip_config.ip_address + "evoucher/api/sign_in", form)
             .then( (response) => {     
               
               let get_user_id     = response.data[0]["user_id"];

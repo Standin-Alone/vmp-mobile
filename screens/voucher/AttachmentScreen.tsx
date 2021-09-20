@@ -66,7 +66,7 @@ export default function FertilizerScreen({
         //     let data = {
         //       reference_num : params.data[0].reference_no
         //     }
-        //     axios.post(ip_config.ip_address + "e_voucher/api/discard_transaction", data).then(()=>{
+        //     axios.post(ip_config.ip_address + "evoucher/api/discard_transaction", data).then(()=>{
         //         AlertComponent.discard_transaction_alert(navigation);
         //     }).catch(()=>{
         //         alert('Error! Please try again.');
@@ -187,7 +187,7 @@ export default function FertilizerScreen({
 
       if (validateProof == 0) {
         axios
-          .post(ip_config.ip_address + "e_voucher/api/submit-voucher-rrp", formData,{
+          .post(ip_config.ip_address + "evoucher/api/submit-voucher-rrp", formData,{
             headers: {
               'Content-Type': 'multipart/form-data'
             }})
@@ -269,7 +269,7 @@ export default function FertilizerScreen({
 
       if (validateProof == 0) {
         axios
-          .post(ip_config.ip_address + "e_voucher/api/submit-voucher-cfsmff", formData)
+          .post(ip_config.ip_address + "evoucher/api/submit-voucher-cfsmff", formData)
           .then((response) => {       
            
             setShowProgrSubmit(false);

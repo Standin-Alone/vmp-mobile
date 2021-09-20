@@ -18,7 +18,7 @@ const discard_transaction_alert = (navigation,data)=>{
       {
         text: "Yes",
         onPress: () => {
-          axios.post(ip_config.ip_address + "e_voucher/api/discard_transaction", data).then(()=>{
+          axios.post(ip_config.ip_address + "evoucher/api/discard_transaction", data).then(()=>{
             navigation.reset({ routes: [{ name: "Root" }] });  
           }).catch((error)=>{
             console.warn(error)

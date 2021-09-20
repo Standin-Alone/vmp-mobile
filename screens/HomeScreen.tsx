@@ -48,7 +48,7 @@ export default function HomeScreen() {
       if (response.isConnected) {
         axios
           .get(
-            ip_config.ip_address + "e_voucher/api/get-scanned-vouchers/"+supplier_id
+            ip_config.ip_address + "evoucher/api/get-scanned-vouchers/"+supplier_id
           )
           .then((response) => {
             if (response.status == 200) {
@@ -87,7 +87,7 @@ export default function HomeScreen() {
       NetInfo.fetch().then(async (response: any) => {
         if (response.isConnected) {
           const result = await axios.get(
-            ip_config.ip_address + "e_voucher/api/get-scanned-vouchers/"+supplier_id,         
+            ip_config.ip_address + "evoucher/api/get-scanned-vouchers/"+supplier_id,         
           ).catch((error)=>error.response);
           if (result.status == 200) {
             setScannedVouchers(result.data);
@@ -115,7 +115,7 @@ export default function HomeScreen() {
       setRefreshing(true)
       if (response.isConnected) {
         
-        axios.get(ip_config.ip_address + "e_voucher/api/get-transaction-history/"+reference_no).then((response)=>{                    
+        axios.get(ip_config.ip_address + "evoucher/api/get-transaction-history/"+reference_no).then((response)=>{                    
           // push to summary screen 
           setRefreshing(false)
           navigation.push('SummaryScreen',{transactions:response.data,fullname:fullname,current_balance:current_balance});

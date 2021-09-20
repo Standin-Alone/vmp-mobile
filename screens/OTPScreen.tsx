@@ -81,7 +81,7 @@ export default function OTPScreen({
 
     // validate otp
     axios.post(
-      ip_config.ip_address + "e_voucher/api/validate-otp",dataToSend
+      ip_config.ip_address + "evoucher/api/validate-otp",dataToSend
     ).then((response)=>{
            
       if (response.data == true) {      
@@ -126,7 +126,7 @@ export default function OTPScreen({
       NetInfo.fetch().then((response: any) => {
         if (response.isConnected) {
           axios
-            .post(ip_config.ip_address + "e_voucher/api/resend-otp", dataToSend)
+            .post(ip_config.ip_address + "evoucher/api/resend-otp", dataToSend)
             .then((response) => {
               setTimer(60);
               setIsShow(false);

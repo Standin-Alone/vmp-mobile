@@ -79,7 +79,7 @@ export default function QRCodeScreen(component) {
       if (response.isConnected) {
         axios
           .post(
-            ip_config.ip_address + "e_voucher/api/get_voucher_info",
+            ip_config.ip_address + "evoucher/api/get_voucher_info",
             form
           )
           .then( (response) => {
