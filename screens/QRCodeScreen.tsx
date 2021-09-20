@@ -110,7 +110,12 @@ export default function QRCodeScreen(component) {
                 setScanned(false);
                 setIsShow(false);
               }
-            } else {
+            }else if(response.data[0]["Message"] == "already scanned") {
+              alert("This voucher is already scanned by the others.");
+              setScanned(false);
+              setIsShow(false);
+            }             
+            else {
               alert("Reference Number doesn't exist.");
               setScanned(false);
               setIsShow(false);

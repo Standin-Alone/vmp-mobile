@@ -127,7 +127,9 @@ function RootNavigator() {
         options={{ title: "Farmer Profile ",
                     headerTransparent: true,
                     headerShown: true, 
-                    headerTitleAlign: 'center'}}
+                    headerTitleAlign: 'center'
+                    
+                }}
       />
 
       {/* CCSF */}

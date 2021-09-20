@@ -102,7 +102,12 @@ export default function OTPScreen({
         setError(true);
       }
 
-    }).catch((error) => console.warn(error.response))
+    }).catch((error) => {
+ 
+        setLoading(false);
+        setCode("");
+        setError(false);
+      console.warn(error.response)})
 
   
   };

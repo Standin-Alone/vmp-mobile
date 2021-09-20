@@ -60,24 +60,32 @@ export default function FertilizerScreen({
         setShowProgrSubmit(false);        
       }
 
-      navigation.addListener("transitionEnd", () => {
-        if (navigation.isFocused()) {
-          const backAction = () => {        
-            AlertComponent.discard_transaction_alert(navigation)
-            return true
-          };
-          const backHandler = BackHandler.addEventListener(
-            "hardwareBackPress",
-            backAction
-          );
+     
+        // if (navigation.isFocused()) {
+        //   const backAction = () => {        
+        //     let data = {
+        //       reference_num : params.data[0].reference_no
+        //     }
+        //     axios.post(ip_config.ip_address + "e_voucher/api/discard_transaction", data).then(()=>{
+        //         AlertComponent.discard_transaction_alert(navigation);
+        //     }).catch(()=>{
+        //         alert('Error! Please try again.');
+        //     })    
+            
+        //     return true
+        //   };
+        //   const backHandler = BackHandler.addEventListener(
+        //     "hardwareBackPress",
+        //     backAction(this)
+        //   );
 
-          return () => {backHandler.remove()
+        //   return () => {backHandler.remove()
           
-            BackHandler.removeEventListener("hardwareBackPress", backAction);
+        //     BackHandler.removeEventListener("hardwareBackPress", backAction);
           
-          };
-        }
-      });
+        //   };
+        // }
+   
     })();
   });
 
@@ -193,6 +201,7 @@ export default function FertilizerScreen({
               });
             }else{
               console.warn(response.data)
+              alert(response.data[0].Message)
               alert("Error! Uploading image not successful. Please try again.");
             }
             
@@ -264,7 +273,8 @@ export default function FertilizerScreen({
           .then((response) => {       
            
             setShowProgrSubmit(false);
-            console.warn(response);
+            
+            
             if(response.data == 'success'){
             alert("Successfully claimed by farmer!");
             navigation.reset({
@@ -277,6 +287,7 @@ export default function FertilizerScreen({
           .catch(function (error) {          
             alert("Error occured!." + error.response);
             console.warn(error.response.data);
+            
             setShowProgrSubmit(false);
           });
       } else {

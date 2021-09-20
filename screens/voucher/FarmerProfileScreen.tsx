@@ -1,4 +1,4 @@
-import { StackScreenProps } from "@react-navigation/stack";
+import { StackScreenProps,HeaderBackButton } from "@react-navigation/stack";
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Image,FlatList,BackHandler,Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -10,7 +10,8 @@ import { Card } from "react-native-paper";
 import AlertComponent from '../../constants/AlertComponent';
 import { Button, Text,Icon } from "galio-framework";
 import Moment from 'react-moment';
-
+import axios from "axios";
+import * as ip_config from "../../ip_config";
 
 export default function FarmerProfileScreen({
   navigation,
@@ -23,11 +24,27 @@ export default function FarmerProfileScreen({
   const history = params.history;
 
 
+
+  // back button
   useEffect(()=>{
-    navigation.addListener("transitionEnd", () => {
+
+    let data = {
+      reference_num : params.data[0].reference_no
+    }
+
+    navigation.setOptions({
+      headerLeft:()=><HeaderBackButton onPress={()=>AlertComponent.discard_transaction_alert(navigation,data)}/>
+
+    });
+         
       if (navigation.isFocused()) {
         const backAction = () => {
-          AlertComponent.discard_transaction_alert(navigation);
+          
+        
+          AlertComponent.discard_transaction_alert(navigation,data);
+          
+
+         
           return true      
         };
         const backHandler = BackHandler.addEventListener(
@@ -41,7 +58,9 @@ export default function FarmerProfileScreen({
         
         };
       }
-    });
+
+      
+    
   })
   const claimVoucher = () => { 
     let get_program = params.data[0].shortname;   

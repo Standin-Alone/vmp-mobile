@@ -28,6 +28,7 @@ export default function LoginScreen({
   
   const [is_error, setError]                          = useState(false);
   const [is_warning, setWarning]                      = useState(false);
+  const [is_no_acc, setNoAcc]                          = useState(false);
   const [is_biometrics_loading, setBiometricsLoading] = useState(false);
   const [isFingerPrint, setFingerPrint]               = useState(false);
   
@@ -158,11 +159,22 @@ export default function LoginScreen({
                 setWarning(false);
                 setLoading(false);
                 setError(false);
-              } else {
-                setError(true);
+                setNoAcc(false);
+              }else if(response.data[0]["Message"] == "no account"){
+                
+                setNoAcc(true);
+                setError(false);
                 setWarning(false);
                 setLoading(false);
+              }              
+              else {
+                setError(true);
+                setWarning(false);                
+                setLoading(false);
+                setNoAcc(false);
               }
+
+              console.warn(response.data[0]["Message"])
             })
             .catch((error) => {
               setLoading(false);
@@ -170,9 +182,10 @@ export default function LoginScreen({
               Alert.alert("Message", "Sorry. VMP Mobile is not available. Please try again Later.");
             });
         } else {
-          setError(false);
           setWarning(true);
+          setError(false);          
           setLoading(false);
+          setNoAcc(false);
         }
       } else {
         Alert.alert("Message", "No Internet Connection.");
@@ -241,6 +254,14 @@ export default function LoginScreen({
               </Text>
             
           ) : null}
+
+        {is_no_acc == true ? ( 
+            
+            <Text h7 style={styles.error}>
+              User account doesn't exist.
+            </Text>
+          
+        ) : null}
 
           {is_warning == true ? (
             <Text h7 style={styles.error}>
