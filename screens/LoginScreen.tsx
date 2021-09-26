@@ -20,10 +20,11 @@ import NetInfo from "@react-native-community/netinfo";
 import AlertComponent from "../constants/AlertComponent";
 
 
+
 export default function LoginScreen({
   navigation,
 }: StackScreenProps<RootStackParamList, "Login">) {
-  const [form, setForm]                               = useState({ username: "", password: "" });
+  const [form, setForm]                               = useState({ username: "", password: "",httpsAgent:null});
   const [is_loading, setLoading]                      = useState(false);
   
   const [is_error, setError]                          = useState(false);
@@ -89,20 +90,19 @@ export default function LoginScreen({
     //Check internet connection
     NetInfo.fetch().then( async(response: any) => {
       if (response.isConnected) {
+        
         if (form.username != "" && form.password != "") {
           setWarning(false);
-          setError(false);
-          alert(ip_config.ip_address + "evoucher/api/sign_in");
+          setError(false);          
           const check_compatible = await LocalAuthentication.hasHardwareAsync();       
-          await axios
-            .post(ip_config.ip_address + "evoucher/api/sign_in", form)
-            .then( (response) => {     
-              
+          
+          await axios.post(ip_config.ip_address + "evoucher/api/sign_in", form,{timeout:5000}).then( async (response) => {   
+
               let get_user_id     = response.data[0]["user_id"];
               let get_email       = response.data[0]["email"];
               let get_supplier_id = response.data[0]["supplier_id"];
               let get_full_name   = response.data[0]["full_name"];
-
+            
               if (response.data[0]["Message"] == "true") {
 
                 // set sessions
@@ -173,12 +173,13 @@ export default function LoginScreen({
                 setLoading(false);
                 setNoAcc(false);
               }
-
-              console.warn(response.data[0]["Message"])
+              
+              // console.warn(response.data[0]["Message"])
             })
-            .catch((error) => {
-              setLoading(false);
+            .catch( (error) => {
+              setLoading(false);              
               console.warn(error.response);
+               
               Alert.alert("Message", "Sorry. VMP Mobile is not available. Please try again Later.");
             });
         } else {
@@ -186,6 +187,7 @@ export default function LoginScreen({
           setError(false);          
           setLoading(false);
           setNoAcc(false);
+          
         }
       } else {
         Alert.alert("Message", "No Internet Connection.");

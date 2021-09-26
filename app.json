@@ -20,11 +20,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/da_icon.png",      
+        "foregroundImage": "./assets/images/da_icon.png"      
       },
       "permissions": ["ACCESS_BACKGROUND_LOCATION","ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION",
-        "FOREGROUND_SERVICE"],
+        "ACCESS_FINE_LOCATION","CAMERA","FOREGROUND_SERVICE","USE_FINGERPRINT","USE_BIOMETRIC","READ_EXTERNAL_STORAGE","WRITE_EXTERNAL_STORAGE"],
       
       "package": "com.standinalone.rnativesample"      
     },

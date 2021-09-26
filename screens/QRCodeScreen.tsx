@@ -113,7 +113,7 @@ export default function QRCodeScreen(component) {
             }else if(response.data[0]["Message"] == "already scanned") {
               alert("This voucher is already scanned by the others.");
               setScanned(false);
-              setIsShow(false);
+              setIsShow(false);s
             }             
             else {
               alert("Reference Number doesn't exist.");
@@ -123,6 +123,7 @@ export default function QRCodeScreen(component) {
           })
           .catch((error) => {
             console.warn(error.response);
+            alert(error.response)
             setScanned(false);
             setIsShow(false);
           });

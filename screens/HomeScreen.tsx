@@ -115,7 +115,7 @@ export default function HomeScreen() {
       setRefreshing(true)
       if (response.isConnected) {
         
-        axios.get(ip_config.ip_address + "evoucher/api/get-transaction-history/"+reference_no).then((response)=>{                    
+        axios.get(ip_config.ip_address + "e_voucher/api/get-transaction-history/"+reference_no).then((response)=>{                    
           // push to summary screen 
           setRefreshing(false)
           navigation.push('SummaryScreen',{transactions:response.data,fullname:fullname,current_balance:current_balance});
