@@ -106,8 +106,9 @@ function TabOneNavigator() {
       <TabOneStack.Screen
         name="HomeScreen"
         component={HomeScreen}
-        options={({ navigation }) => ({
-          headerTitle: "Home",
+        options={async ({ navigation }) =>{ 
+          return ({
+          headerTitle: "helo",
           headerRight: (props) => {
             return (
               <Icon
@@ -133,7 +134,9 @@ function TabOneNavigator() {
             );
           },
           
-        })}
+        })
+        }
+      }
       />
     </TabOneStack.Navigator>
   );

@@ -393,7 +393,7 @@ export default function FertilizerScreen({
           checkLocation = false;          
         }); 
 
-      }, 2000);
+      }, 3000);
       
       
       let getImagePicker = ImagePicker.launchCameraAsync(imagePickerOptions).then(
