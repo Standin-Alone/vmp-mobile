@@ -10,6 +10,7 @@ import { Text } from "galio-framework";
 import moment from "moment";
 
 import { List, Card, Divider } from "react-native-paper";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function SummaryScreen({
   navigation,
@@ -73,7 +74,7 @@ export default function SummaryScreen({
           />
         </Card>
       </View>
-
+    <ScrollView>
       <List.AccordionGroup>
         {transactionFilterByDate.map((item) => {
           let sum = 0;
@@ -112,54 +113,21 @@ export default function SummaryScreen({
             }
             )}
               
-
- 
-
-
-
-{/*         
-              {
-            transactions.map((value,index)=>{
-              let transaction_length = transactions.some((transaction_value)=> convertedDate(value.transac_date)  ==  convertedDate(transaction_value.transac_date) && transaction_value.transac_by_fullname == value.transac_by_fullname );
-
-              
-              let compute = 0; 
-              if( convertedDate(value.transac_date)  ==  convertedDate(item.transac_date) && item.transac_by_fullname == value.transac_by_fullname ) {
-                sum+=Number(value.total_amount);
-
-                  
-                if(transaction_length - 1 == index ){
-                  return(
-                    <List.Item  title={"Total Amount"}               
-                    titleStyle={{fontFamily:'calibri-light',fontWeight:'bold'}}
-                    
-                    right={()=><Text style={{top:10}}>{"₱"+sum.toFixed(2)}</Text>} 
-                    />)
-                }              
-             }
-            })} 
- */}
-
-
             <List.Item  title={"Total Amount"}               
-              titleStyle={{fontFamily:'calibri-light',fontWeight:'bold'}}
-              
+              titleStyle={{fontFamily:'calibri-light',fontWeight:'bold'}}              
               right={()=>              
                {                 
-                let transaction_length = transactions.filter((transaction_value)=> convertedDate(item.transac_date)  ==  convertedDate(transaction_value.transac_date) && transaction_value.transac_by_fullname == item.transac_by_fullname );
+                let filter_transaction = transactions.filter((transaction_value)=> convertedDate(item.transac_date)  ==  convertedDate(transaction_value.transac_date) && transaction_value.transac_by_fullname == item.transac_by_fullname );
                 return (<Text style={{top:10}}>{"₱"+
-                transaction_length.reduce((val,index) => { return convertedDate(index.transac_date)  ==  convertedDate(item.transac_date)  ? val += Number( index.total_amount)  : null }, 0 ).toFixed(2)          
-                  
+                            filter_transaction.reduce((val,index) => { return convertedDate(index.transac_date)  ==  convertedDate(item.transac_date)  ? val += Number( index.total_amount)  : null }, 0 ).toFixed(2)                            
                     }</Text>)
                     
                 }} 
-              />   
-                         
-
-
+              />                           
           </List.Accordion>
         )})}
       </List.AccordionGroup>
+      </ScrollView>
     </View>
   );
 }
