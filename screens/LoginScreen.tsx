@@ -223,8 +223,7 @@ export default function LoginScreen({
             right
             icon="account-circle"
             iconColor={Colors.muted}
-            iconSize={20}
-
+            iconSize={20}            
             onChangeText={(value) => setForm({ ...form, username: value })}
           />
         </View>

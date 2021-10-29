@@ -246,6 +246,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'flex-start',
 
+
   },
   details_view:{
     fontFamily:'calibri-light',
@@ -270,14 +271,15 @@ const styles = StyleSheet.create({
     color:'#9E9FA0',
     justifyContent:'flex-start', 
     fontFamily:'calibri-light',
-    fontSize:20,
+    fontSize:14,
 
   },
   detail_info_value:{
     color:'#000000',
     fontFamily:'calibri-light',
-    fontSize:20,    
+    fontSize:18,    
     justifyContent:'flex-start', 
+    marginRight:40
   }, 
   history_view:{
     fontFamily:'calibri-light',

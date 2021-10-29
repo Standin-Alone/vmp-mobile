@@ -106,37 +106,67 @@ function TabOneNavigator() {
       <TabOneStack.Screen
         name="HomeScreen"
         component={HomeScreen}
-        options={async ({ navigation }) =>{ 
-          return ({
-          headerTitle: "helo",
-          headerRight: (props) => {
-            return (
-              <Icon
-                name="logout"
-                family="FontAwesome"
-                color={Colors.base}
-                size={50}
-                style={styles.button}
-                onPress={() =>
-                  Alert.alert("Message", "Are you sure you want to logout?", [
-                    { text: "No" },
-                    {
-                      text: "Yes",
-                      onPress: () => {
-                        AsyncStorage.removeItem("otp_code");
-                        AsyncStorage.removeItem("email");
-                        navigation.replace("AuthenticationScreen");
-                      },
-                    },
-                  ])
-                }
-              />
-            );
-          },
+      //   options={async ({ navigation }) =>{ 
+      //     return ({
+      //     headerTitle: "helo",
+      //     headerRight: (props) => {
+      //       return (
+      //         <Icon
+      //           name="logout"
+      //           family="FontAwesome"
+      //           color={Colors.base}
+      //           size={50}
+      //           style={styles.button}
+      //           onPress={() =>
+      //             Alert.alert("Message", "Are you sure you want to logout?", [
+      //               { text: "No" },
+      //               {
+      //                 text: "Yes",
+      //                 onPress: () => {
+      //                   AsyncStorage.removeItem("otp_code");
+      //                   AsyncStorage.removeItem("email");
+      //                   navigation.replace("AuthenticationScreen");
+      //                 },
+      //               },
+      //             ])
+      //           }
+      //         />
+      //       );
+      //     },
           
-        })
-        }
-      }
+      //   })
+      //   }
+      // }
+
+
+      options = {({navigation})=> ({headerTitle:'Home',
+      headerRight: (props) => {
+        return (
+          <Icon
+            name="logout"
+            family="FontAwesome"
+            color={Colors.base}
+            size={50}
+            style={styles.button}
+            onPress={() =>
+              Alert.alert("Message", "Are you sure you want to logout?", [
+                { text: "No" },
+                {
+                  text: "Yes",
+                  onPress: () => {
+                    AsyncStorage.removeItem("otp_code");
+                    AsyncStorage.removeItem("email");
+                    navigation.replace("AuthenticationScreen");
+                  },
+                },
+              ])
+            }
+          />
+        );
+      },
+    })
+  
+  }
       />
     </TabOneStack.Navigator>
   );

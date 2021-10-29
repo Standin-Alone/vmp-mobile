@@ -90,7 +90,7 @@ export default function SummaryScreen({
           >
             {transactions.map((value) =>{
 
-            return convertedDate(value.transac_date) == convertedDate(item.transac_date) ? (
+            return  convertedDate(value.transac_date)  ==  convertedDate(item.transac_date)  &&  item.transac_by_fullname == value.transac_by_fullname  ? (
                 <View>
                   <List.Item
                     title={value.item_name + "(" + value.quantity + ")"}
@@ -98,6 +98,8 @@ export default function SummaryScreen({
                     description={
                       "₱" + value.amount + " per " + value.unit_measure
                     }
+
+                    
                     right={() => (
                       <Text style={{ top: 10 }}>
                         {"₱" + value.total_amount}
@@ -110,22 +112,47 @@ export default function SummaryScreen({
             }
             )}
               
-              {/* {
-            transactions.map((value)=>{
+
+ 
+
+
+
+{/*         
+              {
+            transactions.map((value,index)=>{
+              let transaction_length = transactions.some((transaction_value)=> convertedDate(value.transac_date)  ==  convertedDate(transaction_value.transac_date) && transaction_value.transac_by_fullname == value.transac_by_fullname );
+
               
-              return convertedDate(value.transac_date)  ==  convertedDate(item.transac_date) ?
-              <List.Item  title={"Total Amount"}               
-              titleStyle={{fontFamily:'calibri-light',fontWeight:'bold'}}
-              
-              right={()=><Text style={{top:10}}>{"₱"+(sum+=Number(value.total_amount)).toFixed(2)}</Text>} 
-              />     : null
-            })}  */}
+              let compute = 0; 
+              if( convertedDate(value.transac_date)  ==  convertedDate(item.transac_date) && item.transac_by_fullname == value.transac_by_fullname ) {
+                sum+=Number(value.total_amount);
+
+                  
+                if(transaction_length - 1 == index ){
+                  return(
+                    <List.Item  title={"Total Amount"}               
+                    titleStyle={{fontFamily:'calibri-light',fontWeight:'bold'}}
+                    
+                    right={()=><Text style={{top:10}}>{"₱"+sum.toFixed(2)}</Text>} 
+                    />)
+                }              
+             }
+            })} 
+ */}
+
+
             <List.Item  title={"Total Amount"}               
               titleStyle={{fontFamily:'calibri-light',fontWeight:'bold'}}
               
-              right={()=><Text style={{top:10}}>{"₱"+
-              transactions.reduce((val,index) => { return convertedDate(index.transac_date)  ==  convertedDate(item.transac_date)  ? val = val + Number( index.total_amount) : null }, 0 ).toFixed(2)              
-              }</Text>} 
+              right={()=>              
+               {                 
+                let transaction_length = transactions.filter((transaction_value)=> convertedDate(item.transac_date)  ==  convertedDate(transaction_value.transac_date) && transaction_value.transac_by_fullname == item.transac_by_fullname );
+                return (<Text style={{top:10}}>{"₱"+
+                transaction_length.reduce((val,index) => { return convertedDate(index.transac_date)  ==  convertedDate(item.transac_date)  ? val += Number( index.total_amount)  : null }, 0 ).toFixed(2)          
+                  
+                    }</Text>)
+                    
+                }} 
               />   
                          
 
