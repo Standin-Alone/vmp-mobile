@@ -154,8 +154,7 @@ function TabOneNavigator() {
                 {
                   text: "Yes",
                   onPress: () => {
-                    AsyncStorage.removeItem("otp_code");
-                    AsyncStorage.removeItem("email");
+                   AsyncStorage.clear();
                     navigation.replace("AuthenticationScreen");
                   },
                 },

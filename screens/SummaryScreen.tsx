@@ -76,12 +76,12 @@ export default function SummaryScreen({
       </View>
     <ScrollView>
       <List.AccordionGroup>
-        {transactionFilterByDate.map((item) => {
+        {transactionFilterByDate.map((item,index) => {
           let sum = 0;
           return (
           <List.Accordion
             title={moment(item.transac_date).format("MMMM DD, YYYY")}
-            id="1"
+            id={index+1}
             description={"transacted by " + item.transac_by_fullname}
             expanded={true}
             titleStyle={{ color: Colors.base }}
@@ -96,8 +96,8 @@ export default function SummaryScreen({
                   <List.Item
                     title={value.item_name + "(" + value.quantity + ")"}
                     titleStyle={{ fontFamily: "calibri-light" }}
-                    description={
-                      "₱" + value.amount + " per " + value.unit_measure
+                    description={ 
+                      "₱" + value.amount + " per " + value.unit_measure 
                     }
 
                     
